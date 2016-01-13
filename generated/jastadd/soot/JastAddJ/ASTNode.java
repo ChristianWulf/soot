@@ -776,7 +776,7 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol implements Cloneab
 	 * @aspect Statements
 	 * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/Statements.jrag:256
 	 */
-	public void endExceptionRange(final Body b, final ArrayList list) {
+	public void endExceptionRange(final Body b, final java.util.List<soot.jimple.Stmt> list) {
 		if (list != null) {
 			soot.jimple.Stmt label = newLabel();
 			b.addLabel(label);
@@ -790,7 +790,7 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol implements Cloneab
 	 * @aspect Statements
 	 * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/Statements.jrag:264
 	 */
-	public void beginExceptionRange(final Body b, final ArrayList list) {
+	public void beginExceptionRange(final Body b, final java.util.List<soot.jimple.Stmt> list) {
 		if (list != null) {
 			b.addNextStmt(list);
 		}

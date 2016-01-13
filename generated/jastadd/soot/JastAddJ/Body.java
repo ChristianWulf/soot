@@ -1,25 +1,25 @@
 package soot.JastAddJ;
 
-import java.util.HashSet;
-import java.io.File;
-import java.util.*;
-import beaver.*;
 import java.util.ArrayList;
-import java.util.zip.*;
-import java.io.*;
-import java.io.FileNotFoundException;
-import java.util.Collection;
-import soot.*;
-import soot.util.*;
-import soot.jimple.*;
-import soot.coffi.ClassFile;
-import soot.coffi.method_info;
-import soot.coffi.CONSTANT_Utf8_info;
-import soot.tagkit.SourceFileTag;
-import soot.coffi.CoffiMethodSource;
+import java.util.Arrays;
+
+import beaver.Symbol;
+import soot.ArrayType;
+import soot.Local;
+import soot.PatchingChain;
+import soot.RefType;
+import soot.SootFieldRef;
+import soot.SootMethodRef;
+import soot.Type;
+import soot.Unit;
+import soot.Value;
+import soot.jimple.CaughtExceptionRef;
+import soot.jimple.IdentityStmt;
+import soot.jimple.Jimple;
+import soot.jimple.NullConstant;
 /**
   * @ast class
- * 
+ *
  */
 public class Body extends java.lang.Object {
 
@@ -35,37 +35,39 @@ public class Body extends java.lang.Object {
     TypeDecl typeDecl;
 
 
-    public Body(TypeDecl typeDecl, soot.jimple.JimpleBody body, ASTNode container) {
+    public Body(final TypeDecl typeDecl, final soot.jimple.JimpleBody body, final ASTNode container) {
       this.typeDecl = typeDecl;
       this.body = body;
       chains = new java.util.Stack();
       chains.push(body.getUnits());
       setLine(container);
-      if(!body.getMethod().isStatic())
-        emitThis(typeDecl);
+      if(!body.getMethod().isStatic()) {
+		emitThis(typeDecl);
+	}
     }
 
 
-    public Local getParam(int i)
+    public Local getParam(final int i)
     {
       return body.getParameterLocal(i);
     }
 
 
-    public Local newTemp(soot.Type type) {
+    public Local newTemp(final soot.Type type) {
       Local local = Jimple.v().newLocal("temp$" + nextTempIndex++, type);
       body.getLocals().add(local);
       return local;
     }
 
 
-    public Local newTemp(soot.Value v) {
-      if (v == NullConstant.v())
-        throw new UnsupportedOperationException(
+    public Local newTemp(final soot.Value v) {
+      if (v == NullConstant.v()) {
+		throw new UnsupportedOperationException(
             "Cannot create a temporary local for null literal");
+	}
       Local local = newTemp(v.getType());
       if(v instanceof soot.jimple.ParameterRef) {
-        add(newIdentityStmt(local, (soot.jimple.ParameterRef)v, null));
+        add(newIdentityStmt(local, v, null));
       }
       else {
         add(newAssignStmt(local, v, null));
@@ -75,11 +77,12 @@ public class Body extends java.lang.Object {
     }
 
 
-    public Local newLocal(String name, soot.Type type) {
+    public Local newLocal(final String name, final soot.Type type) {
       Local local = Jimple.v().newLocal(name, type);
       body.getLocals().add(local);
-      if(name.equals("this") && thisName == null)
-        thisName = local;
+      if(name.equals("this") && thisName == null) {
+		thisName = local;
+	}
       return local;
     }
 
@@ -88,13 +91,13 @@ public class Body extends java.lang.Object {
     private soot.tagkit.Tag lineTag;
 
 
-    public void setLine(ASTNode node)
+    public void setLine(final ASTNode node)
     {
-      if(node.getStart() != 0 && node.getEnd() != 0) { 
-        int line = node.getLine(node.getStart());
-        int column = node.getColumn(node.getStart());
-        int endLine = node.getLine(node.getEnd());
-        int endColumn = node.getColumn(node.getEnd());
+      if(node.getStart() != 0 && node.getEnd() != 0) {
+        int line = Symbol.getLine(node.getStart());
+        int column = Symbol.getColumn(node.getStart());
+        int endLine = Symbol.getLine(node.getEnd());
+        int endColumn = Symbol.getColumn(node.getEnd());
         String s = node.sourceFile();
         s = s != null ? s.substring(s.lastIndexOf(java.io.File.separatorChar)+1) : "Unknown";
         lineTag = new soot.tagkit.SourceLnNamePosTag(s, line, endLine, column, endColumn);
@@ -112,7 +115,7 @@ public class Body extends java.lang.Object {
 
 
 
-    public Body add(soot.jimple.Stmt stmt) {
+    public Body add(final soot.jimple.Stmt stmt) {
       if(list != null) {
         list.add(stmt);
         list = null;
@@ -123,10 +126,11 @@ public class Body extends java.lang.Object {
         IdentityStmt idstmt = (IdentityStmt) stmt;
         if(!(idstmt.getRightOp() instanceof CaughtExceptionRef)) {
           soot.Unit s = chain.getFirst();
-          while(s instanceof IdentityStmt)
-            s = chain.getSuccOf((soot.jimple.Stmt)s);
+          while(s instanceof IdentityStmt) {
+			s = chain.getSuccOf(s);
+		}
           if(s != null) {
-            chain.insertBefore(stmt, (soot.jimple.Stmt)s);
+            chain.insertBefore(stmt, s);
             return this;
           }
         }
@@ -136,7 +140,7 @@ public class Body extends java.lang.Object {
     }
 
 
-    public void pushBlock(soot.PatchingChain c) {
+    public void pushBlock(final soot.PatchingChain c) {
       chains.push(c);
     }
 
@@ -152,20 +156,21 @@ public class Body extends java.lang.Object {
     }
 
 
-    public Body addLabel(soot.jimple.Stmt label) {
+    public Body addLabel(final soot.jimple.Stmt label) {
       add(label);
       return this;
     }
 
 
 
-    public soot.Local emitThis(TypeDecl typeDecl) {
+    public soot.Local emitThis(final TypeDecl typeDecl) {
       if(thisName == null) {
         thisName = newLocal("this", typeDecl.getSootType());
-        if(body.getMethod().isStatic())
-          add(Jimple.v().newIdentityStmt(thisName, Jimple.v().newParameterRef(typeDecl.getSootType(), 0)));
-        else
-          add(Jimple.v().newIdentityStmt(thisName, Jimple.v().newThisRef(typeDecl.sootRef())));
+        if(body.getMethod().isStatic()) {
+			add(Jimple.v().newIdentityStmt(thisName, Jimple.v().newParameterRef(typeDecl.getSootType(), 0)));
+		} else {
+			add(Jimple.v().newIdentityStmt(thisName, Jimple.v().newThisRef(typeDecl.sootRef())));
+		}
       }
       return thisName;
     }
@@ -175,7 +180,7 @@ public class Body extends java.lang.Object {
 
 
 
-    public Body addTrap(TypeDecl type, soot.jimple.Stmt firstStmt, soot.jimple.Stmt lastStmt, soot.jimple.Stmt handler) {
+    public Body addTrap(final TypeDecl type, final soot.jimple.Stmt firstStmt, final soot.jimple.Stmt lastStmt, final soot.jimple.Stmt handler) {
       body.getTraps().add(Jimple.v().newTrap(type.getSootClassDecl(), firstStmt, lastStmt, handler));
       return this;
     }
@@ -188,103 +193,107 @@ public class Body extends java.lang.Object {
     }
 
 
-    public void addNextStmt(java.util.ArrayList list) {
+    public void addNextStmt(final java.util.List<soot.jimple.Stmt> list) {
       this.list = list;
     }
 
 
-    java.util.ArrayList list = null;
+    java.util.List list = null;
 
 
-    public soot.jimple.BinopExpr newXorExpr(soot.Value op1, soot.Value op2, ASTNode location) { return updateTags(Jimple.v().newXorExpr(op1, op2), location, op1, op2); }
+    public soot.jimple.BinopExpr newXorExpr(final soot.Value op1, final soot.Value op2, final ASTNode location) { return updateTags(Jimple.v().newXorExpr(op1, op2), location, op1, op2); }
 
 
-    public soot.jimple.BinopExpr newUshrExpr(soot.Value op1, soot.Value op2, ASTNode location) { return updateTags(Jimple.v().newUshrExpr(op1, op2), location, op1, op2); }
+    public soot.jimple.BinopExpr newUshrExpr(final soot.Value op1, final soot.Value op2, final ASTNode location) { return updateTags(Jimple.v().newUshrExpr(op1, op2), location, op1, op2); }
 
 
-    public soot.jimple.BinopExpr newSubExpr(soot.Value op1, soot.Value op2, ASTNode location) { return updateTags(Jimple.v().newSubExpr(op1, op2), location, op1, op2); }
+    public soot.jimple.BinopExpr newSubExpr(final soot.Value op1, final soot.Value op2, final ASTNode location) { return updateTags(Jimple.v().newSubExpr(op1, op2), location, op1, op2); }
 
 
-    public soot.jimple.BinopExpr newShrExpr(soot.Value op1, soot.Value op2, ASTNode location) { return updateTags(Jimple.v().newShrExpr(op1, op2), location, op1, op2); }
+    public soot.jimple.BinopExpr newShrExpr(final soot.Value op1, final soot.Value op2, final ASTNode location) { return updateTags(Jimple.v().newShrExpr(op1, op2), location, op1, op2); }
 
 
-    public soot.jimple.BinopExpr newShlExpr(soot.Value op1, soot.Value op2, ASTNode location) { return updateTags(Jimple.v().newShlExpr(op1, op2), location, op1, op2); }
+    public soot.jimple.BinopExpr newShlExpr(final soot.Value op1, final soot.Value op2, final ASTNode location) { return updateTags(Jimple.v().newShlExpr(op1, op2), location, op1, op2); }
 
 
-    public soot.jimple.BinopExpr newRemExpr(soot.Value op1, soot.Value op2, ASTNode location) { return updateTags(Jimple.v().newRemExpr(op1, op2), location, op1, op2); }
+    public soot.jimple.BinopExpr newRemExpr(final soot.Value op1, final soot.Value op2, final ASTNode location) { return updateTags(Jimple.v().newRemExpr(op1, op2), location, op1, op2); }
 
 
-    public soot.jimple.BinopExpr newOrExpr(soot.Value op1, soot.Value op2, ASTNode location) { return updateTags(Jimple.v().newOrExpr(op1, op2), location, op1, op2); }
+    public soot.jimple.BinopExpr newOrExpr(final soot.Value op1, final soot.Value op2, final ASTNode location) { return updateTags(Jimple.v().newOrExpr(op1, op2), location, op1, op2); }
 
 
-    public soot.jimple.BinopExpr newNeExpr(soot.Value op1, soot.Value op2, ASTNode location) { return updateTags(Jimple.v().newNeExpr(op1, op2), location, op1, op2); }
+    public soot.jimple.BinopExpr newNeExpr(final soot.Value op1, final soot.Value op2, final ASTNode location) { return updateTags(Jimple.v().newNeExpr(op1, op2), location, op1, op2); }
 
 
-    public soot.jimple.BinopExpr newMulExpr(soot.Value op1, soot.Value op2, ASTNode location) { return updateTags(Jimple.v().newMulExpr(op1, op2), location, op1, op2); }
+    public soot.jimple.BinopExpr newMulExpr(final soot.Value op1, final soot.Value op2, final ASTNode location) { return updateTags(Jimple.v().newMulExpr(op1, op2), location, op1, op2); }
 
 
-    public soot.jimple.BinopExpr newLeExpr(soot.Value op1, soot.Value op2, ASTNode location) { return updateTags(Jimple.v().newLeExpr(op1, op2), location, op1, op2); }
+    public soot.jimple.BinopExpr newLeExpr(final soot.Value op1, final soot.Value op2, final ASTNode location) { return updateTags(Jimple.v().newLeExpr(op1, op2), location, op1, op2); }
 
 
-    public soot.jimple.BinopExpr newGeExpr(soot.Value op1, soot.Value op2, ASTNode location) { return updateTags(Jimple.v().newGeExpr(op1, op2), location, op1, op2); }
+    public soot.jimple.BinopExpr newGeExpr(final soot.Value op1, final soot.Value op2, final ASTNode location) { return updateTags(Jimple.v().newGeExpr(op1, op2), location, op1, op2); }
 
 
-    public soot.jimple.BinopExpr newEqExpr(soot.Value op1, soot.Value op2, ASTNode location) { return updateTags(Jimple.v().newEqExpr(op1, op2), location, op1, op2); }
+    public soot.jimple.BinopExpr newEqExpr(final soot.Value op1, final soot.Value op2, final ASTNode location) { return updateTags(Jimple.v().newEqExpr(op1, op2), location, op1, op2); }
 
 
-    public soot.jimple.BinopExpr newDivExpr(soot.Value op1, soot.Value op2, ASTNode location) { return updateTags(Jimple.v().newDivExpr(op1, op2), location, op1, op2); }
+    public soot.jimple.BinopExpr newDivExpr(final soot.Value op1, final soot.Value op2, final ASTNode location) { return updateTags(Jimple.v().newDivExpr(op1, op2), location, op1, op2); }
 
 
-    public soot.jimple.BinopExpr newCmplExpr(soot.Value op1, soot.Value op2, ASTNode location) { return updateTags(Jimple.v().newCmplExpr(op1, op2), location, op1, op2); }
+    public soot.jimple.BinopExpr newCmplExpr(final soot.Value op1, final soot.Value op2, final ASTNode location) { return updateTags(Jimple.v().newCmplExpr(op1, op2), location, op1, op2); }
 
 
-    public soot.jimple.BinopExpr newCmpgExpr(soot.Value op1, soot.Value op2, ASTNode location) { return updateTags(Jimple.v().newCmpgExpr(op1, op2), location, op1, op2); }
+    public soot.jimple.BinopExpr newCmpgExpr(final soot.Value op1, final soot.Value op2, final ASTNode location) { return updateTags(Jimple.v().newCmpgExpr(op1, op2), location, op1, op2); }
 
 
-    public soot.jimple.BinopExpr newCmpExpr(soot.Value op1, soot.Value op2, ASTNode location) { return updateTags(Jimple.v().newCmpExpr(op1, op2), location, op1, op2); }
+    public soot.jimple.BinopExpr newCmpExpr(final soot.Value op1, final soot.Value op2, final ASTNode location) { return updateTags(Jimple.v().newCmpExpr(op1, op2), location, op1, op2); }
 
 
-    public soot.jimple.BinopExpr newGtExpr(soot.Value op1, soot.Value op2, ASTNode location) { return updateTags(Jimple.v().newGtExpr(op1, op2), location, op1, op2); }
+    public soot.jimple.BinopExpr newGtExpr(final soot.Value op1, final soot.Value op2, final ASTNode location) { return updateTags(Jimple.v().newGtExpr(op1, op2), location, op1, op2); }
 
 
-    public soot.jimple.BinopExpr newLtExpr(soot.Value op1, soot.Value op2, ASTNode location) { return updateTags(Jimple.v().newLtExpr(op1, op2), location, op1, op2); }
+    public soot.jimple.BinopExpr newLtExpr(final soot.Value op1, final soot.Value op2, final ASTNode location) { return updateTags(Jimple.v().newLtExpr(op1, op2), location, op1, op2); }
 
 
-    public soot.jimple.BinopExpr newAddExpr(soot.Value op1, soot.Value op2, ASTNode location) { return updateTags(Jimple.v().newAddExpr(op1, op2), location, op1, op2); }
+    public soot.jimple.BinopExpr newAddExpr(final soot.Value op1, final soot.Value op2, final ASTNode location) { return updateTags(Jimple.v().newAddExpr(op1, op2), location, op1, op2); }
 
 
-    public soot.jimple.BinopExpr newAndExpr(soot.Value op1, soot.Value op2, ASTNode location) { return updateTags(Jimple.v().newAndExpr(op1, op2), location, op1, op2); }
-
-
-
-    public soot.jimple.UnopExpr newNegExpr(soot.Value op, ASTNode location) { return updateTags(Jimple.v().newNegExpr(op), location, op); }
-
-
-    public soot.jimple.UnopExpr newLengthExpr(soot.Value op, ASTNode location) { return updateTags(Jimple.v().newLengthExpr(op), location, op); }
+    public soot.jimple.BinopExpr newAndExpr(final soot.Value op1, final soot.Value op2, final ASTNode location) { return updateTags(Jimple.v().newAndExpr(op1, op2), location, op1, op2); }
 
 
 
-    public soot.jimple.CastExpr newCastExpr(Value op1, Type t, ASTNode location) {
+    public soot.jimple.UnopExpr newNegExpr(final soot.Value op, final ASTNode location) { return updateTags(Jimple.v().newNegExpr(op), location, op); }
+
+
+    public soot.jimple.UnopExpr newLengthExpr(final soot.Value op, final ASTNode location) { return updateTags(Jimple.v().newLengthExpr(op), location, op); }
+
+
+
+    public soot.jimple.CastExpr newCastExpr(final Value op1, final Type t, final ASTNode location) {
       soot.jimple.CastExpr expr = Jimple.v().newCastExpr(op1, t);
       createTag(expr, location);
       soot.tagkit.Tag op1tag = getTag(op1);
-      if(op1tag != null) expr.getOpBox().addTag(op1tag);
+      if(op1tag != null) {
+		expr.getOpBox().addTag(op1tag);
+	}
       return expr;
     }
 
 
 
-    public soot.jimple.InstanceOfExpr newInstanceOfExpr(Value op1, Type t, ASTNode location) {
+    public soot.jimple.InstanceOfExpr newInstanceOfExpr(final Value op1, final Type t, final ASTNode location) {
       soot.jimple.InstanceOfExpr expr = Jimple.v().newInstanceOfExpr(op1, t);
       createTag(expr, location);
       soot.tagkit.Tag op1tag = getTag(op1);
-      if(op1tag != null) expr.getOpBox().addTag(op1tag);
+      if(op1tag != null) {
+		expr.getOpBox().addTag(op1tag);
+	}
       return expr;
     }
 
 
 
-    public soot.jimple.NewExpr newNewExpr(RefType type, ASTNode location) {
+    public soot.jimple.NewExpr newNewExpr(final RefType type, final ASTNode location) {
       soot.jimple.NewExpr expr = Jimple.v().newNewExpr(type);
       createTag(expr, location);
       return expr;
@@ -292,233 +301,269 @@ public class Body extends java.lang.Object {
 
 
 
-    public soot.jimple.NewArrayExpr newNewArrayExpr(Type type, Value size, ASTNode location) {
+    public soot.jimple.NewArrayExpr newNewArrayExpr(final Type type, final Value size, final ASTNode location) {
       soot.jimple.NewArrayExpr expr = Jimple.v().newNewArrayExpr(type, size);
       createTag(expr, location);
       soot.tagkit.Tag tag = getTag(size);
-      if(tag != null) expr.getSizeBox().addTag(tag);
+      if(tag != null) {
+		expr.getSizeBox().addTag(tag);
+	}
       return expr;
     }
 
 
 
-    public soot.jimple.NewMultiArrayExpr newNewMultiArrayExpr(ArrayType type, java.util.List sizes, ASTNode location) {
+    public soot.jimple.NewMultiArrayExpr newNewMultiArrayExpr(final ArrayType type, final java.util.List sizes, final ASTNode location) {
       soot.jimple.NewMultiArrayExpr expr = Jimple.v().newNewMultiArrayExpr(type, sizes);
       createTag(expr, location);
       for(int i = 0; i < sizes.size(); i++) {
         soot.tagkit.Tag tag = getTag((Value)sizes.get(i));
-        if(tag != null) expr.getSizeBox(i).addTag(tag);
+        if(tag != null) {
+			expr.getSizeBox(i).addTag(tag);
+		}
       }
       return expr;
     }
 
 
 
-    public soot.jimple.StaticInvokeExpr newStaticInvokeExpr(SootMethodRef method, java.util.List args, ASTNode location) {
+    public soot.jimple.StaticInvokeExpr newStaticInvokeExpr(final SootMethodRef method, final java.util.List args, final ASTNode location) {
       soot.jimple.StaticInvokeExpr expr = Jimple.v().newStaticInvokeExpr(method, args);
       createTag(expr, location);
       for(int i = 0; i < args.size(); i++) {
         soot.tagkit.Tag tag = getTag((Value)args.get(i));
-        if(tag != null) expr.getArgBox(i).addTag(tag);
+        if(tag != null) {
+			expr.getArgBox(i).addTag(tag);
+		}
       }
       return expr;
     }
 
 
 
-    public soot.jimple.SpecialInvokeExpr newSpecialInvokeExpr(Local base, SootMethodRef method, java.util.List args, ASTNode location) {
+    public soot.jimple.SpecialInvokeExpr newSpecialInvokeExpr(final Local base, final SootMethodRef method, final java.util.List args, final ASTNode location) {
       soot.jimple.SpecialInvokeExpr expr = Jimple.v().newSpecialInvokeExpr(base, method, args);
       createTag(expr, location);
       for(int i = 0; i < args.size(); i++) {
         soot.tagkit.Tag tag = getTag((Value)args.get(i));
-        if(tag != null) expr.getArgBox(i).addTag(tag);
+        if(tag != null) {
+			expr.getArgBox(i).addTag(tag);
+		}
       }
       return expr;
     }
 
 
 
-    public soot.jimple.VirtualInvokeExpr newVirtualInvokeExpr(Local base, SootMethodRef method, java.util.List args, ASTNode location) {
+    public soot.jimple.VirtualInvokeExpr newVirtualInvokeExpr(final Local base, final SootMethodRef method, final java.util.List args, final ASTNode location) {
       soot.jimple.VirtualInvokeExpr expr = Jimple.v().newVirtualInvokeExpr(base, method, args);
       createTag(expr, location);
       for(int i = 0; i < args.size(); i++) {
         soot.tagkit.Tag tag = getTag((Value)args.get(i));
-        if(tag != null) expr.getArgBox(i).addTag(tag);
+        if(tag != null) {
+			expr.getArgBox(i).addTag(tag);
+		}
       }
       return expr;
     }
 
 
 
-    public soot.jimple.InterfaceInvokeExpr newInterfaceInvokeExpr(Local base, SootMethodRef method, java.util.List args, ASTNode location) {
+    public soot.jimple.InterfaceInvokeExpr newInterfaceInvokeExpr(final Local base, final SootMethodRef method, final java.util.List args, final ASTNode location) {
       soot.jimple.InterfaceInvokeExpr expr = Jimple.v().newInterfaceInvokeExpr(base, method, args);
       createTag(expr, location);
       for(int i = 0; i < args.size(); i++) {
         soot.tagkit.Tag tag = getTag((Value)args.get(i));
-        if(tag != null) expr.getArgBox(i).addTag(tag);
+        if(tag != null) {
+			expr.getArgBox(i).addTag(tag);
+		}
       }
       return expr;
     }
 
 
 
-    public soot.jimple.StaticInvokeExpr newStaticInvokeExpr(SootMethodRef method, ASTNode location) {
+    public soot.jimple.StaticInvokeExpr newStaticInvokeExpr(final SootMethodRef method, final ASTNode location) {
       return newStaticInvokeExpr(method, new ArrayList(), location);
     }
 
 
-    public soot.jimple.SpecialInvokeExpr newSpecialInvokeExpr(Local base, SootMethodRef method, ASTNode location) {
+    public soot.jimple.SpecialInvokeExpr newSpecialInvokeExpr(final Local base, final SootMethodRef method, final ASTNode location) {
       return newSpecialInvokeExpr(base, method, new ArrayList(), location);
     }
 
 
-    public soot.jimple.VirtualInvokeExpr newVirtualInvokeExpr(Local base, SootMethodRef method, ASTNode location) {
+    public soot.jimple.VirtualInvokeExpr newVirtualInvokeExpr(final Local base, final SootMethodRef method, final ASTNode location) {
       return newVirtualInvokeExpr(base, method, new ArrayList(), location);
     }
 
 
-    public soot.jimple.InterfaceInvokeExpr newInterfaceInvokeExpr(Local base, SootMethodRef method, ASTNode location) {
+    public soot.jimple.InterfaceInvokeExpr newInterfaceInvokeExpr(final Local base, final SootMethodRef method, final ASTNode location) {
       return newInterfaceInvokeExpr(base, method, new ArrayList(), location);
     }
 
 
-    public soot.jimple.StaticInvokeExpr newStaticInvokeExpr(SootMethodRef method, Value arg, ASTNode location) {
+    public soot.jimple.StaticInvokeExpr newStaticInvokeExpr(final SootMethodRef method, final Value arg, final ASTNode location) {
       return newStaticInvokeExpr(method, Arrays.asList(new Value[] { arg }), location);
     }
 
 
-    public soot.jimple.SpecialInvokeExpr newSpecialInvokeExpr(Local base, SootMethodRef method, Value arg, ASTNode location) {
+    public soot.jimple.SpecialInvokeExpr newSpecialInvokeExpr(final Local base, final SootMethodRef method, final Value arg, final ASTNode location) {
       return newSpecialInvokeExpr(base, method, Arrays.asList(new Value[] { arg }), location);
     }
 
 
-    public soot.jimple.VirtualInvokeExpr newVirtualInvokeExpr(Local base, SootMethodRef method, Value arg, ASTNode location) {
+    public soot.jimple.VirtualInvokeExpr newVirtualInvokeExpr(final Local base, final SootMethodRef method, final Value arg, final ASTNode location) {
       return newVirtualInvokeExpr(base, method, Arrays.asList(new Value[] { arg }), location);
     }
 
 
-    public soot.jimple.InterfaceInvokeExpr newInterfaceInvokeExpr(Local base, SootMethodRef method, Value arg, ASTNode location) {
+    public soot.jimple.InterfaceInvokeExpr newInterfaceInvokeExpr(final Local base, final SootMethodRef method, final Value arg, final ASTNode location) {
       return newInterfaceInvokeExpr(base, method, Arrays.asList(new Value[] { arg }), location);
     }
 
 
 
-    public soot.jimple.ThrowStmt newThrowStmt(Value op, ASTNode location) {
+    public soot.jimple.ThrowStmt newThrowStmt(final Value op, final ASTNode location) {
       soot.jimple.ThrowStmt stmt = Jimple.v().newThrowStmt(op);
       soot.tagkit.Tag tag = getTag(op);
-      if(tag != null) stmt.getOpBox().addTag(tag);
+      if(tag != null) {
+		stmt.getOpBox().addTag(tag);
+	}
       return stmt;
     }
 
 
 
-    public soot.jimple.ExitMonitorStmt newExitMonitorStmt(Value op, ASTNode location) {
+    public soot.jimple.ExitMonitorStmt newExitMonitorStmt(final Value op, final ASTNode location) {
       soot.jimple.ExitMonitorStmt stmt = Jimple.v().newExitMonitorStmt(op);
       soot.tagkit.Tag tag = getTag(op);
-      if(tag != null) stmt.getOpBox().addTag(tag);
+      if(tag != null) {
+		stmt.getOpBox().addTag(tag);
+	}
       return stmt;
     }
 
 
 
-    public soot.jimple.EnterMonitorStmt newEnterMonitorStmt(Value op, ASTNode location) {
+    public soot.jimple.EnterMonitorStmt newEnterMonitorStmt(final Value op, final ASTNode location) {
       soot.jimple.EnterMonitorStmt stmt = Jimple.v().newEnterMonitorStmt(op);
       soot.tagkit.Tag tag = getTag(op);
-      if(tag != null) stmt.getOpBox().addTag(tag);
+      if(tag != null) {
+		stmt.getOpBox().addTag(tag);
+	}
       return stmt;
     }
 
 
 
-    public soot.jimple.GotoStmt newGotoStmt(Unit target, ASTNode location) {
+    public soot.jimple.GotoStmt newGotoStmt(final Unit target, final ASTNode location) {
       soot.jimple.GotoStmt stmt = Jimple.v().newGotoStmt(target);
       return stmt;
     }
 
 
 
-    public soot.jimple.ReturnVoidStmt newReturnVoidStmt(ASTNode location) {
+    public soot.jimple.ReturnVoidStmt newReturnVoidStmt(final ASTNode location) {
       return Jimple.v().newReturnVoidStmt();
     }
 
 
 
-    public soot.jimple.ReturnStmt newReturnStmt(Value op, ASTNode location) {
+    public soot.jimple.ReturnStmt newReturnStmt(final Value op, final ASTNode location) {
       soot.jimple.ReturnStmt stmt = Jimple.v().newReturnStmt(op);
       soot.tagkit.Tag tag = getTag(op);
-      if(tag != null) stmt.getOpBox().addTag(tag);
+      if(tag != null) {
+		stmt.getOpBox().addTag(tag);
+	}
       return stmt;
     }
 
 
 
-    public soot.jimple.IfStmt newIfStmt(Value op, Unit target, ASTNode location) {
+    public soot.jimple.IfStmt newIfStmt(final Value op, final Unit target, final ASTNode location) {
       soot.jimple.IfStmt stmt = Jimple.v().newIfStmt(op, target);
       soot.tagkit.Tag tag = getTag(op);
-      if(tag != null) stmt.getConditionBox().addTag(tag);
+      if(tag != null) {
+		stmt.getConditionBox().addTag(tag);
+	}
       return stmt;
     }
 
 
-    
-    public soot.jimple.IdentityStmt newIdentityStmt(Value local, Value identityRef, ASTNode location) {
+
+    public soot.jimple.IdentityStmt newIdentityStmt(final Value local, final Value identityRef, final ASTNode location) {
       soot.jimple.IdentityStmt stmt = Jimple.v().newIdentityStmt(local, identityRef);
       soot.tagkit.Tag left = getTag(local);
-      if(left != null) stmt.getLeftOpBox().addTag(left);
+      if(left != null) {
+		stmt.getLeftOpBox().addTag(left);
+	}
       soot.tagkit.Tag right = getTag(identityRef);
-      if(right != null) stmt.getRightOpBox().addTag(right);
+      if(right != null) {
+		stmt.getRightOpBox().addTag(right);
+	}
       return stmt;
     }
 
 
 
-    public soot.jimple.AssignStmt newAssignStmt(Value variable, Value rvalue, ASTNode location) {
+    public soot.jimple.AssignStmt newAssignStmt(final Value variable, final Value rvalue, final ASTNode location) {
       soot.jimple.AssignStmt stmt = Jimple.v().newAssignStmt(variable, rvalue);
       soot.tagkit.Tag left = getTag(variable);
-      if(left != null) stmt.getLeftOpBox().addTag(left);
+      if(left != null) {
+		stmt.getLeftOpBox().addTag(left);
+	}
       soot.tagkit.Tag right = getTag(rvalue);
-      if(right != null) stmt.getRightOpBox().addTag(right);
+      if(right != null) {
+		stmt.getRightOpBox().addTag(right);
+	}
       return stmt;
     }
 
 
 
-    public soot.jimple.InvokeStmt newInvokeStmt(Value op, ASTNode location) {
+    public soot.jimple.InvokeStmt newInvokeStmt(final Value op, final ASTNode location) {
       soot.jimple.InvokeStmt stmt = Jimple.v().newInvokeStmt(op);
       soot.tagkit.Tag tag = getTag(op);
-      if(tag != null) stmt.getInvokeExprBox().addTag(tag);
+      if(tag != null) {
+		stmt.getInvokeExprBox().addTag(tag);
+	}
       return stmt;
     }
 
 
 
-    public soot.jimple.TableSwitchStmt newTableSwitchStmt(Value key, int lowIndex, int highIndex, java.util.List targets, Unit defaultTarget, ASTNode location) {
+    public soot.jimple.TableSwitchStmt newTableSwitchStmt(final Value key, final int lowIndex, final int highIndex, final java.util.List targets, final Unit defaultTarget, final ASTNode location) {
       soot.jimple.TableSwitchStmt stmt = Jimple.v().newTableSwitchStmt(key, lowIndex, highIndex, targets, defaultTarget);
       soot.tagkit.Tag tag = getTag(key);
-      if(tag != null) stmt.getKeyBox().addTag(tag);
+      if(tag != null) {
+		stmt.getKeyBox().addTag(tag);
+	}
       return stmt;
     }
 
 
 
-    public soot.jimple.LookupSwitchStmt newLookupSwitchStmt(Value key, java.util.List lookupValues, java.util.List targets, Unit defaultTarget, ASTNode location) {
+    public soot.jimple.LookupSwitchStmt newLookupSwitchStmt(final Value key, final java.util.List lookupValues, final java.util.List targets, final Unit defaultTarget, final ASTNode location) {
       soot.jimple.LookupSwitchStmt stmt = Jimple.v().newLookupSwitchStmt(key, lookupValues, targets, defaultTarget);
       soot.tagkit.Tag tag = getTag(key);
-      if(tag != null) stmt.getKeyBox().addTag(tag);
+      if(tag != null) {
+		stmt.getKeyBox().addTag(tag);
+	}
       return stmt;
     }
 
 
 
-    public soot.jimple.StaticFieldRef newStaticFieldRef(SootFieldRef f, ASTNode location) {
+    public soot.jimple.StaticFieldRef newStaticFieldRef(final SootFieldRef f, final ASTNode location) {
       soot.jimple.StaticFieldRef ref = Jimple.v().newStaticFieldRef(f);
       createTag(ref, location);
       return ref;
     }
 
 
-    
-    public soot.jimple.ThisRef newThisRef(RefType t, ASTNode location) {
+
+    public soot.jimple.ThisRef newThisRef(final RefType t, final ASTNode location) {
       soot.jimple.ThisRef ref = Jimple.v().newThisRef(t);
       createTag(ref, location);
       return ref;
@@ -526,7 +571,7 @@ public class Body extends java.lang.Object {
 
 
 
-    public soot.jimple.ParameterRef newParameterRef(Type paramType, int number, ASTNode location) {
+    public soot.jimple.ParameterRef newParameterRef(final Type paramType, final int number, final ASTNode location) {
       soot.jimple.ParameterRef ref = Jimple.v().newParameterRef(paramType, number);
       createTag(ref, location);
       return ref;
@@ -534,17 +579,19 @@ public class Body extends java.lang.Object {
 
 
 
-    public soot.jimple.InstanceFieldRef newInstanceFieldRef(Value base, SootFieldRef f, ASTNode location) {
+    public soot.jimple.InstanceFieldRef newInstanceFieldRef(final Value base, final SootFieldRef f, final ASTNode location) {
       soot.jimple.InstanceFieldRef ref = Jimple.v().newInstanceFieldRef(base, f);
       createTag(ref, location);
       soot.tagkit.Tag tag = getTag(base);
-      if(tag != null) ref.getBaseBox().addTag(tag);
+      if(tag != null) {
+		ref.getBaseBox().addTag(tag);
+	}
       return ref;
     }
 
 
 
-    public soot.jimple.CaughtExceptionRef newCaughtExceptionRef(ASTNode location) {
+    public soot.jimple.CaughtExceptionRef newCaughtExceptionRef(final ASTNode location) {
       soot.jimple.CaughtExceptionRef ref = Jimple.v().newCaughtExceptionRef();
       createTag(ref, location);
       return ref;
@@ -552,53 +599,64 @@ public class Body extends java.lang.Object {
 
 
 
-    public soot.jimple.ArrayRef newArrayRef(Value base, Value index, ASTNode location) {
+    public soot.jimple.ArrayRef newArrayRef(final Value base, final Value index, final ASTNode location) {
       soot.jimple.ArrayRef ref = Jimple.v().newArrayRef(base, index);
       createTag(ref, location);
       soot.tagkit.Tag baseTag = getTag(base);
-      if(baseTag != null) ref.getBaseBox().addTag(baseTag);
+      if(baseTag != null) {
+		ref.getBaseBox().addTag(baseTag);
+	}
       soot.tagkit.Tag indexTag = getTag(index);
-      if(indexTag != null) ref.getIndexBox().addTag(indexTag);
+      if(indexTag != null) {
+		ref.getIndexBox().addTag(indexTag);
+	}
       return ref;
     }
 
 
 
-    private soot.jimple.BinopExpr updateTags(soot.jimple.BinopExpr binary, ASTNode binaryLocation, soot.Value op1, soot.Value op2) {
+    private soot.jimple.BinopExpr updateTags(final soot.jimple.BinopExpr binary, final ASTNode binaryLocation, final soot.Value op1, final soot.Value op2) {
       createTag(binary, binaryLocation);
       soot.tagkit.Tag op1tag = getTag(op1);
-      if(op1tag != null) binary.getOp1Box().addTag(op1tag);
+      if(op1tag != null) {
+		binary.getOp1Box().addTag(op1tag);
+	}
       soot.tagkit.Tag op2tag = getTag(op2);
-      if(op2tag != null) binary.getOp2Box().addTag(op2tag);
+      if(op2tag != null) {
+		binary.getOp2Box().addTag(op2tag);
+	}
       return binary;
     }
 
 
-    private soot.jimple.UnopExpr updateTags(soot.jimple.UnopExpr unary, ASTNode unaryLocation, soot.Value op) {
+    private soot.jimple.UnopExpr updateTags(final soot.jimple.UnopExpr unary, final ASTNode unaryLocation, final soot.Value op) {
       createTag(unary, unaryLocation);
       soot.tagkit.Tag optag = getTag(op);
-      if(optag != null) unary.getOpBox().addTag(optag);
+      if(optag != null) {
+		unary.getOpBox().addTag(optag);
+	}
       return unary;
     }
 
 
 
-    private java.util.HashMap<soot.Value, soot.tagkit.Tag> tagMap = new java.util.HashMap<soot.Value, soot.tagkit.Tag>();
+    private final java.util.HashMap<soot.Value, soot.tagkit.Tag> tagMap = new java.util.HashMap<soot.Value, soot.tagkit.Tag>();
 
 
-    private soot.tagkit.Tag getTag(soot.Value value) {
+    private soot.tagkit.Tag getTag(final soot.Value value) {
       return tagMap.get(value);
     }
 
 
-    private void createTag(soot.Value value, ASTNode node) {
-      if(node == null || tagMap.containsKey(value))
-        return;
-      if(node.getStart() != 0 && node.getEnd() != 0) { 
-        int line = node.getLine(node.getStart());
-        int column = node.getColumn(node.getStart());
-        int endLine = node.getLine(node.getEnd());
-        int endColumn = node.getColumn(node.getEnd());
+    private void createTag(final soot.Value value, final ASTNode node) {
+      if(node == null || tagMap.containsKey(value)) {
+		return;
+	}
+      if(node.getStart() != 0 && node.getEnd() != 0) {
+        int line = Symbol.getLine(node.getStart());
+        int column = Symbol.getColumn(node.getStart());
+        int endLine = Symbol.getLine(node.getEnd());
+        int endColumn = Symbol.getColumn(node.getEnd());
         String s = node.sourceFile();
         s = s != null ? s.substring(s.lastIndexOf(java.io.File.separatorChar)+1) : "Unknown";
         tagMap.put(value, new soot.tagkit.SourceLnNamePosTag(s, line, endLine, column, endColumn));
@@ -609,10 +667,11 @@ public class Body extends java.lang.Object {
     }
 
 
-    public void copyLocation(soot.Value fromValue, soot.Value toValue) {
+    public void copyLocation(final soot.Value fromValue, final soot.Value toValue) {
       soot.tagkit.Tag tag = tagMap.get(fromValue);
-      if(tag != null)
-        tagMap.put(toValue, tag);
+      if(tag != null) {
+		tagMap.put(toValue, tag);
+	}
     }
 
 

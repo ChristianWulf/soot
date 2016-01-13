@@ -9,7 +9,9 @@ public enum HigherLevelStructureTags implements Tag {
 
 	IF_COND, IF_END,
 
-	SWITCH_COND, SWITCH_END
+	SWITCH_COND, SWITCH_END,
+
+	TRY_BEGIN,
 	;
 
 	@Override
