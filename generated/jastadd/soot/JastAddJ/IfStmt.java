@@ -2,7 +2,6 @@
 package soot.JastAddJ;
 
 import soot.javaToJimple.jj.extension.HigherLevelStructureTags;
-import soot.javaToJimple.jj.extension.RefersToTag;
 
 /**
  * @production IfStmt : {@link Stmt} ::= <span class="component">Condition:{@link Expr}</span>
@@ -160,17 +159,19 @@ public class IfStmt extends Stmt implements Cloneable {
 		b.add(beginCond);
 
 		soot.jimple.Stmt endBranch = endBranchLabel();
-		endBranch.addTag(new RefersToTag(beginCond));
 
-		if (getCondition().isConstant()) {
-			if (getCondition().isTrue()) {
-				getThen().jimplify2(b);
-			} else if (getCondition().isFalse() && hasElse()) {
-				getElse().jimplify2(b);
-			}
-		} else {
+		// chw: this optimization should not be made while constructing the jimple representation;
+		// instead it should be performed afterwards to separate construction from optimization
+//		if (getCondition().isConstant()) {
+//			if (getCondition().isTrue()) {
+//				getThen().jimplify2(b);
+//			} else if (getCondition().isFalse() && hasElse()) {
+//				getElse().jimplify2(b);
+//			}
+//		} else {
 			soot.jimple.Stmt elseBranch = else_branch_label();
 			soot.jimple.Stmt thenBranch = then_branch_label();
+
 			getCondition().emitEvalBranch(b);
 			b.addLabel(thenBranch);
 			getThen().jimplify2(b);
@@ -182,7 +183,7 @@ public class IfStmt extends Stmt implements Cloneable {
 			if (hasElse()) {
 				getElse().jimplify2(b);
 			}
-		}
+//		}
 
 		if (!alwaysProduceEndBranchStmt) {
 			if (getThen().canCompleteNormally() && hasElse()) {
