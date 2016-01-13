@@ -5,13 +5,16 @@ import soot.tagkit.Tag;
 
 public enum HigherLevelStructureTags implements Tag {
 
-	FOR_INIT, FOR_COND, FOR_BODY, FOR_UPDATE, FOR_END,
+	FOR_INIT, FOR_COND, FOR_UPDATE, FOR_BODY, FOR_END,
 
-	IF_END, ;
+	IF_COND, IF_END,
+
+	SWITCH_COND, SWITCH_END
+	;
 
 	@Override
 	public String getName() {
-		return name();
+		return "HigherLevelStructureTag";
 	}
 
 	@Override

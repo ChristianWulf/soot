@@ -155,6 +155,9 @@ public class IfStmt extends Stmt implements Cloneable {
 	 */
 	@Override
 	public void jimplify2(final Body b) {
+		soot.jimple.Stmt beginCond = beginCondLabel();
+		b.add(beginCond);
+
 		soot.jimple.Stmt endBranch = endBranchLabel();
 		if (getCondition().isConstant()) {
 			if (getCondition().isTrue()) {
@@ -177,6 +180,7 @@ public class IfStmt extends Stmt implements Cloneable {
 				getElse().jimplify2(b);
 			}
 		}
+
 		if (!alwaysProduceEndBranchStmt) {
 			if (getThen().canCompleteNormally() && hasElse()) {
 				b.addLabel(endBranch);
@@ -186,6 +190,14 @@ public class IfStmt extends Stmt implements Cloneable {
 		}
 	}
 
+	/**
+	 * @author chw
+	 */
+	private soot.jimple.Stmt beginCondLabel() {
+		soot.jimple.Stmt label = newLabel();
+		label.addTag(HigherLevelStructureTags.IF_COND);
+		return label;
+	}
 	/**
 	 * @author chw
 	 */

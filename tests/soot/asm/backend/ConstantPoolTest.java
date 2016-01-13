@@ -16,7 +16,6 @@ import org.objectweb.asm.util.TraceClassVisitor;
 import soot.G;
 import soot.Main;
 
-import com.sun.org.apache.bcel.internal.classfile.ClassFormatException;
 
 /**
  * Test for fields that contain constant values
@@ -27,7 +26,7 @@ import com.sun.org.apache.bcel.internal.classfile.ClassFormatException;
 public class ConstantPoolTest extends AbstractASMBackendTest {
 
 	@Override
-	protected void generate(TraceClassVisitor cw) {
+	protected void generate(final TraceClassVisitor cw) {
 		FieldVisitor fv;
 		MethodVisitor mv;
 
@@ -201,7 +200,7 @@ public class ConstantPoolTest extends AbstractASMBackendTest {
 			URLClassLoader cl = new URLClassLoader(urls);
 
 			cl.loadClass(getTargetClass());
-			
+
 			// cl.close();
 			// Java 6 backwards compatibility hack
 			try {
@@ -219,8 +218,6 @@ public class ConstantPoolTest extends AbstractASMBackendTest {
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		} catch (ClassFormatException e) {
 			e.printStackTrace();
 		}
 
