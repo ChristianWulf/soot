@@ -2,6 +2,7 @@
 package soot.JastAddJ;
 
 import soot.javaToJimple.jj.extension.HigherLevelStructureTags;
+import soot.javaToJimple.jj.extension.RefersToTag;
 
 /**
  * @production IfStmt : {@link Stmt} ::= <span class="component">Condition:{@link Expr}</span>
@@ -159,6 +160,8 @@ public class IfStmt extends Stmt implements Cloneable {
 		b.add(beginCond);
 
 		soot.jimple.Stmt endBranch = endBranchLabel();
+		endBranch.addTag(new RefersToTag(beginCond));
+
 		if (getCondition().isConstant()) {
 			if (getCondition().isTrue()) {
 				getThen().jimplify2(b);
