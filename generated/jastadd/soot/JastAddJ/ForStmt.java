@@ -1237,7 +1237,7 @@ public class ForStmt extends BranchTargetStmt implements Cloneable, VariableScop
 	 * @aspect Statements
 	 * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/Statements.jrag:176
 	 */
-	@SuppressWarnings({ "unchecked", "cast" })
+	@SuppressWarnings({  "cast" })
 	public soot.jimple.Stmt begin_label() {
 		if (begin_label_computed) {
 			return begin_label_value;
