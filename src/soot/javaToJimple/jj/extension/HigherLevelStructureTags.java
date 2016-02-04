@@ -14,6 +14,11 @@ public enum HigherLevelStructureTags implements Tag {
 	SWITCH_COND, SWITCH_CASE, SWITCH_END,
 
 	TRY_BEGIN,
+
+	WHILE_COND, WHILE_BODY, WHILE_END,
+
+	DO_WHILE_BODY, DO_WHILE_COND, DO_WHILE_END,
+
 	;
 
 	@Override

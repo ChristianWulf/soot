@@ -10,6 +10,7 @@ import java.util.LinkedList;
 
 import soot.Type;
 import soot.jimple.NopStmt;
+import soot.tagkit.Tag;
 
 /**
  * @production ASTNode;
@@ -736,6 +737,15 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol implements Cloneab
 	 */
 	protected soot.jimple.Stmt newLabel() {
 		NopStmt label = soot.jimple.Jimple.v().newNopStmt();
+		return label;
+	}
+
+	/**
+	 * @author chw
+	 */
+	protected soot.jimple.Stmt newLabel(final Tag tag) {
+		soot.jimple.Stmt label = newLabel();
+		label.addTag(tag);
 		return label;
 	}
 
