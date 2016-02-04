@@ -1219,9 +1219,7 @@ public class TryStmt extends Stmt implements Cloneable, FinallyHost {
 	 * @apilevel internal
 	 */
 	private soot.jimple.Stmt label_begin_compute() {
-		soot.jimple.Stmt label = newLabel();
-		label.addTag(HigherLevelStructureTags.TRY_BEGIN);
-		return label;
+		return newLabel(HigherLevelStructureTags.TRY_BEGIN);
 	}
 
 	/**
