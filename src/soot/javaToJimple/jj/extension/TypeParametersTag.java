@@ -1,16 +1,21 @@
 package soot.javaToJimple.jj.extension;
 
-import soot.JastAddJ.List;
+import java.util.ArrayList;
+import java.util.List;
+
 import soot.JastAddJ.TypeVariable;
 import soot.tagkit.AttributeValueException;
 import soot.tagkit.Tag;
 
 public class TypeParametersTag implements Tag {
 
-	private final List<TypeVariable> typeParameters;
+	private final List<TypeVariable> typeParameters = new ArrayList<TypeVariable>();
 
-	public TypeParametersTag(final List<TypeVariable> typeParameters) {
-		this.typeParameters = typeParameters;
+	public TypeParametersTag(final soot.JastAddJ.List<TypeVariable> typeParameters) {
+		for (int i = 0; i < typeParameters.getNumChild(); i++) {
+			TypeVariable typeVariable = typeParameters.getChild(i);
+			this.typeParameters.add(typeVariable);
+		}
 	}
 
 	public List<TypeVariable> getTypeParameters() {
