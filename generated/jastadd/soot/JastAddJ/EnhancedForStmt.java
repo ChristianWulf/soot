@@ -241,7 +241,9 @@ public class EnhancedForStmt extends BranchTargetStmt implements Cloneable, Vari
 		b.addLabel(cond_label());
 		b.add(b.newIfStmt(b.newEqExpr(
 				asImmediate(b, b.newInterfaceInvokeExpr(iterator, hasNextMethod().sootRef(), new ArrayList(), this)),
-				BooleanType.emitConstant(false), this), end_label(), this));
+				BooleanType.emitConstant(false), this),
+				end_label(),
+				this));
 		b.add(b.newAssignStmt(parameter,
 				nextMethod().type().emitCastTo(b,
 						b.newInterfaceInvokeExpr(iterator, nextMethod().sootRef(), new ArrayList(), this),
@@ -784,7 +786,7 @@ public class EnhancedForStmt extends BranchTargetStmt implements Cloneable, Vari
 	 * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/Jimple1.5Backend/EnhancedForCodegen.
 	 *             jrag:13
 	 */
-	@SuppressWarnings({ "unchecked", "cast" })
+	@SuppressWarnings({ "cast" })
 	public soot.jimple.Stmt update_label() {
 		if (update_label_computed) {
 			return update_label_value;
@@ -803,9 +805,7 @@ public class EnhancedForStmt extends BranchTargetStmt implements Cloneable, Vari
 	 * @apilevel internal
 	 */
 	private soot.jimple.Stmt update_label_compute() {
-		soot.jimple.Stmt label = newLabel();
-		label.addTag(HigherLevelStructureTags.FOREACH_UPDATE);
-		return label;
+		return newLabel();
 	}
 
 	/**
