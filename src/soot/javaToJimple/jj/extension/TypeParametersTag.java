@@ -9,6 +9,8 @@ import soot.tagkit.Tag;
 
 public class TypeParametersTag implements Tag {
 
+	public static final String NAME = "TypeParametersTag";
+
 	private final List<TypeVariable> typeParameters = new ArrayList<TypeVariable>();
 
 	public TypeParametersTag(final soot.JastAddJ.List<TypeVariable> typeParameters) {
@@ -24,12 +26,12 @@ public class TypeParametersTag implements Tag {
 
 	@Override
 	public String getName() {
-		return "TypeParametersTag";
+		return NAME;
 	}
 
 	@Override
 	public byte[] getValue() throws AttributeValueException {
-		throw new RuntimeException("TypeParametersTag has no value for bytecode");
+		throw new RuntimeException(NAME + " has no value for bytecode");
 	}
 
 }

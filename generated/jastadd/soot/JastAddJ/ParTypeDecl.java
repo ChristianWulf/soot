@@ -1,44 +1,34 @@
 package soot.JastAddJ;
 
-import java.util.HashSet;
-import java.io.File;
-import java.util.*;
-import beaver.*;
 import java.util.ArrayList;
-import java.util.zip.*;
-import java.io.*;
-import java.io.FileNotFoundException;
-import java.util.Collection;
-import soot.*;
-import soot.util.*;
-import soot.jimple.*;
-import soot.coffi.ClassFile;
-import soot.coffi.method_info;
-import soot.coffi.CONSTANT_Utf8_info;
-import soot.tagkit.SourceFileTag;
-import soot.coffi.CoffiMethodSource;
+import java.util.HashMap;
 /**
   * @ast interface
- * 
+ *
  */
 public interface ParTypeDecl extends Parameterization {
 
     //syn String name();
-     
+
     //syn String name();
     int getNumArgument();
 
-     
+
     Access getArgument(int index);
 
-     
+    /**
+     * @author Christian Wulf (chw)
+     */
+    public List<Access> getArguments();
+
     public String typeName();
 
-     
+
     SimpleSet localFields(String name);
 
-     
+
     HashMap localMethodsSignatureMap();
+@Override
 public TypeDecl substitute(TypeVariable typeVariable);
 
 public int numTypeParameter();
@@ -63,7 +53,8 @@ public void transformation();
    * @aspect Generics
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:245
    */
-  @SuppressWarnings({"unchecked", "cast"})
+  @Override
+@SuppressWarnings({"unchecked", "cast"})
   public boolean isRawType();
   /**
    * @attribute syn

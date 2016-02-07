@@ -1,23 +1,11 @@
 /* This file was generated with JastAdd2 (http://jastadd.org) version R20130212 (r1031) */
 package soot.JastAddJ;
 
-import java.util.HashSet;
-import java.io.File;
-import java.util.*;
-import beaver.*;
 import java.util.ArrayList;
-import java.util.zip.*;
-import java.io.*;
-import java.io.FileNotFoundException;
 import java.util.Collection;
-import soot.*;
-import soot.util.*;
-import soot.jimple.*;
-import soot.coffi.ClassFile;
-import soot.coffi.method_info;
-import soot.coffi.CONSTANT_Utf8_info;
-import soot.tagkit.SourceFileTag;
-import soot.coffi.CoffiMethodSource;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 
 /**
  * @production ParClassDecl : {@link ClassDecl} ::= <span class="component">Argument:{@link Access}*</span> <span class="component">[SuperClassAccess:{@link Access}]</span> <span class="component">Implements:{@link Access}*</span> <span class="component">{@link BodyDecl}*</span>;
@@ -28,7 +16,8 @@ public class ParClassDecl extends ClassDecl implements Cloneable, ParTypeDecl, M
   /**
    * @apilevel low-level
    */
-  public void flushCache() {
+  @Override
+public void flushCache() {
     super.flushCache();
     involvesTypeParameters_visited = -1;
     involvesTypeParameters_computed = false;
@@ -68,13 +57,15 @@ public class ParClassDecl extends ClassDecl implements Cloneable, ParTypeDecl, M
   /**
    * @apilevel internal
    */
-  public void flushCollectionCache() {
+  @Override
+public void flushCollectionCache() {
     super.flushCollectionCache();
   }
   /**
    * @apilevel internal
    */
-  @SuppressWarnings({"unchecked", "cast"})
+  @Override
+@SuppressWarnings({"unchecked", "cast"})
   public ParClassDecl clone() throws CloneNotSupportedException {
     ParClassDecl node = (ParClassDecl)super.clone();
     node.involvesTypeParameters_visited = -1;
@@ -118,13 +109,15 @@ public class ParClassDecl extends ClassDecl implements Cloneable, ParTypeDecl, M
   /**
    * @apilevel internal
    */
-  @SuppressWarnings({"unchecked", "cast"})
+  @Override
+@SuppressWarnings({"unchecked", "cast"})
   public ParClassDecl copy() {
     try {
-      ParClassDecl node = (ParClassDecl) clone();
+      ParClassDecl node = clone();
       node.parent = null;
-      if(children != null)
-        node.children = (ASTNode[]) children.clone();
+      if(children != null) {
+		node.children = children.clone();
+	}
       return node;
     } catch (CloneNotSupportedException e) {
       throw new Error("Error: clone not supported for " +
@@ -137,9 +130,10 @@ public class ParClassDecl extends ClassDecl implements Cloneable, ParTypeDecl, M
    * @return dangling copy of the subtree at this node
    * @apilevel low-level
    */
-  @SuppressWarnings({"unchecked", "cast"})
+  @Override
+@SuppressWarnings({"unchecked", "cast"})
   public ParClassDecl fullCopy() {
-    ParClassDecl tree = (ParClassDecl) copy();
+    ParClassDecl tree = copy();
     if (children != null) {
       for (int i = 0; i < children.length; ++i) {
           switch (i) {
@@ -151,7 +145,7 @@ public class ParClassDecl extends ClassDecl implements Cloneable, ParTypeDecl, M
             tree.children[i] = new List();
             continue;
           }
-        ASTNode child = (ASTNode) children[i];
+        ASTNode child = children[i];
         if(child != null) {
           child = child.fullCopy();
           tree.setChild(child, i);
@@ -161,19 +155,21 @@ public class ParClassDecl extends ClassDecl implements Cloneable, ParTypeDecl, M
     return tree;
   }
   /**
-   * @ast method 
+   * @ast method
    * @aspect GenericsNameBinding
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:554
    */
-  public void collectErrors() {
+  @Override
+public void collectErrors() {
     // Disable error check for ParClassDecl which is an instanciated GenericClassDecl
   }
   /**
-   * @ast method 
+   * @ast method
    * @aspect GenericsPrettyPrint
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericsPrettyPrint.jrag:34
    */
-  public void toString(StringBuffer s) {
+  @Override
+public void toString(final StringBuffer s) {
       getModifiers().toString(s);
       s.append("class " + getID());
       s.append('<');
@@ -200,89 +196,103 @@ public class ParClassDecl extends ClassDecl implements Cloneable, ParTypeDecl, M
       ppBodyDecls(s);
   }
   /**
-   * @ast method 
+   * @ast method
    * @aspect LookupParTypeDecl
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:840
    */
-  public TypeDecl substitute(TypeVariable typeVariable) {
-    for(int i = 0; i < numTypeParameter(); i++)
-      if(typeParameter(i) == typeVariable)
-        return getArgument(i).type();
+  @Override
+public TypeDecl substitute(final TypeVariable typeVariable) {
+    for(int i = 0; i < numTypeParameter(); i++) {
+		if(typeParameter(i) == typeVariable) {
+			return getArgument(i).type();
+		}
+	}
     return super.substitute(typeVariable);
   }
   /**
-   * @ast method 
+   * @ast method
    * @aspect LookupParTypeDecl
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:853
    */
-  public int numTypeParameter() {
-    return ((GenericTypeDecl)original()).getNumTypeParameter(); 
+  @Override
+public int numTypeParameter() {
+    return ((GenericTypeDecl)original()).getNumTypeParameter();
   }
   /**
-   * @ast method 
+   * @ast method
    * @aspect LookupParTypeDecl
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:856
    */
-  public TypeVariable typeParameter(int index) {
+  @Override
+public TypeVariable typeParameter(final int index) {
     return ((GenericTypeDecl)original()).getTypeParameter(index);
   }
   /**
-   * @ast method 
+   * @ast method
    * @aspect LookupParTypeDecl
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:888
    */
-  public Access substitute(Parameterization parTypeDecl) {
+  @Override
+public Access substitute(final Parameterization parTypeDecl) {
     // TODO: include nesting as well....
-    if(parTypeDecl.isRawType())
-      return ((GenericTypeDecl)genericDecl()).rawType().createBoundAccess();
-    if(!usesTypeVariable())
-      return super.substitute(parTypeDecl);
+    if(parTypeDecl.isRawType()) {
+		return ((GenericTypeDecl)genericDecl()).rawType().createBoundAccess();
+	}
+    if(!usesTypeVariable()) {
+		return super.substitute(parTypeDecl);
+	}
     List list = new List();
-    for(int i = 0; i < getNumArgument(); i++)
-      list.add(getArgument(i).type().substitute(parTypeDecl));
+    for(int i = 0; i < getNumArgument(); i++) {
+		list.add(getArgument(i).type().substitute(parTypeDecl));
+	}
     return new ParTypeAccess(genericDecl().createQualifiedAccess(), list);
   }
   /**
-   * @ast method 
+   * @ast method
    * @aspect GenericsParTypeDecl
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericsParTypeDecl.jrag:76
    */
-  public Access createQualifiedAccess() {
+  @Override
+public Access createQualifiedAccess() {
     List typeArgumentList = new List();
     for(int i = 0; i < getNumArgument(); i++) {
-      Access a = (Access)getArgument(i);
-      if(a instanceof TypeAccess)
-        typeArgumentList.add(a.type().createQualifiedAccess());
-      else
-        typeArgumentList.add(a.fullCopy());
+      Access a = getArgument(i);
+      if(a instanceof TypeAccess) {
+		typeArgumentList.add(a.type().createQualifiedAccess());
+	} else {
+		typeArgumentList.add(a.fullCopy());
+	}
     }
     if(!isTopLevelType()) {
-      if(isRawType())
-        return enclosingType().createQualifiedAccess().qualifiesAccess(
+      if(isRawType()) {
+		return enclosingType().createQualifiedAccess().qualifiesAccess(
           new TypeAccess("", getID())
         );
-      else
-        return enclosingType().createQualifiedAccess().qualifiesAccess(
+	} else {
+		return enclosingType().createQualifiedAccess().qualifiesAccess(
           new ParTypeAccess(new TypeAccess("", getID()), typeArgumentList)
         );
+	}
     }
     else {
-      if(isRawType())
-        return new TypeAccess(packageName(), getID());
-      else
-        return new ParTypeAccess(new TypeAccess(packageName(), getID()), typeArgumentList);
+      if(isRawType()) {
+		return new TypeAccess(packageName(), getID());
+	} else {
+		return new ParTypeAccess(new TypeAccess(packageName(), getID()), typeArgumentList);
+	}
     }
   }
   /**
-   * @ast method 
+   * @ast method
    * @aspect GenericsCodegen
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/Jimple1.5Backend/GenericsCodegen.jrag:406
    */
-  public void transformation() {
+  @Override
+public void transformation() {
   }
   /**
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
   public ParClassDecl() {
     super();
@@ -294,10 +304,11 @@ public class ParClassDecl extends ClassDecl implements Cloneable, ParTypeDecl, M
    * Initializes List and Opt nta children.
    * @apilevel internal
    * @ast method
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
-  public void init$Children() {
+  @Override
+public void init$Children() {
     children = new ASTNode[5];
     setChild(new List(), 1);
     setChild(new Opt(), 2);
@@ -305,57 +316,61 @@ public class ParClassDecl extends ClassDecl implements Cloneable, ParTypeDecl, M
     setChild(new List(), 4);
   }
   /**
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
-  public ParClassDecl(Modifiers p0, String p1, List<Access> p2) {
+  public ParClassDecl(final Modifiers p0, final String p1, final List<Access> p2) {
     setChild(p0, 0);
     setID(p1);
     setChild(p2, 1);
   }
   /**
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
-  public ParClassDecl(Modifiers p0, beaver.Symbol p1, List<Access> p2) {
+  public ParClassDecl(final Modifiers p0, final beaver.Symbol p1, final List<Access> p2) {
     setChild(p0, 0);
     setID(p1);
     setChild(p2, 1);
   }
   /**
    * @apilevel low-level
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
-  protected int numChildren() {
+  @Override
+protected int numChildren() {
     return 2;
   }
   /**
    * @apilevel internal
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
-  public boolean mayHaveRewrite() {
+  @Override
+public boolean mayHaveRewrite() {
     return false;
   }
   /**
    * Replaces the Modifiers child.
    * @param node The new node to replace the Modifiers child.
    * @apilevel high-level
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
-  public void setModifiers(Modifiers node) {
+  @Override
+public void setModifiers(final Modifiers node) {
     setChild(node, 0);
   }
   /**
    * Retrieves the Modifiers child.
    * @return The current node used as the Modifiers child.
    * @apilevel high-level
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
-  public Modifiers getModifiers() {
+  @Override
+public Modifiers getModifiers() {
     return (Modifiers)getChild(0);
   }
   /**
@@ -363,31 +378,35 @@ public class ParClassDecl extends ClassDecl implements Cloneable, ParTypeDecl, M
    * <p><em>This method does not invoke AST transformations.</em></p>
    * @return The current node used as the Modifiers child.
    * @apilevel low-level
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
-  public Modifiers getModifiersNoTransform() {
+  @Override
+public Modifiers getModifiersNoTransform() {
     return (Modifiers)getChildNoTransform(0);
   }
   /**
    * Replaces the lexeme ID.
    * @param value The new value for the lexeme ID.
    * @apilevel high-level
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
-  public void setID(String value) {
+  @Override
+public void setID(final String value) {
     tokenString_ID = value;
   }
   /**
    * JastAdd-internal setter for lexeme ID using the Beaver parser.
    * @apilevel internal
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
-  public void setID(beaver.Symbol symbol) {
-    if(symbol.value != null && !(symbol.value instanceof String))
-      throw new UnsupportedOperationException("setID is only valid for String lexemes");
+  @Override
+public void setID(final beaver.Symbol symbol) {
+    if(symbol.value != null && !(symbol.value instanceof String)) {
+		throw new UnsupportedOperationException("setID is only valid for String lexemes");
+	}
     tokenString_ID = (String)symbol.value;
     IDstart = symbol.getStart();
     IDend = symbol.getEnd();
@@ -396,30 +415,32 @@ public class ParClassDecl extends ClassDecl implements Cloneable, ParTypeDecl, M
    * Retrieves the value for the lexeme ID.
    * @return The value for the lexeme ID.
    * @apilevel high-level
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
-  public String getID() {
+  @Override
+public String getID() {
     return tokenString_ID != null ? tokenString_ID : "";
   }
   /**
    * Replaces the Argument list.
    * @param list The new list node to be used as the Argument list.
    * @apilevel high-level
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
-  public void setArgumentList(List<Access> list) {
+  public void setArgumentList(final List<Access> list) {
     setChild(list, 1);
   }
   /**
    * Retrieves the number of children in the Argument list.
    * @return Number of children in the Argument list.
    * @apilevel high-level
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
-  public int getNumArgument() {
+  @Override
+public int getNumArgument() {
     return getArgumentList().getNumChild();
   }
   /**
@@ -427,8 +448,8 @@ public class ParClassDecl extends ClassDecl implements Cloneable, ParTypeDecl, M
    * Calling this method will not trigger rewrites..
    * @return Number of children in the Argument list.
    * @apilevel low-level
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
   public int getNumArgumentNoTransform() {
     return getArgumentListNoTransform().getNumChildNoTransform();
@@ -438,30 +459,31 @@ public class ParClassDecl extends ClassDecl implements Cloneable, ParTypeDecl, M
    * @param i Index of the element to return.
    * @return The element at position {@code i} in the Argument list.
    * @apilevel high-level
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
-  @SuppressWarnings({"unchecked", "cast"})
-  public Access getArgument(int i) {
-    return (Access)getArgumentList().getChild(i);
+  @Override
+@SuppressWarnings({"unchecked", "cast"})
+  public Access getArgument(final int i) {
+    return getArgumentList().getChild(i);
   }
   /**
    * Append an element to the Argument list.
    * @param node The element to append to the Argument list.
    * @apilevel high-level
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
-  public void addArgument(Access node) {
+  public void addArgument(final Access node) {
     List<Access> list = (parent == null || state == null) ? getArgumentListNoTransform() : getArgumentList();
     list.addChild(node);
   }
   /**
    * @apilevel low-level
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
-  public void addArgumentNoTransform(Access node) {
+  public void addArgumentNoTransform(final Access node) {
     List<Access> list = getArgumentListNoTransform();
     list.addChild(node);
   }
@@ -470,10 +492,10 @@ public class ParClassDecl extends ClassDecl implements Cloneable, ParTypeDecl, M
    * @param node The new node to replace the old list element.
    * @param i The list index of the node to be replaced.
    * @apilevel high-level
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
-  public void setArgument(Access node, int i) {
+  public void setArgument(final Access node, final int i) {
     List<Access> list = getArgumentList();
     list.setChild(node, i);
   }
@@ -481,10 +503,11 @@ public class ParClassDecl extends ClassDecl implements Cloneable, ParTypeDecl, M
    * Retrieves the Argument list.
    * @return The node representing the Argument list.
    * @apilevel high-level
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
-  public List<Access> getArguments() {
+  @Override
+public List<Access> getArguments() {
     return getArgumentList();
   }
   /**
@@ -492,8 +515,8 @@ public class ParClassDecl extends ClassDecl implements Cloneable, ParTypeDecl, M
    * <p><em>This method does not invoke AST transformations.</em></p>
    * @return The node representing the Argument list.
    * @apilevel low-level
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
   public List<Access> getArgumentsNoTransform() {
     return getArgumentListNoTransform();
@@ -502,8 +525,8 @@ public class ParClassDecl extends ClassDecl implements Cloneable, ParTypeDecl, M
    * Retrieves the Argument list.
    * @return The node representing the Argument list.
    * @apilevel high-level
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
   @SuppressWarnings({"unchecked", "cast"})
   public List<Access> getArgumentList() {
@@ -516,8 +539,8 @@ public class ParClassDecl extends ClassDecl implements Cloneable, ParTypeDecl, M
    * <p><em>This method does not invoke AST transformations.</em></p>
    * @return The node representing the Argument list.
    * @apilevel low-level
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
   @SuppressWarnings({"unchecked", "cast"})
   public List<Access> getArgumentListNoTransform() {
@@ -527,30 +550,33 @@ public class ParClassDecl extends ClassDecl implements Cloneable, ParTypeDecl, M
    * Replaces the optional node for the SuperClassAccess child. This is the {@code Opt} node containing the child SuperClassAccess, not the actual child!
    * @param opt The new node to be used as the optional node for the SuperClassAccess child.
    * @apilevel low-level
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
-  public void setSuperClassAccessOpt(Opt<Access> opt) {
+  @Override
+public void setSuperClassAccessOpt(final Opt<Access> opt) {
     setChild(opt, 2);
   }
   /**
    * Check whether the optional SuperClassAccess child exists.
    * @return {@code true} if the optional SuperClassAccess child exists, {@code false} if it does not.
    * @apilevel high-level
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
-  public boolean hasSuperClassAccess() {
+  @Override
+public boolean hasSuperClassAccess() {
     return getSuperClassAccessOpt().getNumChild() != 0;
   }
   /**
    * Retrieves the (optional) SuperClassAccess child.
    * @return The SuperClassAccess child, if it exists. Returns {@code null} otherwise.
    * @apilevel low-level
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
-  @SuppressWarnings({"unchecked", "cast"})
+  @Override
+@SuppressWarnings({"unchecked", "cast"})
   public Access getSuperClassAccess() {
     return (Access)getSuperClassAccessOpt().getChild(0);
   }
@@ -558,10 +584,11 @@ public class ParClassDecl extends ClassDecl implements Cloneable, ParTypeDecl, M
    * Replaces the (optional) SuperClassAccess child.
    * @param node The new node to be used as the SuperClassAccess child.
    * @apilevel high-level
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
-  public void setSuperClassAccess(Access node) {
+  @Override
+public void setSuperClassAccess(final Access node) {
     getSuperClassAccessOpt().setChild(node, 0);
   }
   /**
@@ -569,10 +596,11 @@ public class ParClassDecl extends ClassDecl implements Cloneable, ParTypeDecl, M
    * <p><em>This method does not invoke AST transformations.</em></p>
    * @return The optional node for child SuperClassAccess.
    * @apilevel low-level
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
-  @SuppressWarnings({"unchecked", "cast"})
+  @Override
+@SuppressWarnings({"unchecked", "cast"})
   public Opt<Access> getSuperClassAccessOptNoTransform() {
     return (Opt<Access>)getChildNoTransform(2);
   }
@@ -580,8 +608,8 @@ public class ParClassDecl extends ClassDecl implements Cloneable, ParTypeDecl, M
    * Retrieves the child position of the optional child SuperClassAccess.
    * @return The the child position of the optional child SuperClassAccess.
    * @apilevel low-level
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
   protected int getSuperClassAccessOptChildPosition() {
     return 2;
@@ -590,20 +618,22 @@ public class ParClassDecl extends ClassDecl implements Cloneable, ParTypeDecl, M
    * Replaces the Implements list.
    * @param list The new list node to be used as the Implements list.
    * @apilevel high-level
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
-  public void setImplementsList(List<Access> list) {
+  @Override
+public void setImplementsList(final List<Access> list) {
     setChild(list, 3);
   }
   /**
    * Retrieves the number of children in the Implements list.
    * @return Number of children in the Implements list.
    * @apilevel high-level
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
-  public int getNumImplements() {
+  @Override
+public int getNumImplements() {
     return getImplementsList().getNumChild();
   }
   /**
@@ -611,10 +641,11 @@ public class ParClassDecl extends ClassDecl implements Cloneable, ParTypeDecl, M
    * Calling this method will not trigger rewrites..
    * @return Number of children in the Implements list.
    * @apilevel low-level
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
-  public int getNumImplementsNoTransform() {
+  @Override
+public int getNumImplementsNoTransform() {
     return getImplementsListNoTransform().getNumChildNoTransform();
   }
   /**
@@ -622,30 +653,33 @@ public class ParClassDecl extends ClassDecl implements Cloneable, ParTypeDecl, M
    * @param i Index of the element to return.
    * @return The element at position {@code i} in the Implements list.
    * @apilevel high-level
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
-  @SuppressWarnings({"unchecked", "cast"})
-  public Access getImplements(int i) {
+  @Override
+@SuppressWarnings({"unchecked", "cast"})
+  public Access getImplements(final int i) {
     return (Access)getImplementsList().getChild(i);
   }
   /**
    * Append an element to the Implements list.
    * @param node The element to append to the Implements list.
    * @apilevel high-level
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
-  public void addImplements(Access node) {
+  @Override
+public void addImplements(final Access node) {
     List<Access> list = (parent == null || state == null) ? getImplementsListNoTransform() : getImplementsList();
     list.addChild(node);
   }
   /**
    * @apilevel low-level
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
-  public void addImplementsNoTransform(Access node) {
+  @Override
+public void addImplementsNoTransform(final Access node) {
     List<Access> list = getImplementsListNoTransform();
     list.addChild(node);
   }
@@ -654,10 +688,11 @@ public class ParClassDecl extends ClassDecl implements Cloneable, ParTypeDecl, M
    * @param node The new node to replace the old list element.
    * @param i The list index of the node to be replaced.
    * @apilevel high-level
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
-  public void setImplements(Access node, int i) {
+  @Override
+public void setImplements(final Access node, final int i) {
     List<Access> list = getImplementsList();
     list.setChild(node, i);
   }
@@ -665,10 +700,11 @@ public class ParClassDecl extends ClassDecl implements Cloneable, ParTypeDecl, M
    * Retrieves the Implements list.
    * @return The node representing the Implements list.
    * @apilevel high-level
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
-  public List<Access> getImplementss() {
+  @Override
+public List<Access> getImplementss() {
     return getImplementsList();
   }
   /**
@@ -676,10 +712,11 @@ public class ParClassDecl extends ClassDecl implements Cloneable, ParTypeDecl, M
    * <p><em>This method does not invoke AST transformations.</em></p>
    * @return The node representing the Implements list.
    * @apilevel low-level
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
-  public List<Access> getImplementssNoTransform() {
+  @Override
+public List<Access> getImplementssNoTransform() {
     return getImplementsListNoTransform();
   }
   /**
@@ -687,18 +724,19 @@ public class ParClassDecl extends ClassDecl implements Cloneable, ParTypeDecl, M
    * <p><em>This method does not invoke AST transformations.</em></p>
    * @return The node representing the Implements list.
    * @apilevel low-level
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
-  public List<Access> getImplementsListNoTransform() {
+  @Override
+public List<Access> getImplementsListNoTransform() {
     return (List<Access>)getChildNoTransform(3);
   }
   /**
    * Retrieves the child position of the Implements list.
    * @return The the child position of the Implements list.
    * @apilevel low-level
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
   protected int getImplementsListChildPosition() {
     return 3;
@@ -707,20 +745,22 @@ public class ParClassDecl extends ClassDecl implements Cloneable, ParTypeDecl, M
    * Replaces the BodyDecl list.
    * @param list The new list node to be used as the BodyDecl list.
    * @apilevel high-level
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
-  public void setBodyDeclList(List<BodyDecl> list) {
+  @Override
+public void setBodyDeclList(final List<BodyDecl> list) {
     setChild(list, 4);
   }
   /**
    * Retrieves the number of children in the BodyDecl list.
    * @return Number of children in the BodyDecl list.
    * @apilevel high-level
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
-  public int getNumBodyDecl() {
+  @Override
+public int getNumBodyDecl() {
     return getBodyDeclList().getNumChild();
   }
   /**
@@ -728,10 +768,11 @@ public class ParClassDecl extends ClassDecl implements Cloneable, ParTypeDecl, M
    * Calling this method will not trigger rewrites..
    * @return Number of children in the BodyDecl list.
    * @apilevel low-level
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
-  public int getNumBodyDeclNoTransform() {
+  @Override
+public int getNumBodyDeclNoTransform() {
     return getBodyDeclListNoTransform().getNumChildNoTransform();
   }
   /**
@@ -739,30 +780,33 @@ public class ParClassDecl extends ClassDecl implements Cloneable, ParTypeDecl, M
    * @param i Index of the element to return.
    * @return The element at position {@code i} in the BodyDecl list.
    * @apilevel high-level
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
-  @SuppressWarnings({"unchecked", "cast"})
-  public BodyDecl getBodyDecl(int i) {
+  @Override
+@SuppressWarnings({"unchecked", "cast"})
+  public BodyDecl getBodyDecl(final int i) {
     return (BodyDecl)getBodyDeclList().getChild(i);
   }
   /**
    * Append an element to the BodyDecl list.
    * @param node The element to append to the BodyDecl list.
    * @apilevel high-level
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
-  public void addBodyDecl(BodyDecl node) {
+  @Override
+public void addBodyDecl(final BodyDecl node) {
     List<BodyDecl> list = (parent == null || state == null) ? getBodyDeclListNoTransform() : getBodyDeclList();
     list.addChild(node);
   }
   /**
    * @apilevel low-level
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
-  public void addBodyDeclNoTransform(BodyDecl node) {
+  @Override
+public void addBodyDeclNoTransform(final BodyDecl node) {
     List<BodyDecl> list = getBodyDeclListNoTransform();
     list.addChild(node);
   }
@@ -771,10 +815,11 @@ public class ParClassDecl extends ClassDecl implements Cloneable, ParTypeDecl, M
    * @param node The new node to replace the old list element.
    * @param i The list index of the node to be replaced.
    * @apilevel high-level
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
-  public void setBodyDecl(BodyDecl node, int i) {
+  @Override
+public void setBodyDecl(final BodyDecl node, final int i) {
     List<BodyDecl> list = getBodyDeclList();
     list.setChild(node, i);
   }
@@ -782,10 +827,11 @@ public class ParClassDecl extends ClassDecl implements Cloneable, ParTypeDecl, M
    * Retrieves the BodyDecl list.
    * @return The node representing the BodyDecl list.
    * @apilevel high-level
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
-  public List<BodyDecl> getBodyDecls() {
+  @Override
+public List<BodyDecl> getBodyDecls() {
     return getBodyDeclList();
   }
   /**
@@ -793,10 +839,11 @@ public class ParClassDecl extends ClassDecl implements Cloneable, ParTypeDecl, M
    * <p><em>This method does not invoke AST transformations.</em></p>
    * @return The node representing the BodyDecl list.
    * @apilevel low-level
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
-  public List<BodyDecl> getBodyDeclsNoTransform() {
+  @Override
+public List<BodyDecl> getBodyDeclsNoTransform() {
     return getBodyDeclListNoTransform();
   }
   /**
@@ -804,18 +851,19 @@ public class ParClassDecl extends ClassDecl implements Cloneable, ParTypeDecl, M
    * <p><em>This method does not invoke AST transformations.</em></p>
    * @return The node representing the BodyDecl list.
    * @apilevel low-level
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
-  public List<BodyDecl> getBodyDeclListNoTransform() {
+  @Override
+public List<BodyDecl> getBodyDeclListNoTransform() {
     return (List<BodyDecl>)getChildNoTransform(4);
   }
   /**
    * Retrieves the child position of the BodyDecl list.
    * @return The the child position of the BodyDecl list.
    * @apilevel low-level
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
   protected int getBodyDeclListChildPosition() {
     return 4;
@@ -841,7 +889,8 @@ public class ParClassDecl extends ClassDecl implements Cloneable, ParTypeDecl, M
    * @aspect GenericMethodsInference
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericMethodsInference.jrag:18
    */
-  @SuppressWarnings({"unchecked", "cast"})
+  @Override
+@SuppressWarnings({"unchecked", "cast"})
   public boolean involvesTypeParameters() {
     if(involvesTypeParameters_computed) {
       return involvesTypeParameters_value;
@@ -859,9 +908,10 @@ public class ParClassDecl extends ClassDecl implements Cloneable, ParTypeDecl, M
         involvesTypeParameters_visited = state.CIRCLE_INDEX;
         state.CHANGE = false;
         boolean new_involvesTypeParameters_value = involvesTypeParameters_compute();
-        if (new_involvesTypeParameters_value!=involvesTypeParameters_value)
-          state.CHANGE = true;
-        involvesTypeParameters_value = new_involvesTypeParameters_value; 
+        if (new_involvesTypeParameters_value!=involvesTypeParameters_value) {
+			state.CHANGE = true;
+		}
+        involvesTypeParameters_value = new_involvesTypeParameters_value;
         state.CIRCLE_INDEX++;
       } while (state.CHANGE);
         if(isFinal && num == state().boundariesCrossed) {
@@ -874,7 +924,7 @@ public class ParClassDecl extends ClassDecl implements Cloneable, ParTypeDecl, M
         involvesTypeParameters_computed = false;
         involvesTypeParameters_initialized = false;
       }
-      state.IN_CIRCLE = false; 
+      state.IN_CIRCLE = false;
       return involvesTypeParameters_value;
     }
     if(involvesTypeParameters_visited != state.CIRCLE_INDEX) {
@@ -886,9 +936,10 @@ public class ParClassDecl extends ClassDecl implements Cloneable, ParTypeDecl, M
         return involvesTypeParameters_value;
       }
       boolean new_involvesTypeParameters_value = involvesTypeParameters_compute();
-      if (new_involvesTypeParameters_value!=involvesTypeParameters_value)
-        state.CHANGE = true;
-      involvesTypeParameters_value = new_involvesTypeParameters_value; 
+      if (new_involvesTypeParameters_value!=involvesTypeParameters_value) {
+		state.CHANGE = true;
+	}
+      involvesTypeParameters_value = new_involvesTypeParameters_value;
       return involvesTypeParameters_value;
     }
     return involvesTypeParameters_value;
@@ -897,9 +948,11 @@ public class ParClassDecl extends ClassDecl implements Cloneable, ParTypeDecl, M
    * @apilevel internal
    */
   private boolean involvesTypeParameters_compute() {
-    for(int i = 0; i < getNumArgument(); i++)
-      if(getArgument(i).type().involvesTypeParameters())
-        return true;
+    for(int i = 0; i < getNumArgument(); i++) {
+		if(getArgument(i).type().involvesTypeParameters()) {
+			return true;
+		}
+	}
     return false;
   }
   /**
@@ -907,7 +960,8 @@ public class ParClassDecl extends ClassDecl implements Cloneable, ParTypeDecl, M
    * @aspect NestedTypes
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:569
    */
-  public TypeDecl hostType() {
+  @Override
+public TypeDecl hostType() {
     ASTNode$State state = state();
     try {  return original();  }
     finally {
@@ -918,7 +972,8 @@ public class ParClassDecl extends ClassDecl implements Cloneable, ParTypeDecl, M
    * @aspect NestedTypes
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:497
    */
-  public TypeDecl topLevelType() {
+  @Override
+public TypeDecl topLevelType() {
     ASTNode$State state = state();
     try {  return erasure().topLevelType();  }
     finally {
@@ -929,7 +984,8 @@ public class ParClassDecl extends ClassDecl implements Cloneable, ParTypeDecl, M
    * @aspect Generics
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:245
    */
-  public boolean isRawType() {
+  @Override
+public boolean isRawType() {
     ASTNode$State state = state();
     try {  return isNestedType() && enclosingType().isRawType();  }
     finally {
@@ -948,7 +1004,8 @@ public class ParClassDecl extends ClassDecl implements Cloneable, ParTypeDecl, M
    * @aspect GenericsErasure
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:350
    */
-  @SuppressWarnings({"unchecked", "cast"})
+  @Override
+@SuppressWarnings({"unchecked", "cast"})
   public TypeDecl erasure() {
     if(erasure_computed) {
       return erasure_value;
@@ -957,7 +1014,9 @@ public class ParClassDecl extends ClassDecl implements Cloneable, ParTypeDecl, M
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     erasure_value = erasure_compute();
-      if(isFinal && num == state().boundariesCrossed) erasure_computed = true;
+      if(isFinal && num == state().boundariesCrossed) {
+		erasure_computed = true;
+	}
     return erasure_value;
   }
   /**
@@ -977,7 +1036,8 @@ public class ParClassDecl extends ClassDecl implements Cloneable, ParTypeDecl, M
    * @aspect LookupParTypeDecl
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1015
    */
-  @SuppressWarnings({"unchecked", "cast"})
+  @Override
+@SuppressWarnings({"unchecked", "cast"})
   public Opt getSuperClassAccessOpt() {
     if(getSuperClassAccessOpt_computed) {
       return (Opt) getChild(getSuperClassAccessOptChildPosition());
@@ -987,7 +1047,9 @@ public class ParClassDecl extends ClassDecl implements Cloneable, ParTypeDecl, M
   boolean isFinal = this.is$Final();
     getSuperClassAccessOpt_value = getSuperClassAccessOpt_compute();
     setSuperClassAccessOpt(getSuperClassAccessOpt_value);
-      if(isFinal && num == state().boundariesCrossed) getSuperClassAccessOpt_computed = true;
+      if(isFinal && num == state().boundariesCrossed) {
+		getSuperClassAccessOpt_computed = true;
+	}
     return (Opt) getChild(getSuperClassAccessOptChildPosition());
   }
   /**
@@ -997,10 +1059,11 @@ public class ParClassDecl extends ClassDecl implements Cloneable, ParTypeDecl, M
     GenericClassDecl decl = (GenericClassDecl)genericDecl();
     Opt opt;
     //System.err.println("Begin substituting extends clause");
-    if(decl.hasSuperClassAccess())
-      opt = new Opt((decl.getSuperClassAccess().type().substitute(this)));
-    else
-      opt = new Opt();
+    if(decl.hasSuperClassAccess()) {
+		opt = new Opt((decl.getSuperClassAccess().type().substitute(this)));
+	} else {
+		opt = new Opt();
+	}
     //System.err.println("End substituting extends clause");
     return opt;
   }
@@ -1017,7 +1080,8 @@ public class ParClassDecl extends ClassDecl implements Cloneable, ParTypeDecl, M
    * @aspect LookupParTypeDecl
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1026
    */
-  @SuppressWarnings({"unchecked", "cast"})
+  @Override
+@SuppressWarnings({"unchecked", "cast"})
   public List getImplementsList() {
     if(getImplementsList_computed) {
       return (List) getChild(getImplementsListChildPosition());
@@ -1027,7 +1091,9 @@ public class ParClassDecl extends ClassDecl implements Cloneable, ParTypeDecl, M
   boolean isFinal = this.is$Final();
     getImplementsList_value = getImplementsList_compute();
     setImplementsList(getImplementsList_value);
-      if(isFinal && num == state().boundariesCrossed) getImplementsList_computed = true;
+      if(isFinal && num == state().boundariesCrossed) {
+		getImplementsList_computed = true;
+	}
     return (List) getChild(getImplementsListChildPosition());
   }
   /**
@@ -1053,7 +1119,8 @@ public class ParClassDecl extends ClassDecl implements Cloneable, ParTypeDecl, M
    * @aspect LookupParTypeDecl
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1035
    */
-  @SuppressWarnings({"unchecked", "cast"})
+  @Override
+@SuppressWarnings({"unchecked", "cast"})
   public List getBodyDeclList() {
     if(getBodyDeclList_computed) {
       return (List) getChild(getBodyDeclListChildPosition());
@@ -1063,7 +1130,9 @@ public class ParClassDecl extends ClassDecl implements Cloneable, ParTypeDecl, M
   boolean isFinal = this.is$Final();
     getBodyDeclList_value = getBodyDeclList_compute();
     setBodyDeclList(getBodyDeclList_value);
-      if(isFinal && num == state().boundariesCrossed) getBodyDeclList_computed = true;
+      if(isFinal && num == state().boundariesCrossed) {
+		getBodyDeclList_computed = true;
+	}
     return (List) getChild(getBodyDeclListChildPosition());
   }
   /**
@@ -1075,7 +1144,8 @@ public class ParClassDecl extends ClassDecl implements Cloneable, ParTypeDecl, M
    * @aspect GenericsSubtype
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericsSubtype.jrag:14
    */
-  public boolean supertypeGenericClassDecl(GenericClassDecl type) {
+  @Override
+public boolean supertypeGenericClassDecl(final GenericClassDecl type) {
     ASTNode$State state = state();
     try {  return type.subtype(genericDecl().original());  }
     finally {
@@ -1086,7 +1156,8 @@ public class ParClassDecl extends ClassDecl implements Cloneable, ParTypeDecl, M
    * @aspect GenericsSubtype
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericsSubtype.jrag:421
    */
-  public boolean supertypeClassDecl(ClassDecl type) {
+  @Override
+public boolean supertypeClassDecl(final ClassDecl type) {
     ASTNode$State state = state();
     try {  return super.supertypeClassDecl(type);  }
     finally {
@@ -1098,18 +1169,21 @@ public class ParClassDecl extends ClassDecl implements Cloneable, ParTypeDecl, M
    * @aspect GenericsSubtype
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericsSubtype.jrag:124
    */
-  @SuppressWarnings({"unchecked", "cast"})
-  public boolean subtype(TypeDecl type) {
+  @Override
+@SuppressWarnings({"unchecked", "cast"})
+  public boolean subtype(final TypeDecl type) {
     Object _parameters = type;
-    if(subtype_TypeDecl_values == null) subtype_TypeDecl_values = new java.util.HashMap(4);
+    if(subtype_TypeDecl_values == null) {
+		subtype_TypeDecl_values = new java.util.HashMap(4);
+	}
     ASTNode$State.CircularValue _value;
     if(subtype_TypeDecl_values.containsKey(_parameters)) {
       Object _o = subtype_TypeDecl_values.get(_parameters);
       if(!(_o instanceof ASTNode$State.CircularValue)) {
         return ((Boolean)_o).booleanValue();
-      }
-      else
-        _value = (ASTNode$State.CircularValue)_o;
+      } else {
+		_value = (ASTNode$State.CircularValue)_o;
+	}
     }
     else {
       _value = new ASTNode$State.CircularValue();
@@ -1141,7 +1215,7 @@ public class ParClassDecl extends ClassDecl implements Cloneable, ParTypeDecl, M
       subtype_compute(type);
       state.RESET_CYCLE = false;
       }
-      state.IN_CIRCLE = false; 
+      state.IN_CIRCLE = false;
       return new_subtype_TypeDecl_value;
     }
     if(!new Integer(state.CIRCLE_INDEX).equals(_value.visited)) {
@@ -1161,13 +1235,14 @@ public class ParClassDecl extends ClassDecl implements Cloneable, ParTypeDecl, M
   /**
    * @apilevel internal
    */
-  private boolean subtype_compute(TypeDecl type) {  return type.supertypeParClassDecl(this);  }
+  private boolean subtype_compute(final TypeDecl type) {  return type.supertypeParClassDecl(this);  }
   /**
    * @attribute syn
    * @aspect GenericsSubtype
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericsSubtype.jrag:26
    */
-  public boolean supertypeRawClassDecl(RawClassDecl type) {
+  @Override
+public boolean supertypeRawClassDecl(final RawClassDecl type) {
     ASTNode$State state = state();
     try {  return type.genericDecl().original().subtype(genericDecl().original());  }
     finally {
@@ -1178,7 +1253,8 @@ public class ParClassDecl extends ClassDecl implements Cloneable, ParTypeDecl, M
    * @aspect GenericsSubtype
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericsSubtype.jrag:30
    */
-  public boolean supertypeRawInterfaceDecl(RawInterfaceDecl type) {
+  @Override
+public boolean supertypeRawInterfaceDecl(final RawInterfaceDecl type) {
     ASTNode$State state = state();
     try {  return type.genericDecl().original().subtype(genericDecl().original());  }
     finally {
@@ -1190,18 +1266,21 @@ public class ParClassDecl extends ClassDecl implements Cloneable, ParTypeDecl, M
    * @aspect GenericsSubtype
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericsSubtype.jrag:179
    */
-  @SuppressWarnings({"unchecked", "cast"})
-  public boolean sameStructure(TypeDecl t) {
+  @Override
+@SuppressWarnings({"unchecked", "cast"})
+  public boolean sameStructure(final TypeDecl t) {
     Object _parameters = t;
-    if(sameStructure_TypeDecl_values == null) sameStructure_TypeDecl_values = new java.util.HashMap(4);
+    if(sameStructure_TypeDecl_values == null) {
+		sameStructure_TypeDecl_values = new java.util.HashMap(4);
+	}
     ASTNode$State.CircularValue _value;
     if(sameStructure_TypeDecl_values.containsKey(_parameters)) {
       Object _o = sameStructure_TypeDecl_values.get(_parameters);
       if(!(_o instanceof ASTNode$State.CircularValue)) {
         return ((Boolean)_o).booleanValue();
-      }
-      else
-        _value = (ASTNode$State.CircularValue)_o;
+      } else {
+		_value = (ASTNode$State.CircularValue)_o;
+	}
     }
     else {
       _value = new ASTNode$State.CircularValue();
@@ -1233,7 +1312,7 @@ public class ParClassDecl extends ClassDecl implements Cloneable, ParTypeDecl, M
       sameStructure_compute(t);
       state.RESET_CYCLE = false;
       }
-      state.IN_CIRCLE = false; 
+      state.IN_CIRCLE = false;
       return new_sameStructure_TypeDecl_value;
     }
     if(!new Integer(state.CIRCLE_INDEX).equals(_value.visited)) {
@@ -1253,17 +1332,21 @@ public class ParClassDecl extends ClassDecl implements Cloneable, ParTypeDecl, M
   /**
    * @apilevel internal
    */
-  private boolean sameStructure_compute(TypeDecl t) {
-    if(!(t instanceof ParClassDecl))
-      return false;
+  private boolean sameStructure_compute(final TypeDecl t) {
+    if(!(t instanceof ParClassDecl)) {
+		return false;
+	}
     ParClassDecl type = (ParClassDecl)t;
     if(type.genericDecl().original() == genericDecl().original() &&
        type.getNumArgument() == getNumArgument()) {
-      for(int i = 0; i < getNumArgument(); i++)
-        if(!type.getArgument(i).type().sameStructure(getArgument(i).type()))
-          return false;
-      if(isNestedType() && type.isNestedType())
-        return type.enclosingType().sameStructure(enclosingType());
+      for(int i = 0; i < getNumArgument(); i++) {
+		if(!type.getArgument(i).type().sameStructure(getArgument(i).type())) {
+			return false;
+		}
+	}
+      if(isNestedType() && type.isNestedType()) {
+		return type.enclosingType().sameStructure(enclosingType());
+	}
       return true;
     }
     return false;
@@ -1273,16 +1356,20 @@ public class ParClassDecl extends ClassDecl implements Cloneable, ParTypeDecl, M
    * @aspect GenericsSubtype
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericsSubtype.jrag:125
    */
-  public boolean supertypeParClassDecl(ParClassDecl type) {
+  @Override
+public boolean supertypeParClassDecl(final ParClassDecl type) {
     ASTNode$State state = state();
     try {
     if(type.genericDecl().original() == genericDecl().original() &&
        type.getNumArgument() == getNumArgument()) {
-      for(int i = 0; i < getNumArgument(); i++)
-        if(!type.getArgument(i).type().containedIn(getArgument(i).type()))
-          return false;
-      if(isNestedType() && type.isNestedType())
-        return type.enclosingType().subtype(enclosingType());
+      for(int i = 0; i < getNumArgument(); i++) {
+		if(!type.getArgument(i).type().containedIn(getArgument(i).type())) {
+			return false;
+		}
+	}
+      if(isNestedType() && type.isNestedType()) {
+		return type.enclosingType().subtype(enclosingType());
+	}
       return true;
     }
     return supertypeClassDecl(type);
@@ -1295,7 +1382,8 @@ public class ParClassDecl extends ClassDecl implements Cloneable, ParTypeDecl, M
    * @aspect GenericsSubtype
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericsSubtype.jrag:129
    */
-  public boolean supertypeParInterfaceDecl(ParInterfaceDecl type) {
+  @Override
+public boolean supertypeParInterfaceDecl(final ParInterfaceDecl type) {
     ASTNode$State state = state();
     try {  return false;  }
     finally {
@@ -1307,10 +1395,13 @@ public class ParClassDecl extends ClassDecl implements Cloneable, ParTypeDecl, M
    * @aspect GenericsSubtype
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericsSubtype.jrag:396
    */
-  @SuppressWarnings({"unchecked", "cast"})
-  public boolean instanceOf(TypeDecl type) {
+  @Override
+@SuppressWarnings({"unchecked", "cast"})
+  public boolean instanceOf(final TypeDecl type) {
     Object _parameters = type;
-    if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.util.HashMap(4);
+    if(instanceOf_TypeDecl_values == null) {
+		instanceOf_TypeDecl_values = new java.util.HashMap(4);
+	}
     if(instanceOf_TypeDecl_values.containsKey(_parameters)) {
       return ((Boolean)instanceOf_TypeDecl_values.get(_parameters)).booleanValue();
     }
@@ -1318,13 +1409,15 @@ public class ParClassDecl extends ClassDecl implements Cloneable, ParTypeDecl, M
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     boolean instanceOf_TypeDecl_value = instanceOf_compute(type);
-      if(isFinal && num == state().boundariesCrossed) instanceOf_TypeDecl_values.put(_parameters, Boolean.valueOf(instanceOf_TypeDecl_value));
+      if(isFinal && num == state().boundariesCrossed) {
+		instanceOf_TypeDecl_values.put(_parameters, Boolean.valueOf(instanceOf_TypeDecl_value));
+	}
     return instanceOf_TypeDecl_value;
   }
   /**
    * @apilevel internal
    */
-  private boolean instanceOf_compute(TypeDecl type) {  return subtype(type);  }
+  private boolean instanceOf_compute(final TypeDecl type) {  return subtype(type);  }
   /**
 	 * A type is reifiable if it either refers to a non-parameterized type,
 	 * is a raw type, is a parameterized type with only unbound wildcard
@@ -1335,26 +1428,31 @@ public class ParClassDecl extends ClassDecl implements Cloneable, ParTypeDecl, M
    * @aspect SafeVarargs
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/SafeVarargs.jrag:106
    */
-  public boolean isReifiable() {
+  @Override
+public boolean isReifiable() {
     ASTNode$State state = state();
     try {
-		if (isRawType())
+		if (isRawType()) {
 			return true;
+		}
 		for (int i = 0; i < getNumArgument(); ++i) {
-			if (!getArgument(i).type().isWildcard())
+			if (!getArgument(i).type().isWildcard()) {
 				return false;
+			}
 		}
 		return true;
 	}
     finally {
     }
   }
+
   /**
    * @attribute syn
    * @aspect Generics
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:244
    */
-  public boolean isParameterizedType() {
+  @Override
+public boolean isParameterizedType() {
     ASTNode$State state = state();
     try {  return true;  }
     finally {
@@ -1365,22 +1463,28 @@ public class ParClassDecl extends ClassDecl implements Cloneable, ParTypeDecl, M
    * @aspect GenericsTypeCheck
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:380
    */
-  public boolean sameArgument(ParTypeDecl decl) {
+  @Override
+public boolean sameArgument(final ParTypeDecl decl) {
     ASTNode$State state = state();
     try {
-    if(this == decl) return true;
-    if(genericDecl() != decl.genericDecl())
-      return false;
+    if(this == decl) {
+		return true;
+	}
+    if(genericDecl() != decl.genericDecl()) {
+		return false;
+	}
     for(int i = 0; i < getNumArgument(); i++) {
       TypeDecl t1 = getArgument(i).type();
       TypeDecl t2 = decl.getArgument(i).type();
       if(t1 instanceof ParTypeDecl && t2 instanceof ParTypeDecl) {
-        if(!((ParTypeDecl)t1).sameArgument((ParTypeDecl)t2))
-          return false;
+        if(!((ParTypeDecl)t1).sameArgument((ParTypeDecl)t2)) {
+			return false;
+		}
       }
       else {
-        if(t1 != t2)
-          return false;
+        if(t1 != t2) {
+			return false;
+		}
       }
     }
     return true;
@@ -1393,22 +1497,28 @@ public class ParClassDecl extends ClassDecl implements Cloneable, ParTypeDecl, M
    * @aspect LookupParTypeDecl
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:577
    */
-  public boolean sameSignature(Access a) {
+  @Override
+public boolean sameSignature(final Access a) {
     ASTNode$State state = state();
     try {
     if(a instanceof ParTypeAccess) {
       ParTypeAccess ta = (ParTypeAccess)a;
-      if(genericDecl() != ta.genericDecl())
-        return false;
-      if(getNumArgument() != ta.getNumTypeArgument())
-        return false;
-      for(int i = 0; i < getNumArgument(); i++)
-        if(!getArgument(i).type().sameSignature(ta.getTypeArgument(i)))
-          return false;
+      if(genericDecl() != ta.genericDecl()) {
+		return false;
+	}
+      if(getNumArgument() != ta.getNumTypeArgument()) {
+		return false;
+	}
+      for(int i = 0; i < getNumArgument(); i++) {
+		if(!getArgument(i).type().sameSignature(ta.getTypeArgument(i))) {
+			return false;
+		}
+	}
       return true;
     }
-    else if(a instanceof TypeAccess && ((TypeAccess)a).isRaw())
-      return false;
+    else if(a instanceof TypeAccess && ((TypeAccess)a).isRaw()) {
+		return false;
+	}
     return super.sameSignature(a);
   }
     finally {
@@ -1420,18 +1530,21 @@ public class ParClassDecl extends ClassDecl implements Cloneable, ParTypeDecl, M
    * @aspect LookupParTypeDecl
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:612
    */
-  @SuppressWarnings({"unchecked", "cast"})
-  public boolean sameSignature(ArrayList list) {
+  @Override
+@SuppressWarnings({"unchecked", "cast"})
+  public boolean sameSignature(final ArrayList list) {
     Object _parameters = list;
-    if(sameSignature_ArrayList_values == null) sameSignature_ArrayList_values = new java.util.HashMap(4);
+    if(sameSignature_ArrayList_values == null) {
+		sameSignature_ArrayList_values = new java.util.HashMap(4);
+	}
     ASTNode$State.CircularValue _value;
     if(sameSignature_ArrayList_values.containsKey(_parameters)) {
       Object _o = sameSignature_ArrayList_values.get(_parameters);
       if(!(_o instanceof ASTNode$State.CircularValue)) {
         return ((Boolean)_o).booleanValue();
-      }
-      else
-        _value = (ASTNode$State.CircularValue)_o;
+      } else {
+		_value = (ASTNode$State.CircularValue)_o;
+	}
     }
     else {
       _value = new ASTNode$State.CircularValue();
@@ -1463,7 +1576,7 @@ public class ParClassDecl extends ClassDecl implements Cloneable, ParTypeDecl, M
       sameSignature_compute(list);
       state.RESET_CYCLE = false;
       }
-      state.IN_CIRCLE = false; 
+      state.IN_CIRCLE = false;
       return new_sameSignature_ArrayList_value;
     }
     if(!new Integer(state.CIRCLE_INDEX).equals(_value.visited)) {
@@ -1483,12 +1596,15 @@ public class ParClassDecl extends ClassDecl implements Cloneable, ParTypeDecl, M
   /**
    * @apilevel internal
    */
-  private boolean sameSignature_compute(ArrayList list) {
-    if(getNumArgument() != list.size())
-      return false;
-    for(int i = 0; i < list.size(); i++)
-      if(getArgument(i).type() != list.get(i))
-        return false;
+  private boolean sameSignature_compute(final ArrayList list) {
+    if(getNumArgument() != list.size()) {
+		return false;
+	}
+    for(int i = 0; i < list.size(); i++) {
+		if(getArgument(i).type() != list.get(i)) {
+			return false;
+		}
+	}
     return true;
   }
   /**
@@ -1512,7 +1628,8 @@ public class ParClassDecl extends ClassDecl implements Cloneable, ParTypeDecl, M
    * @aspect LookupParTypeDecl
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1069
    */
-  @SuppressWarnings({"unchecked", "cast"})
+  @Override
+@SuppressWarnings({"unchecked", "cast"})
   public boolean usesTypeVariable() {
     if(usesTypeVariable_computed) {
       return usesTypeVariable_value;
@@ -1530,9 +1647,10 @@ public class ParClassDecl extends ClassDecl implements Cloneable, ParTypeDecl, M
         usesTypeVariable_visited = state.CIRCLE_INDEX;
         state.CHANGE = false;
         boolean new_usesTypeVariable_value = usesTypeVariable_compute();
-        if (new_usesTypeVariable_value!=usesTypeVariable_value)
-          state.CHANGE = true;
-        usesTypeVariable_value = new_usesTypeVariable_value; 
+        if (new_usesTypeVariable_value!=usesTypeVariable_value) {
+			state.CHANGE = true;
+		}
+        usesTypeVariable_value = new_usesTypeVariable_value;
         state.CIRCLE_INDEX++;
       } while (state.CHANGE);
         if(isFinal && num == state().boundariesCrossed) {
@@ -1545,7 +1663,7 @@ public class ParClassDecl extends ClassDecl implements Cloneable, ParTypeDecl, M
         usesTypeVariable_computed = false;
         usesTypeVariable_initialized = false;
       }
-      state.IN_CIRCLE = false; 
+      state.IN_CIRCLE = false;
       return usesTypeVariable_value;
     }
     if(usesTypeVariable_visited != state.CIRCLE_INDEX) {
@@ -1557,9 +1675,10 @@ public class ParClassDecl extends ClassDecl implements Cloneable, ParTypeDecl, M
         return usesTypeVariable_value;
       }
       boolean new_usesTypeVariable_value = usesTypeVariable_compute();
-      if (new_usesTypeVariable_value!=usesTypeVariable_value)
-        state.CHANGE = true;
-      usesTypeVariable_value = new_usesTypeVariable_value; 
+      if (new_usesTypeVariable_value!=usesTypeVariable_value) {
+		state.CHANGE = true;
+	}
+      usesTypeVariable_value = new_usesTypeVariable_value;
       return usesTypeVariable_value;
     }
     return usesTypeVariable_value;
@@ -1568,11 +1687,14 @@ public class ParClassDecl extends ClassDecl implements Cloneable, ParTypeDecl, M
    * @apilevel internal
    */
   private boolean usesTypeVariable_compute() {
-    if(super.usesTypeVariable())
-      return true;
-    for(int i = 0; i < getNumArgument(); i++)
-      if(getArgument(i).type().usesTypeVariable())
-        return true;
+    if(super.usesTypeVariable()) {
+		return true;
+	}
+    for(int i = 0; i < getNumArgument(); i++) {
+		if(getArgument(i).type().usesTypeVariable()) {
+			return true;
+		}
+	}
     return false;
   }
   /**
@@ -1580,7 +1702,8 @@ public class ParClassDecl extends ClassDecl implements Cloneable, ParTypeDecl, M
    * @aspect LookupParTypeDecl
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1306
    */
-  public TypeDecl original() {
+  @Override
+public TypeDecl original() {
     ASTNode$State state = state();
     try {  return genericDecl().original();  }
     finally {
@@ -1599,7 +1722,8 @@ public class ParClassDecl extends ClassDecl implements Cloneable, ParTypeDecl, M
    * @aspect SourceDeclarations
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1505
    */
-  @SuppressWarnings({"unchecked", "cast"})
+  @Override
+@SuppressWarnings({"unchecked", "cast"})
   public TypeDecl sourceTypeDecl() {
     if(sourceTypeDecl_computed) {
       return sourceTypeDecl_value;
@@ -1608,7 +1732,9 @@ public class ParClassDecl extends ClassDecl implements Cloneable, ParTypeDecl, M
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     sourceTypeDecl_value = sourceTypeDecl_compute();
-      if(isFinal && num == state().boundariesCrossed) sourceTypeDecl_computed = true;
+      if(isFinal && num == state().boundariesCrossed) {
+		sourceTypeDecl_computed = true;
+	}
     return sourceTypeDecl_value;
   }
   /**
@@ -1628,7 +1754,8 @@ public class ParClassDecl extends ClassDecl implements Cloneable, ParTypeDecl, M
    * @aspect GenericsParTypeDecl
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericsParTypeDecl.jrag:12
    */
-  @SuppressWarnings({"unchecked", "cast"})
+  @Override
+@SuppressWarnings({"unchecked", "cast"})
   public String fullName() {
     if(fullName_computed) {
       return fullName_value;
@@ -1637,18 +1764,22 @@ public class ParClassDecl extends ClassDecl implements Cloneable, ParTypeDecl, M
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     fullName_value = fullName_compute();
-      if(isFinal && num == state().boundariesCrossed) fullName_computed = true;
+      if(isFinal && num == state().boundariesCrossed) {
+		fullName_computed = true;
+	}
     return fullName_value;
   }
   /**
    * @apilevel internal
    */
   private String fullName_compute() {
-    if(isNestedType())
-      return enclosingType().fullName() + "." + nameWithArgs();
+    if(isNestedType()) {
+		return enclosingType().fullName() + "." + nameWithArgs();
+	}
     String packageName = packageName();
-    if(packageName.equals(""))
-      return nameWithArgs();
+    if(packageName.equals("")) {
+		return nameWithArgs();
+	}
     return packageName + "." + nameWithArgs();
   }
   /**
@@ -1664,7 +1795,8 @@ public class ParClassDecl extends ClassDecl implements Cloneable, ParTypeDecl, M
    * @aspect GenericsParTypeDecl
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericsParTypeDecl.jrag:21
    */
-  @SuppressWarnings({"unchecked", "cast"})
+  @Override
+@SuppressWarnings({"unchecked", "cast"})
   public String typeName() {
     if(typeName_computed) {
       return typeName_value;
@@ -1673,18 +1805,22 @@ public class ParClassDecl extends ClassDecl implements Cloneable, ParTypeDecl, M
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     typeName_value = typeName_compute();
-      if(isFinal && num == state().boundariesCrossed) typeName_computed = true;
+      if(isFinal && num == state().boundariesCrossed) {
+		typeName_computed = true;
+	}
     return typeName_value;
   }
   /**
    * @apilevel internal
    */
   private String typeName_compute() {
-    if(isNestedType())
-      return enclosingType().typeName() + "." + nameWithArgs();
+    if(isNestedType()) {
+		return enclosingType().typeName() + "." + nameWithArgs();
+	}
     String packageName = packageName();
-    if(packageName.equals("") || packageName.equals(PRIMITIVE_PACKAGE_NAME))
-      return nameWithArgs();
+    if(packageName.equals("") || packageName.equals(PRIMITIVE_PACKAGE_NAME)) {
+		return nameWithArgs();
+	}
     return packageName + "." + nameWithArgs();
   }
   /**
@@ -1692,15 +1828,17 @@ public class ParClassDecl extends ClassDecl implements Cloneable, ParTypeDecl, M
    * @aspect GenericsParTypeDecl
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericsParTypeDecl.jrag:30
    */
-  public String nameWithArgs() {
+  @Override
+public String nameWithArgs() {
     ASTNode$State state = state();
     try {
     StringBuffer s = new StringBuffer();
     s.append(name());
     s.append("<");
     for(int i = 0; i < getNumArgument(); i++) {
-      if(i != 0)
-        s.append(", ");
+      if(i != 0) {
+		s.append(", ");
+	}
       s.append(getArgument(i).type().fullName());
     }
     s.append(">");
@@ -1722,7 +1860,8 @@ public class ParClassDecl extends ClassDecl implements Cloneable, ParTypeDecl, M
    * @aspect MethodSignature15
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/MethodSignature.jrag:406
    */
-  @SuppressWarnings({"unchecked", "cast"})
+  @Override
+@SuppressWarnings({"unchecked", "cast"})
   public Collection unimplementedMethods() {
     if(unimplementedMethods_computed) {
       return unimplementedMethods_value;
@@ -1731,7 +1870,9 @@ public class ParClassDecl extends ClassDecl implements Cloneable, ParTypeDecl, M
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     unimplementedMethods_value = unimplementedMethods_compute();
-      if(isFinal && num == state().boundariesCrossed) unimplementedMethods_computed = true;
+      if(isFinal && num == state().boundariesCrossed) {
+		unimplementedMethods_computed = true;
+	}
     return unimplementedMethods_value;
   }
   /**
@@ -1746,8 +1887,9 @@ public class ParClassDecl extends ClassDecl implements Cloneable, ParTypeDecl, M
     }
     for(Iterator iter = super.unimplementedMethods().iterator(); iter.hasNext(); ) {
       MethodDecl m = (MethodDecl)iter.next();
-      if(set.contains(m.sourceMethodDecl()))
-        result.add(m);
+      if(set.contains(m.sourceMethodDecl())) {
+		result.add(m);
+	}
     }
     return result;
   }
@@ -1764,7 +1906,8 @@ public class ParClassDecl extends ClassDecl implements Cloneable, ParTypeDecl, M
    * @aspect LookupParTypeDecl
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1084
    */
-  @SuppressWarnings({"unchecked", "cast"})
+  @Override
+@SuppressWarnings({"unchecked", "cast"})
   public HashMap localMethodsSignatureMap() {
     if(localMethodsSignatureMap_computed) {
       return localMethodsSignatureMap_value;
@@ -1773,7 +1916,9 @@ public class ParClassDecl extends ClassDecl implements Cloneable, ParTypeDecl, M
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     localMethodsSignatureMap_value = localMethodsSignatureMap_compute();
-      if(true) localMethodsSignatureMap_computed = true;
+      if(true) {
+		localMethodsSignatureMap_computed = true;
+	}
     return localMethodsSignatureMap_value;
   }
   /**
@@ -1812,10 +1957,13 @@ public class ParClassDecl extends ClassDecl implements Cloneable, ParTypeDecl, M
    * @aspect LookupParTypeDecl
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1119
    */
-  @SuppressWarnings({"unchecked", "cast"})
-  public SimpleSet localFields(String name) {
+  @Override
+@SuppressWarnings({"unchecked", "cast"})
+  public SimpleSet localFields(final String name) {
     Object _parameters = name;
-    if(localFields_String_values == null) localFields_String_values = new java.util.HashMap(4);
+    if(localFields_String_values == null) {
+		localFields_String_values = new java.util.HashMap(4);
+	}
     if(localFields_String_values.containsKey(_parameters)) {
       return (SimpleSet)localFields_String_values.get(_parameters);
     }
@@ -1823,18 +1971,20 @@ public class ParClassDecl extends ClassDecl implements Cloneable, ParTypeDecl, M
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     SimpleSet localFields_String_value = localFields_compute(name);
-      if(true) localFields_String_values.put(_parameters, localFields_String_value);
+      if(true) {
+		localFields_String_values.put(_parameters, localFields_String_value);
+	}
     return localFields_String_value;
   }
   /**
    * @apilevel internal
    */
-  private SimpleSet localFields_compute(String name) {
+  private SimpleSet localFields_compute(final String name) {
     SimpleSet set = SimpleSet.emptySet;
     for(Iterator iter = original().localFields(name).iterator(); iter.hasNext(); ) {
       FieldDeclaration f = (FieldDeclaration)iter.next();
 
-      /* ES removing this:   
+      /* ES removing this:
       if(!f.isStatic() && (f.usesTypeVariable() || isRawType())) {
         BodyDecl b = f.substitutedBodyDecl(this);
         addBodyDecl(b);
@@ -1862,18 +2012,21 @@ public class ParClassDecl extends ClassDecl implements Cloneable, ParTypeDecl, M
    * @aspect LookupParTypeDecl
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1154
    */
-  @SuppressWarnings({"unchecked", "cast"})
-  public SimpleSet localTypeDecls(String name) {
+  @Override
+@SuppressWarnings({"unchecked", "cast"})
+  public SimpleSet localTypeDecls(final String name) {
     Object _parameters = name;
-    if(localTypeDecls_String_values == null) localTypeDecls_String_values = new java.util.HashMap(4);
+    if(localTypeDecls_String_values == null) {
+		localTypeDecls_String_values = new java.util.HashMap(4);
+	}
     ASTNode$State.CircularValue _value;
     if(localTypeDecls_String_values.containsKey(_parameters)) {
       Object _o = localTypeDecls_String_values.get(_parameters);
       if(!(_o instanceof ASTNode$State.CircularValue)) {
         return (SimpleSet)_o;
-      }
-      else
-        _value = (ASTNode$State.CircularValue)_o;
+      } else {
+		_value = (ASTNode$State.CircularValue)_o;
+	}
     }
     else {
       _value = new ASTNode$State.CircularValue();
@@ -1890,7 +2043,7 @@ public class ParClassDecl extends ClassDecl implements Cloneable, ParTypeDecl, M
         _value.visited = new Integer(state.CIRCLE_INDEX);
         state.CHANGE = false;
         new_localTypeDecls_String_value = localTypeDecls_compute(name);
-        if ((new_localTypeDecls_String_value==null && (SimpleSet)_value.value!=null) || (new_localTypeDecls_String_value!=null && !new_localTypeDecls_String_value.equals((SimpleSet)_value.value))) {
+        if ((new_localTypeDecls_String_value==null && (SimpleSet)_value.value!=null) || (new_localTypeDecls_String_value!=null && !new_localTypeDecls_String_value.equals(_value.value))) {
           state.CHANGE = true;
           _value.value = new_localTypeDecls_String_value;
         }
@@ -1905,7 +2058,7 @@ public class ParClassDecl extends ClassDecl implements Cloneable, ParTypeDecl, M
       localTypeDecls_compute(name);
       state.RESET_CYCLE = false;
       }
-      state.IN_CIRCLE = false; 
+      state.IN_CIRCLE = false;
       return new_localTypeDecls_String_value;
     }
     if(!new Integer(state.CIRCLE_INDEX).equals(_value.visited)) {
@@ -1914,7 +2067,7 @@ public class ParClassDecl extends ClassDecl implements Cloneable, ParTypeDecl, M
       if (state.RESET_CYCLE) {
         localTypeDecls_String_values.remove(_parameters);
       }
-      else if ((new_localTypeDecls_String_value==null && (SimpleSet)_value.value!=null) || (new_localTypeDecls_String_value!=null && !new_localTypeDecls_String_value.equals((SimpleSet)_value.value))) {
+      else if ((new_localTypeDecls_String_value==null && (SimpleSet)_value.value!=null) || (new_localTypeDecls_String_value!=null && !new_localTypeDecls_String_value.equals(_value.value))) {
         state.CHANGE = true;
         _value.value = new_localTypeDecls_String_value;
       }
@@ -1925,7 +2078,7 @@ public class ParClassDecl extends ClassDecl implements Cloneable, ParTypeDecl, M
   /**
    * @apilevel internal
    */
-  private SimpleSet localTypeDecls_compute(String name) {
+  private SimpleSet localTypeDecls_compute(final String name) {
     SimpleSet set = SimpleSet.emptySet;
     for(Iterator iter = original().localTypeDecls(name).iterator(); iter.hasNext(); ) {
       TypeDecl t = (TypeDecl)iter.next();
@@ -1986,7 +2139,8 @@ public class ParClassDecl extends ClassDecl implements Cloneable, ParTypeDecl, M
    * @aspect LookupParTypeDecl
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1213
    */
-  @SuppressWarnings({"unchecked", "cast"})
+  @Override
+@SuppressWarnings({"unchecked", "cast"})
   public Collection constructors() {
     if(constructors_computed) {
       return constructors_value;
@@ -1995,7 +2149,9 @@ public class ParClassDecl extends ClassDecl implements Cloneable, ParTypeDecl, M
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     constructors_value = constructors_compute();
-      if(isFinal && num == state().boundariesCrossed) constructors_computed = true;
+      if(isFinal && num == state().boundariesCrossed) {
+		constructors_computed = true;
+	}
     return constructors_value;
   }
   /**
@@ -2033,7 +2189,8 @@ public class ParClassDecl extends ClassDecl implements Cloneable, ParTypeDecl, M
    * @aspect GenericsParTypeDecl
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericsParTypeDecl.jrag:45
    */
-  @SuppressWarnings({"unchecked", "cast"})
+  @Override
+@SuppressWarnings({"unchecked", "cast"})
   public TypeDecl genericDecl() {
     if(genericDecl_computed) {
       return genericDecl_value;
@@ -2042,14 +2199,17 @@ public class ParClassDecl extends ClassDecl implements Cloneable, ParTypeDecl, M
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     genericDecl_value = getParent().Define_TypeDecl_genericDecl(this, null);
-      if(isFinal && num == state().boundariesCrossed) genericDecl_computed = true;
+      if(isFinal && num == state().boundariesCrossed) {
+		genericDecl_computed = true;
+	}
     return genericDecl_value;
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:476
    * @apilevel internal
    */
-  public NameType Define_NameType_nameType(ASTNode caller, ASTNode child) {
+  @Override
+public NameType Define_NameType_nameType(final ASTNode caller, final ASTNode child) {
     if(caller == getArgumentListNoTransform())  {
     int childIndex = caller.getIndexOfChild(child);
     return NameType.TYPE_NAME;
@@ -2061,8 +2221,9 @@ public class ParClassDecl extends ClassDecl implements Cloneable, ParTypeDecl, M
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericsParTypeDecl.jrag:52
    * @apilevel internal
    */
-  public TypeDecl Define_TypeDecl_genericDecl(ASTNode caller, ASTNode child) {
-    if(caller == getBodyDeclListNoTransform())  { 
+  @Override
+public TypeDecl Define_TypeDecl_genericDecl(final ASTNode caller, final ASTNode child) {
+    if(caller == getBodyDeclListNoTransform())  {
     int index = caller.getIndexOfChild(child);
     {
     if(getBodyDecl(index) instanceof MemberTypeDecl) {
@@ -2078,7 +2239,8 @@ public class ParClassDecl extends ClassDecl implements Cloneable, ParTypeDecl, M
   /**
    * @apilevel internal
    */
-  public ASTNode rewriteTo() {
+  @Override
+public ASTNode rewriteTo() {
     return super.rewriteTo();
   }
 }

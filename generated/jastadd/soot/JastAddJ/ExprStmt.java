@@ -1,23 +1,7 @@
 /* This file was generated with JastAdd2 (http://jastadd.org) version R20130212 (r1031) */
 package soot.JastAddJ;
 
-import java.util.HashSet;
-import java.io.File;
-import java.util.*;
-import beaver.*;
-import java.util.ArrayList;
-import java.util.zip.*;
-import java.io.*;
-import java.io.FileNotFoundException;
-import java.util.Collection;
-import soot.*;
-import soot.util.*;
-import soot.jimple.*;
-import soot.coffi.ClassFile;
-import soot.coffi.method_info;
-import soot.coffi.CONSTANT_Utf8_info;
-import soot.tagkit.SourceFileTag;
-import soot.coffi.CoffiMethodSource;
+import soot.jimple.InvokeStmt;
 /**
  * @production ExprStmt : {@link Stmt} ::= <span class="component">{@link Expr}</span>;
  * @ast node
@@ -27,7 +11,8 @@ public class ExprStmt extends Stmt implements Cloneable {
   /**
    * @apilevel low-level
    */
-  public void flushCache() {
+  @Override
+public void flushCache() {
     super.flushCache();
     isDAafter_Variable_values = null;
     isDUafter_Variable_values = null;
@@ -36,13 +21,15 @@ public class ExprStmt extends Stmt implements Cloneable {
   /**
    * @apilevel internal
    */
-  public void flushCollectionCache() {
+  @Override
+public void flushCollectionCache() {
     super.flushCollectionCache();
   }
   /**
    * @apilevel internal
    */
-  @SuppressWarnings({"unchecked", "cast"})
+  @Override
+@SuppressWarnings({"unchecked", "cast"})
   public ExprStmt clone() throws CloneNotSupportedException {
     ExprStmt node = (ExprStmt)super.clone();
     node.isDAafter_Variable_values = null;
@@ -55,13 +42,15 @@ public class ExprStmt extends Stmt implements Cloneable {
   /**
    * @apilevel internal
    */
-  @SuppressWarnings({"unchecked", "cast"})
+  @Override
+@SuppressWarnings({"unchecked", "cast"})
   public ExprStmt copy() {
     try {
-      ExprStmt node = (ExprStmt) clone();
+      ExprStmt node = clone();
       node.parent = null;
-      if(children != null)
-        node.children = (ASTNode[]) children.clone();
+      if(children != null) {
+		node.children = children.clone();
+	}
       return node;
     } catch (CloneNotSupportedException e) {
       throw new Error("Error: clone not supported for " +
@@ -74,12 +63,13 @@ public class ExprStmt extends Stmt implements Cloneable {
    * @return dangling copy of the subtree at this node
    * @apilevel low-level
    */
-  @SuppressWarnings({"unchecked", "cast"})
+  @Override
+@SuppressWarnings({"unchecked", "cast"})
   public ExprStmt fullCopy() {
-    ExprStmt tree = (ExprStmt) copy();
+    ExprStmt tree = copy();
     if (children != null) {
       for (int i = 0; i < children.length; ++i) {
-        ASTNode child = (ASTNode) children[i];
+        ASTNode child = children[i];
         if(child != null) {
           child = child.fullCopy();
           tree.setChild(child, i);
@@ -89,30 +79,36 @@ public class ExprStmt extends Stmt implements Cloneable {
     return tree;
   }
   /**
-   * @ast method 
+   * @ast method
    * @aspect PrettyPrint
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/PrettyPrint.jadd:548
    */
-  public void toString(StringBuffer s) {
+  @Override
+public void toString(final StringBuffer s) {
     s.append(indent());
     getExpr().toString(s);
     s.append(";");
   }
   /**
-   * @ast method 
+   * @ast method
    * @aspect Statements
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/Statements.jrag:32
    */
-  public void jimplify2(Body b) {
+  @Override
+public void jimplify2(final Body b) {
     b.setLine(this);
     soot.Value value = getExpr().eval(b);
     if(value instanceof soot.jimple.InvokeExpr) {
-      b.add(b.newInvokeStmt((soot.jimple.InvokeExpr)value, this));
+    	final soot.jimple.InvokeExpr invokeExpr = (soot.jimple.InvokeExpr)value;
+		InvokeStmt invokeStmt = b.newInvokeStmt(invokeExpr, this);
+//    	if (value instanceof )
+//    	invokeStmt.getInvokeExprBox().addTag(t);
+    	b.add(invokeStmt);
     }
   }
   /**
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
   public ExprStmt() {
     super();
@@ -124,51 +120,54 @@ public class ExprStmt extends Stmt implements Cloneable {
    * Initializes List and Opt nta children.
    * @apilevel internal
    * @ast method
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
-  public void init$Children() {
+  @Override
+public void init$Children() {
     children = new ASTNode[1];
   }
   /**
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
-  public ExprStmt(Expr p0) {
+  public ExprStmt(final Expr p0) {
     setChild(p0, 0);
   }
   /**
    * @apilevel low-level
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
-  protected int numChildren() {
+  @Override
+protected int numChildren() {
     return 1;
   }
   /**
    * @apilevel internal
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
-  public boolean mayHaveRewrite() {
+  @Override
+public boolean mayHaveRewrite() {
     return false;
   }
   /**
    * Replaces the Expr child.
    * @param node The new node to replace the Expr child.
    * @apilevel high-level
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
-  public void setExpr(Expr node) {
+  public void setExpr(final Expr node) {
     setChild(node, 0);
   }
   /**
    * Retrieves the Expr child.
    * @return The current node used as the Expr child.
    * @apilevel high-level
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
   public Expr getExpr() {
     return (Expr)getChild(0);
@@ -178,8 +177,8 @@ public class ExprStmt extends Stmt implements Cloneable {
    * <p><em>This method does not invoke AST transformations.</em></p>
    * @return The current node used as the Expr child.
    * @apilevel low-level
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
   public Expr getExprNoTransform() {
     return (Expr)getChildNoTransform(0);
@@ -190,10 +189,13 @@ public class ExprStmt extends Stmt implements Cloneable {
    * @aspect DA
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:522
    */
-  @SuppressWarnings({"unchecked", "cast"})
-  public boolean isDAafter(Variable v) {
+  @Override
+@SuppressWarnings({"unchecked", "cast"})
+  public boolean isDAafter(final Variable v) {
     Object _parameters = v;
-    if(isDAafter_Variable_values == null) isDAafter_Variable_values = new java.util.HashMap(4);
+    if(isDAafter_Variable_values == null) {
+		isDAafter_Variable_values = new java.util.HashMap(4);
+	}
     if(isDAafter_Variable_values.containsKey(_parameters)) {
       return ((Boolean)isDAafter_Variable_values.get(_parameters)).booleanValue();
     }
@@ -201,23 +203,28 @@ public class ExprStmt extends Stmt implements Cloneable {
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     boolean isDAafter_Variable_value = isDAafter_compute(v);
-      if(isFinal && num == state().boundariesCrossed) isDAafter_Variable_values.put(_parameters, Boolean.valueOf(isDAafter_Variable_value));
+      if(isFinal && num == state().boundariesCrossed) {
+		isDAafter_Variable_values.put(_parameters, Boolean.valueOf(isDAafter_Variable_value));
+	}
     return isDAafter_Variable_value;
   }
   /**
    * @apilevel internal
    */
-  private boolean isDAafter_compute(Variable v) {  return getExpr().isDAafter(v);  }
+  private boolean isDAafter_compute(final Variable v) {  return getExpr().isDAafter(v);  }
   protected java.util.Map isDUafter_Variable_values;
   /**
    * @attribute syn
    * @aspect DU
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:991
    */
-  @SuppressWarnings({"unchecked", "cast"})
-  public boolean isDUafter(Variable v) {
+  @Override
+@SuppressWarnings({"unchecked", "cast"})
+  public boolean isDUafter(final Variable v) {
     Object _parameters = v;
-    if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.HashMap(4);
+    if(isDUafter_Variable_values == null) {
+		isDUafter_Variable_values = new java.util.HashMap(4);
+	}
     if(isDUafter_Variable_values.containsKey(_parameters)) {
       return ((Boolean)isDUafter_Variable_values.get(_parameters)).booleanValue();
     }
@@ -225,13 +232,15 @@ public class ExprStmt extends Stmt implements Cloneable {
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     boolean isDUafter_Variable_value = isDUafter_compute(v);
-      if(isFinal && num == state().boundariesCrossed) isDUafter_Variable_values.put(_parameters, Boolean.valueOf(isDUafter_Variable_value));
+      if(isFinal && num == state().boundariesCrossed) {
+		isDUafter_Variable_values.put(_parameters, Boolean.valueOf(isDUafter_Variable_value));
+	}
     return isDUafter_Variable_value;
   }
   /**
    * @apilevel internal
    */
-  private boolean isDUafter_compute(Variable v) {  return getExpr().isDUafter(v);  }
+  private boolean isDUafter_compute(final Variable v) {  return getExpr().isDUafter(v);  }
   /**
    * @apilevel internal
    */
@@ -245,7 +254,8 @@ public class ExprStmt extends Stmt implements Cloneable {
    * @aspect UnreachableStatements
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/UnreachableStatements.jrag:58
    */
-  @SuppressWarnings({"unchecked", "cast"})
+  @Override
+@SuppressWarnings({"unchecked", "cast"})
   public boolean canCompleteNormally() {
     if(canCompleteNormally_computed) {
       return canCompleteNormally_value;
@@ -254,7 +264,9 @@ public class ExprStmt extends Stmt implements Cloneable {
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     canCompleteNormally_value = canCompleteNormally_compute();
-      if(isFinal && num == state().boundariesCrossed) canCompleteNormally_computed = true;
+      if(isFinal && num == state().boundariesCrossed) {
+		canCompleteNormally_computed = true;
+	}
     return canCompleteNormally_value;
   }
   /**
@@ -266,7 +278,8 @@ public class ExprStmt extends Stmt implements Cloneable {
    * @aspect PreciseRethrow
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/PreciseRethrow.jrag:55
    */
-  public boolean modifiedInScope(Variable var) {
+  @Override
+public boolean modifiedInScope(final Variable var) {
     ASTNode$State state = state();
     try {  return getExpr().modifiedInScope(var);  }
     finally {
@@ -276,7 +289,8 @@ public class ExprStmt extends Stmt implements Cloneable {
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:523
    * @apilevel internal
    */
-  public boolean Define_boolean_isDAbefore(ASTNode caller, ASTNode child, Variable v) {
+  @Override
+public boolean Define_boolean_isDAbefore(final ASTNode caller, final ASTNode child, final Variable v) {
     if(caller == getExprNoTransform()) {
       return isDAbefore(v);
     }
@@ -287,7 +301,8 @@ public class ExprStmt extends Stmt implements Cloneable {
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:992
    * @apilevel internal
    */
-  public boolean Define_boolean_isDUbefore(ASTNode caller, ASTNode child, Variable v) {
+  @Override
+public boolean Define_boolean_isDUbefore(final ASTNode caller, final ASTNode child, final Variable v) {
     if(caller == getExprNoTransform()) {
       return isDUbefore(v);
     }
@@ -297,7 +312,8 @@ public class ExprStmt extends Stmt implements Cloneable {
   /**
    * @apilevel internal
    */
-  public ASTNode rewriteTo() {
+  @Override
+public ASTNode rewriteTo() {
     return super.rewriteTo();
   }
 }

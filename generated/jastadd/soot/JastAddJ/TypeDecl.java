@@ -1,23 +1,25 @@
 /* This file was generated with JastAdd2 (http://jastadd.org) version R20130212 (r1031) */
 package soot.JastAddJ;
 
-import java.util.HashSet;
-import java.io.File;
-import java.util.*;
-import beaver.*;
 import java.util.ArrayList;
-import java.util.zip.*;
-import java.io.*;
-import java.io.FileNotFoundException;
 import java.util.Collection;
-import soot.*;
-import soot.util.*;
-import soot.jimple.*;
-import soot.coffi.ClassFile;
-import soot.coffi.method_info;
-import soot.coffi.CONSTANT_Utf8_info;
-import soot.tagkit.SourceFileTag;
-import soot.coffi.CoffiMethodSource;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+
+import soot.Local;
+import soot.RefType;
+import soot.Scene;
+import soot.SootClass;
+import soot.SootField;
+import soot.SootMethod;
+import soot.SootMethodRef;
+import soot.SootResolver;
+import soot.Type;
+import soot.jimple.Jimple;
+import soot.jimple.JimpleBody;
 /**
  * @production TypeDecl : {@link ASTNode} ::= <span class="component">{@link Modifiers}</span> <span class="component">&lt;ID:String&gt;</span> <span class="component">{@link BodyDecl}*</span>;
  * @ast node
@@ -27,7 +29,8 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
   /**
    * @apilevel low-level
    */
-  public void flushCache() {
+  @Override
+public void flushCache() {
     super.flushCache();
     accessibleFromPackage_String_values = null;
     accessibleFromExtend_TypeDecl_values = null;
@@ -141,13 +144,15 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
   /**
    * @apilevel internal
    */
-  public void flushCollectionCache() {
+  @Override
+public void flushCollectionCache() {
     super.flushCollectionCache();
   }
   /**
    * @apilevel internal
    */
-  @SuppressWarnings({"unchecked", "cast"})
+  @Override
+@SuppressWarnings({"unchecked", "cast"})
   public TypeDecl clone() throws CloneNotSupportedException {
     TypeDecl node = (TypeDecl)super.clone();
     node.accessibleFromPackage_String_values = null;
@@ -263,29 +268,30 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
     return node;
   }
   /**
-   * @ast method 
+   * @ast method
    * @aspect AnonymousClasses
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/AnonymousClasses.jrag:28
    */
-  
+
 
   public int anonymousIndex = 0;
   /**
-   * @ast method 
+   * @ast method
    * @aspect AnonymousClasses
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/AnonymousClasses.jrag:45
    */
   public int nextAnonymousIndex() {
-    if(isNestedType())
-      return enclosingType().nextAnonymousIndex();
+    if(isNestedType()) {
+		return enclosingType().nextAnonymousIndex();
+	}
     return anonymousIndex++;
   }
   /**
-   * @ast method 
+   * @ast method
    * @aspect BoundNames
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/BoundNames.jrag:24
    */
-  public MethodDecl addMemberMethod(MethodDecl m) {
+  public MethodDecl addMemberMethod(final MethodDecl m) {
     addBodyDecl(m);
     return (MethodDecl)getBodyDecl(getNumBodyDecl()-1);
     /*
@@ -301,36 +307,36 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
     */
   }
   /**
-   * @ast method 
+   * @ast method
    * @aspect BoundNames
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/BoundNames.jrag:40
    */
-  public ConstructorDecl addConstructor(ConstructorDecl c) {
+  public ConstructorDecl addConstructor(final ConstructorDecl c) {
     addBodyDecl(c);
     return (ConstructorDecl)getBodyDecl(getNumBodyDecl()-1);
   }
   /**
-   * @ast method 
+   * @ast method
    * @aspect BoundNames
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/BoundNames.jrag:45
    */
-  public ClassDecl addMemberClass(ClassDecl c) {
+  public ClassDecl addMemberClass(final ClassDecl c) {
     addBodyDecl(new MemberClassDecl(c));
     return ((MemberClassDecl)getBodyDecl(getNumBodyDecl()-1)).getClassDecl();
   }
   /**
-   * @ast method 
+   * @ast method
    * @aspect BoundNames
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/BoundNames.jrag:52
    */
-  public FieldDeclaration addMemberField(FieldDeclaration f) {
+  public FieldDeclaration addMemberField(final FieldDeclaration f) {
     addBodyDecl(f);
     return (FieldDeclaration)getBodyDecl(getNumBodyDecl()-1);
     //if(!memberFields(f.name()).contains(f))
     //  throw new Error("The field " + f.name() + " added to " + typeName() + " can not be found using lookupMemberField");
   }
   /**
-   * @ast method 
+   * @ast method
    * @aspect BoundNames
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/BoundNames.jrag:90
    */
@@ -338,81 +344,88 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
     return new BoundTypeAccess("", name(), this);
   }
   /**
-   * @ast method 
+   * @ast method
    * @aspect DataStructures
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DataStructures.jrag:136
    */
-  public SimpleSet add(Object o) {
+  @Override
+public SimpleSet add(final Object o) {
     return new SimpleSetImpl().add(this).add(o);
   }
   /**
-   * @ast method 
+   * @ast method
    * @aspect DataStructures
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DataStructures.jrag:140
    */
-  public boolean isSingleton() { return true; }
+  @Override
+public boolean isSingleton() { return true; }
   /**
-   * @ast method 
+   * @ast method
    * @aspect DataStructures
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DataStructures.jrag:141
    */
-  public boolean isSingleton(Object o) { return contains(o); }
+  @Override
+public boolean isSingleton(final Object o) { return contains(o); }
   /**
-   * @ast method 
+   * @ast method
    * @aspect DataStructures
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DataStructures.jrag:144
    */
-  
+
   private TypeDecl iterElem;
   /**
-   * @ast method 
+   * @ast method
    * @aspect DataStructures
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DataStructures.jrag:145
    */
-  public Iterator iterator() { iterElem = this; return this; }
+  @Override
+public Iterator iterator() { iterElem = this; return this; }
   /**
-   * @ast method 
+   * @ast method
    * @aspect DataStructures
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DataStructures.jrag:146
    */
-  public boolean hasNext() { return iterElem != null; }
+  @Override
+public boolean hasNext() { return iterElem != null; }
   /**
-   * @ast method 
+   * @ast method
    * @aspect DataStructures
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DataStructures.jrag:147
    */
-  public Object next() { Object o = iterElem; iterElem = null; return o; }
+  @Override
+public Object next() { Object o = iterElem; iterElem = null; return o; }
   /**
-   * @ast method 
+   * @ast method
    * @aspect DataStructures
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DataStructures.jrag:148
    */
-  public void remove() { throw new UnsupportedOperationException(); }
+  @Override
+public void remove() { throw new UnsupportedOperationException(); }
   /**
-   * @ast method 
+   * @ast method
    * @aspect DeclareBeforeUse
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DeclareBeforeUse.jrag:41
    */
-  public boolean declaredBeforeUse(Variable decl, ASTNode use) {
+  public boolean declaredBeforeUse(final Variable decl, final ASTNode use) {
     int indexDecl = ((ASTNode)decl).varChildIndex(this);
     int indexUse = use.varChildIndex(this);
     return indexDecl < indexUse;
   }
   /**
-   * @ast method 
+   * @ast method
    * @aspect DeclareBeforeUse
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DeclareBeforeUse.jrag:46
    */
-  public boolean declaredBeforeUse(Variable decl, int indexUse) {
+  public boolean declaredBeforeUse(final Variable decl, final int indexUse) {
     int indexDecl = ((ASTNode)decl).varChildIndex(this);
     return indexDecl < indexUse;
   }
   /**
-   * @ast method 
+   * @ast method
    * @aspect ConstructorLookup
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupConstructor.jrag:88
    */
-  public ConstructorDecl lookupConstructor(ConstructorDecl signature) {
+  public ConstructorDecl lookupConstructor(final ConstructorDecl signature) {
     for(Iterator iter = constructors().iterator(); iter.hasNext(); ) {
       ConstructorDecl decl = (ConstructorDecl)iter.next();
       if(decl.sameSignature(signature)) {
@@ -423,87 +436,101 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
   }
   /**
    * @return true if the method access may access the method
-   * @ast method 
+   * @ast method
    * @aspect MethodDecl
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupMethod.jrag:189
    */
-  public boolean mayAccess(MethodAccess access, MethodDecl method) {
+  public boolean mayAccess(final MethodAccess access, final MethodDecl method) {
     if (instanceOf(method.hostType())
-        && access.qualifier().type().instanceOf(this))
-        return true;
+        && access.qualifier().type().instanceOf(this)) {
+		return true;
+	}
 
-    if (isNestedType())
-      return enclosingType().mayAccess(access, method);
-    else
-      return false;
+    if (isNestedType()) {
+		return enclosingType().mayAccess(access, method);
+	} else {
+		return false;
+	}
   }
   /**
-   * @ast method 
+   * @ast method
    * @aspect MemberMethods
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupMethod.jrag:231
    */
   public Iterator localMethodsIterator() {
     return new Iterator() {
-      private Iterator outer = localMethodsSignatureMap().values().iterator();
+      private final Iterator outer = localMethodsSignatureMap().values().iterator();
       private Iterator inner = null;
-      public boolean hasNext() {
-        if((inner == null || !inner.hasNext()) && outer.hasNext())
-          inner = ((SimpleSet)outer.next()).iterator();
+      @Override
+	public boolean hasNext() {
+        if((inner == null || !inner.hasNext()) && outer.hasNext()) {
+			inner = ((SimpleSet)outer.next()).iterator();
+		}
         return inner == null ? false : inner.hasNext();
       }
-      public Object next() {
+      @Override
+	public Object next() {
         return inner.next();
       }
-      public void remove() { throw new UnsupportedOperationException(); }
+      @Override
+	public void remove() { throw new UnsupportedOperationException(); }
     };
     //return localMethodsSignatureMap().values().iterator();
   }
   /**
-   * @ast method 
+   * @ast method
    * @aspect MemberMethods
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupMethod.jrag:299
    */
   public Iterator methodsIterator() {
     return new Iterator() {
-      private Iterator outer = methodsSignatureMap().values().iterator();
+      private final Iterator outer = methodsSignatureMap().values().iterator();
       private Iterator inner = null;
-      public boolean hasNext() {
-        if((inner == null || !inner.hasNext()) && outer.hasNext())
-          inner = ((SimpleSet)outer.next()).iterator();
+      @Override
+	public boolean hasNext() {
+        if((inner == null || !inner.hasNext()) && outer.hasNext()) {
+			inner = ((SimpleSet)outer.next()).iterator();
+		}
         return inner != null ? inner.hasNext() : false;
       }
-      public Object next() {
+      @Override
+	public Object next() {
         return inner.next();
       }
-      public void remove() { throw new UnsupportedOperationException(); }
+      @Override
+	public void remove() { throw new UnsupportedOperationException(); }
     };
   }
   /**
-   * @ast method 
+   * @ast method
    * @aspect MemberMethods
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupMethod.jrag:364
    */
-  protected boolean allMethodsAbstract(SimpleSet set) {
-    if(set == null) return true;
+  protected boolean allMethodsAbstract(final SimpleSet set) {
+    if(set == null) {
+		return true;
+	}
     for(Iterator iter = set.iterator(); iter.hasNext(); ) {
       MethodDecl m = (MethodDecl)iter.next();
-      if(!m.isAbstract())
-        return false;
+      if(!m.isAbstract()) {
+		return false;
+	}
     }
     return true;
   }
   /**
    * @return true if the expression may access the field
-   * @ast method 
+   * @ast method
    * @aspect VariableScope
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupVariable.jrag:213
    */
-  public boolean mayAccess(Expr expr, FieldDeclaration field) {
+  public boolean mayAccess(final Expr expr, final FieldDeclaration field) {
     if (instanceOf(field.hostType())) {
       if (!field.isInstanceVariable()
           || expr.isSuperAccess()
-          || expr.type().instanceOf(this))
-        return true;
+          || expr.type().instanceOf(this)) {
+		return true;
+	}
     }
 
     if (isNestedType()) {
@@ -513,45 +540,53 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
     }
   }
   /**
-   * @ast method 
+   * @ast method
    * @aspect Fields
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupVariable.jrag:315
    */
   public Iterator fieldsIterator() {
     return new Iterator() {
-      private Iterator outer = memberFieldsMap().values().iterator();
+      private final Iterator outer = memberFieldsMap().values().iterator();
       private Iterator inner = null;
-      public boolean hasNext() {
-        if((inner == null || !inner.hasNext()) && outer.hasNext())
-          inner = ((SimpleSet)outer.next()).iterator();
+      @Override
+	public boolean hasNext() {
+        if((inner == null || !inner.hasNext()) && outer.hasNext()) {
+			inner = ((SimpleSet)outer.next()).iterator();
+		}
         return inner != null ? inner.hasNext() : false;
       }
-      public Object next() {
+      @Override
+	public Object next() {
         return inner.next();
       }
-      public void remove() { throw new UnsupportedOperationException(); }
+      @Override
+	public void remove() { throw new UnsupportedOperationException(); }
     };
   }
   /**
-   * @ast method 
+   * @ast method
    * @aspect Modifiers
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/Modifiers.jrag:68
    */
-  public void checkModifiers() {
+  @Override
+public void checkModifiers() {
     super.checkModifiers();
     // 8.1.1
-    if(isPublic() && !isTopLevelType() && !isMemberType())
-      error("public pertains only to top level types and member types");
+    if(isPublic() && !isTopLevelType() && !isMemberType()) {
+		error("public pertains only to top level types and member types");
+	}
 
     // 8.1.1
-    if((isProtected() || isPrivate()) && !(isMemberType() && enclosingType().isClassDecl()))
-      error("protected and private may only be used on member types within a directly enclosing class declaration");
+    if((isProtected() || isPrivate()) && !(isMemberType() && enclosingType().isClassDecl())) {
+		error("protected and private may only be used on member types within a directly enclosing class declaration");
+	}
 
     // 8.1.1
-    if(isStatic() && !isMemberType())
-      error("static pertains only to member types");
-    
-    
+    if(isStatic() && !isMemberType()) {
+		error("static pertains only to member types");
+	}
+
+
     // 8.4.3.1
     // 8.1.1.1
     if(!isAbstract() && hasAbstract()) {
@@ -565,38 +600,43 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
     }
   }
   /**
-   * @ast method 
+   * @ast method
    * @aspect NameCheck
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:251
    */
-  public void nameCheck() {
-    if(isTopLevelType() && lookupType(packageName(), name()) != this)
-      error("duplicate type " + name() + " in package " + packageName());
-  
-    if(!isTopLevelType() && !isAnonymous() && !isLocalClass() && extractSingleType(enclosingType().memberTypes(name())) != this)
-      error("duplicate member type " + name() + " in type " + enclosingType().typeName());
+  @Override
+public void nameCheck() {
+    if(isTopLevelType() && lookupType(packageName(), name()) != this) {
+		error("duplicate type " + name() + " in package " + packageName());
+	}
+
+    if(!isTopLevelType() && !isAnonymous() && !isLocalClass() && extractSingleType(enclosingType().memberTypes(name())) != this) {
+		error("duplicate member type " + name() + " in type " + enclosingType().typeName());
+	}
 
     // 14.3
     if(isLocalClass()) {
       TypeDecl typeDecl = extractSingleType(lookupType(name()));
-      if(typeDecl != null && typeDecl != this && typeDecl.isLocalClass() && enclosingBlock() == typeDecl.enclosingBlock())
-        error("local class named " + name() + " may not be redeclared as a local class in the same block");
+      if(typeDecl != null && typeDecl != this && typeDecl.isLocalClass() && enclosingBlock() == typeDecl.enclosingBlock()) {
+		error("local class named " + name() + " may not be redeclared as a local class in the same block");
+	}
     }
 
-    if(!packageName().equals("") && hasPackage(fullName()))
-      error("type name conflicts with a package using the same name: " + name());
-    
+    if(!packageName().equals("") && hasPackage(fullName())) {
+		error("type name conflicts with a package using the same name: " + name());
+	}
+
     // 8.1 & 9.1
     if(hasEnclosingTypeDecl(name())) {
       error("type may not have the same simple name as an enclosing type declaration");
     }
   }
   /**
-   * @ast method 
+   * @ast method
    * @aspect PrettyPrint
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/PrettyPrint.jadd:62
    */
-  protected void ppBodyDecls(StringBuffer s) {
+  protected void ppBodyDecls(final StringBuffer s) {
     s.append(" {");
     for(int i=0; i < getNumBodyDecl(); i++) {
       getBodyDecl(i).toString(s);
@@ -604,7 +644,7 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
     s.append(indent() + "}");
   }
   /**
-   * @ast method 
+   * @ast method
    * @aspect CreateQualifiedAccesses
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/QualifiedNames.jrag:96
    */
@@ -620,15 +660,15 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
     }
   }
   /**
-   * @ast method 
+   * @ast method
    * @aspect TypeAnalysis
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:234
    */
-  public FieldDeclaration findSingleVariable(String name) {
+  public FieldDeclaration findSingleVariable(final String name) {
     return (FieldDeclaration)memberFields(name).iterator().next();
   }
   /**
-   * @ast method 
+   * @ast method
    * @aspect TypeHierarchyCheck
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeHierarchyCheck.jrag:157
    */
@@ -637,171 +677,195 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
     for(Iterator iter1 = localMethodsIterator(); iter1.hasNext(); ) {
       MethodDecl m = (MethodDecl)iter1.next();
       ASTNode target = m.hostType() == this ? (ASTNode)m : (ASTNode)this;
-      
+
       //for(Iterator i2 = overrides(m).iterator(); i2.hasNext(); ) {
       for(Iterator i2 = ancestorMethods(m.signature()).iterator(); i2.hasNext(); ) {
         MethodDecl decl = (MethodDecl)i2.next();
         if(m.overrides(decl)) {
           // 8.4.6.1
-          if(!m.isStatic() && decl.isStatic())
-            target.error("an instance method may not override a static method");
- 
+          if(!m.isStatic() && decl.isStatic()) {
+			target.error("an instance method may not override a static method");
+		}
+
           // regardless of overriding
           // 8.4.6.3
-          if(!m.mayOverrideReturn(decl))
-            target.error("the return type of method " + m.signature() + " in " + m.hostType().typeName() + " does not match the return type of method " + decl.signature() + " in " + decl.hostType().typeName() + " and may thus not be overriden");
- 
+          if(!m.mayOverrideReturn(decl)) {
+			target.error("the return type of method " + m.signature() + " in " + m.hostType().typeName() + " does not match the return type of method " + decl.signature() + " in " + decl.hostType().typeName() + " and may thus not be overriden");
+		}
+
           // regardless of overriding
           // 8.4.4
           for(int i = 0; i < m.getNumException(); i++) {
             Access e = m.getException(i);
             boolean found = false;
             for(int j = 0; !found && j < decl.getNumException(); j++) {
-              if(e.type().instanceOf(decl.getException(j).type()))
-                found = true;
+              if(e.type().instanceOf(decl.getException(j).type())) {
+				found = true;
+			}
             }
-            if(!found && e.type().isUncheckedException())
-              target.error(m.signature() + " in " + m.hostType().typeName() + " may not throw more checked exceptions than overridden method " +
-               decl.signature() + " in " + decl.hostType().typeName());
+            if(!found && e.type().isUncheckedException()) {
+				target.error(m.signature() + " in " + m.hostType().typeName() + " may not throw more checked exceptions than overridden method " +
+				   decl.signature() + " in " + decl.hostType().typeName());
+			}
           }
           // 8.4.6.3
-          if(decl.isPublic() && !m.isPublic())
-            target.error("overriding access modifier error");
+          if(decl.isPublic() && !m.isPublic()) {
+			target.error("overriding access modifier error");
+		}
           // 8.4.6.3
-          if(decl.isProtected() && !(m.isPublic() || m.isProtected()))
-            target.error("overriding access modifier error");
+          if(decl.isProtected() && !(m.isPublic() || m.isProtected())) {
+			target.error("overriding access modifier error");
+		}
           // 8.4.6.3
-          if((!decl.isPrivate() && !decl.isProtected() && !decl.isPublic()) && m.isPrivate())
-            target.error("overriding access modifier error");
- 
+          if((!decl.isPrivate() && !decl.isProtected() && !decl.isPublic()) && m.isPrivate()) {
+			target.error("overriding access modifier error");
+		}
+
           // regardless of overriding
-          if(decl.isFinal())
-            target.error("method " + m.signature() + " in " + hostType().typeName() + " can not override final method " + decl.signature() + " in " + decl.hostType().typeName());
+          if(decl.isFinal()) {
+			target.error("method " + m.signature() + " in " + hostType().typeName() + " can not override final method " + decl.signature() + " in " + decl.hostType().typeName());
+		}
         }
         if(m.hides(decl)) {
           // 8.4.6.2
-          if(m.isStatic() && !decl.isStatic())
-            target.error("a static method may not hide an instance method");
+          if(m.isStatic() && !decl.isStatic()) {
+			target.error("a static method may not hide an instance method");
+		}
           // 8.4.6.3
-          if(!m.mayOverrideReturn(decl))
-            target.error("can not hide a method with a different return type");
+          if(!m.mayOverrideReturn(decl)) {
+			target.error("can not hide a method with a different return type");
+		}
           // 8.4.4
           for(int i = 0; i < m.getNumException(); i++) {
             Access e = m.getException(i);
             boolean found = false;
             for(int j = 0; !found && j < decl.getNumException(); j++) {
-              if(e.type().instanceOf(decl.getException(j).type()))
-                found = true;
+              if(e.type().instanceOf(decl.getException(j).type())) {
+				found = true;
+			}
             }
-            if(!found)
-              target.error("may not throw more checked exceptions than hidden method");
+            if(!found) {
+				target.error("may not throw more checked exceptions than hidden method");
+			}
           }
           // 8.4.6.3
-          if(decl.isPublic() && !m.isPublic())
-            target.error("hiding access modifier error: public method " + decl.signature() + " in " + decl.hostType().typeName() + " is hidden by non public method " + m.signature() + " in " + m.hostType().typeName());
+          if(decl.isPublic() && !m.isPublic()) {
+			target.error("hiding access modifier error: public method " + decl.signature() + " in " + decl.hostType().typeName() + " is hidden by non public method " + m.signature() + " in " + m.hostType().typeName());
+		}
           // 8.4.6.3
-          if(decl.isProtected() && !(m.isPublic() || m.isProtected()))
-            target.error("hiding access modifier error: protected method " + decl.signature() + " in " + decl.hostType().typeName() + " is hidden by non (public|protected) method " + m.signature() + " in " + m.hostType().typeName());
+          if(decl.isProtected() && !(m.isPublic() || m.isProtected())) {
+			target.error("hiding access modifier error: protected method " + decl.signature() + " in " + decl.hostType().typeName() + " is hidden by non (public|protected) method " + m.signature() + " in " + m.hostType().typeName());
+		}
           // 8.4.6.3
-          if((!decl.isPrivate() && !decl.isProtected() && !decl.isPublic()) && m.isPrivate())
-            target.error("hiding access modifier error: default method " + decl.signature() + " in " + decl.hostType().typeName() + " is hidden by private method " + m.signature() + " in " + m.hostType().typeName());
-          if(decl.isFinal())
-            target.error("method " + m.signature() + " in " + hostType().typeName() + " can not hide final method " + decl.signature() + " in " + decl.hostType().typeName());
+          if((!decl.isPrivate() && !decl.isProtected() && !decl.isPublic()) && m.isPrivate()) {
+			target.error("hiding access modifier error: default method " + decl.signature() + " in " + decl.hostType().typeName() + " is hidden by private method " + m.signature() + " in " + m.hostType().typeName());
+		}
+          if(decl.isFinal()) {
+			target.error("method " + m.signature() + " in " + hostType().typeName() + " can not hide final method " + decl.signature() + " in " + decl.hostType().typeName());
+		}
         }
       }
     }
   }
   /**
-   * @ast method 
+   * @ast method
    * @aspect Generics
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:184
    */
-  public TypeDecl makeGeneric(Signatures.ClassSignature s) {
+  public TypeDecl makeGeneric(final Signatures.ClassSignature s) {
     return this;
   }
   /**
-   * @ast method 
+   * @ast method
    * @aspect LookupParTypeDecl
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:835
    */
-  public TypeDecl substitute(TypeVariable typeVariable) {
-    if(isTopLevelType())
-      return typeVariable;
+  public TypeDecl substitute(final TypeVariable typeVariable) {
+    if(isTopLevelType()) {
+		return typeVariable;
+	}
     return enclosingType().substitute(typeVariable);
   }
   /**
-   * @ast method 
+   * @ast method
    * @aspect LookupParTypeDecl
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:873
    */
-  public Access substitute(Parameterization parTypeDecl) {
-    if(parTypeDecl instanceof ParTypeDecl && ((ParTypeDecl)parTypeDecl).genericDecl() == this)
-		  return ((TypeDecl)parTypeDecl).createBoundAccess();
-	  if(isTopLevelType())
-		  return createBoundAccess();
+  public Access substitute(final Parameterization parTypeDecl) {
+    if(parTypeDecl instanceof ParTypeDecl && ((ParTypeDecl)parTypeDecl).genericDecl() == this) {
+		return ((TypeDecl)parTypeDecl).createBoundAccess();
+	}
+	  if(isTopLevelType()) {
+		return createBoundAccess();
+	}
 	  return enclosingType().substitute(parTypeDecl).qualifiesAccess(new TypeAccess(name()));
   }
   /**
-   * @ast method 
+   * @ast method
    * @aspect LookupParTypeDecl
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:913
    */
-  public Access substituteReturnType(Parameterization parTypeDecl) {
+  public Access substituteReturnType(final Parameterization parTypeDecl) {
     return substitute(parTypeDecl);
   }
   /**
-   * @ast method 
+   * @ast method
    * @aspect LookupParTypeDecl
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:957
    */
-  public Access substituteParameterType(Parameterization parTypeDecl) {
+  public Access substituteParameterType(final Parameterization parTypeDecl) {
     return substitute(parTypeDecl);
   }
   /**
-   * @ast method 
+   * @ast method
    * @aspect InnerClasses
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Backend/InnerClasses.jrag:12
    */
-  public boolean hasField(String name) {
-    if(!memberFields(name).isEmpty())
-      return true;
+  public boolean hasField(final String name) {
+    if(!memberFields(name).isEmpty()) {
+		return true;
+	}
     for(int i = 0; i < getNumBodyDecl(); i++) {
       if(getBodyDecl(i) instanceof FieldDeclaration) {
         FieldDeclaration decl = (FieldDeclaration)getBodyDecl(i);
-        if(decl.name().equals(name))
-          return true;
+        if(decl.name().equals(name)) {
+			return true;
+		}
       }
     }
     return false;
   }
   /**
-   * @ast method 
+   * @ast method
    * @aspect InnerClasses
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Backend/InnerClasses.jrag:36
    */
-  public boolean hasMethod(String id) {
-    if(!memberMethods(id).isEmpty()) return true;
+  public boolean hasMethod(final String id) {
+    if(!memberMethods(id).isEmpty()) {
+		return true;
+	}
     for(int i = 0; i < getNumBodyDecl(); i++) {
       if(getBodyDecl(i) instanceof MethodDecl) {
         MethodDecl decl = (MethodDecl)getBodyDecl(i);
-        if(decl.name().equals(id))
-          return true;
+        if(decl.name().equals(id)) {
+			return true;
+		}
       }
     }
     return false;
   }
   /**
-   * @ast method 
+   * @ast method
    * @aspect InnerClasses
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Backend/InnerClasses.jrag:124
    */
-  
+
 
   // The set of TypeDecls that has this TypeDecl as their directly enclosing TypeDecl.
   // I.e., NestedTypes, InnerTypes, AnonymousClasses, LocalClasses.
   private Collection nestedTypes;
   /**
-   * @ast method 
+   * @ast method
    * @aspect InnerClasses
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Backend/InnerClasses.jrag:125
    */
@@ -809,26 +873,29 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
     return nestedTypes != null ? nestedTypes : new HashSet();
   }
   /**
-   * @ast method 
+   * @ast method
    * @aspect InnerClasses
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Backend/InnerClasses.jrag:128
    */
-  public void addNestedType(TypeDecl typeDecl) {
-    if(nestedTypes == null) nestedTypes = new HashSet();
-    if(typeDecl != this)
-      nestedTypes.add(typeDecl);
+  public void addNestedType(final TypeDecl typeDecl) {
+    if(nestedTypes == null) {
+		nestedTypes = new HashSet();
+	}
+    if(typeDecl != this) {
+		nestedTypes.add(typeDecl);
+	}
   }
   /**
-   * @ast method 
+   * @ast method
    * @aspect InnerClasses
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Backend/InnerClasses.jrag:135
    */
-  
+
 
   // The set of nested TypeDecls that are accessed in this TypeDecl
   private Collection usedNestedTypes;
   /**
-   * @ast method 
+   * @ast method
    * @aspect InnerClasses
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Backend/InnerClasses.jrag:136
    */
@@ -836,87 +903,96 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
     return usedNestedTypes != null ? usedNestedTypes : new HashSet();
   }
   /**
-   * @ast method 
+   * @ast method
    * @aspect InnerClasses
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Backend/InnerClasses.jrag:139
    */
-  public void addUsedNestedType(TypeDecl typeDecl) {
-    if(usedNestedTypes == null) usedNestedTypes = new HashSet();
+  public void addUsedNestedType(final TypeDecl typeDecl) {
+    if(usedNestedTypes == null) {
+		usedNestedTypes = new HashSet();
+	}
     usedNestedTypes.add(typeDecl);
   }
   /**
-   * @ast method 
+   * @ast method
    * @aspect InnerClasses
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Backend/InnerClasses.jrag:170
    */
-  
+
 
 
   public int accessorCounter = 0;
   /**
-   * @ast method 
+   * @ast method
    * @aspect InnerClasses
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Backend/InnerClasses.jrag:172
    */
-  
+
 
   private HashMap accessorMap = null;
   /**
-   * @ast method 
+   * @ast method
    * @aspect InnerClasses
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Backend/InnerClasses.jrag:173
    */
-  public ASTNode getAccessor(ASTNode source, String name) {
+  public ASTNode getAccessor(final ASTNode source, final String name) {
     ArrayList key = new ArrayList(2);
     key.add(source);
     key.add(name);
-    if(accessorMap == null || !accessorMap.containsKey(key)) return null;
+    if(accessorMap == null || !accessorMap.containsKey(key)) {
+		return null;
+	}
     return (ASTNode)accessorMap.get(key);
   }
   /**
-   * @ast method 
+   * @ast method
    * @aspect InnerClasses
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Backend/InnerClasses.jrag:181
    */
-  public void addAccessor(ASTNode source, String name, ASTNode accessor) {
+  public void addAccessor(final ASTNode source, final String name, final ASTNode accessor) {
     ArrayList key = new ArrayList(2);
     key.add(source);
     key.add(name);
-    if(accessorMap == null) accessorMap = new HashMap();
+    if(accessorMap == null) {
+		accessorMap = new HashMap();
+	}
     accessorMap.put(key, accessor);
   }
   /**
-   * @ast method 
+   * @ast method
    * @aspect InnerClasses
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Backend/InnerClasses.jrag:189
    */
-  public ASTNode getAccessorSource(ASTNode accessor) {
+  public ASTNode getAccessorSource(final ASTNode accessor) {
     Iterator i = accessorMap.entrySet().iterator();
     while (i.hasNext()) {
       Map.Entry entry = (Map.Entry) i.next();
-      if (entry.getValue() == accessor)
-        return (ASTNode) ((ArrayList) entry.getKey()).get(0);
+      if (entry.getValue() == accessor) {
+		return (ASTNode) ((ArrayList) entry.getKey()).get(0);
+	}
     }
     return null;
   }
   /**
-   * @ast method 
+   * @ast method
    * @aspect InnerClasses
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Backend/InnerClasses.jrag:442
    */
-  
+
 
 
 
   // add val$name as fields to the class
   private boolean addEnclosingVariables = true;
   /**
-   * @ast method 
+   * @ast method
    * @aspect InnerClasses
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Backend/InnerClasses.jrag:443
    */
   public void addEnclosingVariables() {
-    if(!addEnclosingVariables) return;
+    if(!addEnclosingVariables) {
+		return;
+	}
     addEnclosingVariables = false;
     for(Iterator iter = enclosingVariables().iterator(); iter.hasNext(); ) {
       Variable v = (Variable)iter.next();
@@ -928,30 +1004,31 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
     }
   }
   /**
-   * @ast method 
+   * @ast method
    * @aspect Java2Rewrites
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Backend/Java2Rewrites.jrag:11
    */
-  
+
   int uniqueIndexCounter = 1;
   /**
-   * @ast method 
+   * @ast method
    * @aspect Java2Rewrites
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Backend/Java2Rewrites.jrag:65
    */
-  
-  
 
-  // lazily build a static field for assertionsDisabled 
+
+
+  // lazily build a static field for assertionsDisabled
   private FieldDeclaration createAssertionsDisabled = null;
   /**
-   * @ast method 
+   * @ast method
    * @aspect Java2Rewrites
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Backend/Java2Rewrites.jrag:66
    */
   public FieldDeclaration createAssertionsDisabled() {
-    if(createAssertionsDisabled != null)
-      return createAssertionsDisabled;
+    if(createAssertionsDisabled != null) {
+		return createAssertionsDisabled;
+	}
     // static final boolean $assertionsDisabled = !TypeName.class.desiredAssertionStatus();
     createAssertionsDisabled = new FieldDeclaration(
       new Modifiers(new List().add(new Modifier("public")).add(new Modifier("static")).add(new Modifier("final"))),
@@ -978,24 +1055,26 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
     return createAssertionsDisabled;
   }
   /**
-   * @ast method 
+   * @ast method
    * @aspect Java2Rewrites
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Backend/Java2Rewrites.jrag:119
    */
-  
+
 
   // lazily build a static field for each typename used in a .class expression
   private HashMap createStaticClassField = null;
   /**
-   * @ast method 
+   * @ast method
    * @aspect Java2Rewrites
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Backend/Java2Rewrites.jrag:120
    */
-  public FieldDeclaration createStaticClassField(String name) {
-    if(createStaticClassField == null)
-      createStaticClassField = new HashMap();
-    if(createStaticClassField.containsKey(name))
-      return (FieldDeclaration)createStaticClassField.get(name);
+  public FieldDeclaration createStaticClassField(final String name) {
+    if(createStaticClassField == null) {
+		createStaticClassField = new HashMap();
+	}
+    if(createStaticClassField.containsKey(name)) {
+		return (FieldDeclaration)createStaticClassField.get(name);
+	}
     // static synthetic Class class$java$lang$String;
     FieldDeclaration f = new FieldDeclaration(
       new Modifiers(new List().add(new Modifier("public")).add(new Modifier("static"))),
@@ -1003,7 +1082,8 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
       name,
       new Opt()
     ) {
-      public boolean isConstant() {
+      @Override
+	public boolean isConstant() {
         return true;
       }
     };
@@ -1011,22 +1091,23 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
     return addMemberField(f);
   }
   /**
-   * @ast method 
+   * @ast method
    * @aspect Java2Rewrites
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Backend/Java2Rewrites.jrag:141
    */
-  
+
 
   // lazily build a static class$ method in this type declaration
   private MethodDecl createStaticClassMethod = null;
   /**
-   * @ast method 
+   * @ast method
    * @aspect Java2Rewrites
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Backend/Java2Rewrites.jrag:142
    */
   public MethodDecl createStaticClassMethod() {
-    if(createStaticClassMethod != null)
-      return createStaticClassMethod;
+    if(createStaticClassMethod != null) {
+		return createStaticClassMethod;
+	}
     // static synthetic Class class$(String name) {
     //   try {
     //     return java.lang.Class.forName(name);
@@ -1099,38 +1180,42 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
         )
       )
     ) {
-      public boolean isConstant() {
+      @Override
+	public boolean isConstant() {
         return true;
       }
     };
     return addMemberMethod(createStaticClassMethod);
   }
   /**
-   * @ast method 
+   * @ast method
    * @aspect Transformations
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Backend/Transformations.jrag:27
    */
-  public void transformation() {
+  @Override
+public void transformation() {
     addEnclosingVariables();
     super.transformation();
-    if(isNestedType())
-      enclosingType().addNestedType(this);
+    if(isNestedType()) {
+		enclosingType().addNestedType(this);
+	}
   }
   /**
-   * @ast method 
+   * @ast method
    * @aspect EmitJimple
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/EmitJimple.jrag:143
    */
-  
+
 
 
   public SootMethod clinit = null;
   /**
-   * @ast method 
+   * @ast method
    * @aspect EmitJimple
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/EmitJimple.jrag:145
    */
-  public void jimplify1phase2() {
+  @Override
+public void jimplify1phase2() {
     if(needsClinit() && !getSootClassDecl().declaresMethod("<clinit>", new ArrayList())) {
       clinit = new SootMethod("<clinit>", new ArrayList(), soot.VoidType.v(), soot.Modifier.STATIC, new ArrayList());
       getSootClassDecl().addMethod(clinit);
@@ -1140,21 +1225,25 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
       TypeDecl typeDecl = (TypeDecl)iter.next();
       typeDecl.jimplify1phase2();
     }
-    for(int i = 0; i < getNumBodyDecl(); i++)
-      if(getBodyDecl(i).generate())
-        getBodyDecl(i).jimplify1phase2();
+    for(int i = 0; i < getNumBodyDecl(); i++) {
+		if(getBodyDecl(i).generate()) {
+			getBodyDecl(i).jimplify1phase2();
+		}
+	}
     addAttributes();
   }
   /**
-   * @ast method 
+   * @ast method
    * @aspect EmitJimple
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/EmitJimple.jrag:434
    */
-  public soot.Value emitCastTo(Body b, soot.Value v, TypeDecl type, ASTNode location) {
-    if(this == type)
-      return v;
-    if(isReferenceType() && type.isReferenceType() && instanceOf(type))
-      return v;
+  public soot.Value emitCastTo(final Body b, soot.Value v, final TypeDecl type, final ASTNode location) {
+    if(this == type) {
+		return v;
+	}
+    if(isReferenceType() && type.isReferenceType() && instanceOf(type)) {
+		return v;
+	}
     if((isLong() || this instanceof FloatingPointType) && type.isIntegralType()) {
       v = b.newCastExpr(
         asImmediate(b, v), typeInt().getSootType(), location);
@@ -1168,7 +1257,7 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
     );
   }
   /**
-   * @ast method 
+   * @ast method
    * @aspect EmitJimple
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/EmitJimple.jrag:903
    */
@@ -1182,7 +1271,7 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
         if(bodyDecl instanceof FieldDeclaration && bodyDecl.generate()) {
           FieldDeclaration f = (FieldDeclaration)bodyDecl;
           if(f.isStatic() && f.hasInit()) {
-            Local l = asLocal(b, 
+            Local l = asLocal(b,
               f.getInit().type().emitCastTo(b, f.getInit(), f.type()), // AssignConversion
               f.type().getSootType()
             );
@@ -1201,14 +1290,16 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
       b.add(b.newReturnVoidStmt(null));
   }
   /**
-   * @ast method 
+   * @ast method
    * @aspect EmitJimple
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/EmitJimple.jrag:932
    */
-  public void jimplify2() {
+  @Override
+public void jimplify2() {
     super.jimplify2();
-    if(clinit != null)
-      jimplify2clinit();
+    if(clinit != null) {
+		jimplify2clinit();
+	}
     for(Iterator iter = nestedTypes().iterator(); iter.hasNext(); ) {
       TypeDecl typeDecl = (TypeDecl)iter.next();
       typeDecl.jimplify2();
@@ -1226,17 +1317,19 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
         )
       );
     }
-    if(!tags.isEmpty())
-      getSootClassDecl().addTag(new soot.tagkit.InnerClassAttribute(tags));
+    if(!tags.isEmpty()) {
+		getSootClassDecl().addTag(new soot.tagkit.InnerClassAttribute(tags));
+	}
     addAttributes();
     getSootClassDecl().setResolvingLevel(SootClass.BODIES);
   }
   /**
-   * @ast method 
+   * @ast method
    * @aspect AnnotationsCodegen
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/Jimple1.5Backend/AnnotationsCodegen.jrag:20
    */
-  public void addAttributes() {
+  @Override
+public void addAttributes() {
     super.addAttributes();
     ArrayList c = new ArrayList();
     getModifiers().addRuntimeVisibleAnnotationsAttribute(c);
@@ -1248,11 +1341,11 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
     }
   }
   /**
-   * @ast method 
+   * @ast method
    * @aspect AutoBoxingCodegen
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/Jimple1.5Backend/AutoBoxingCodegen.jrag:57
    */
-  protected soot.Value emitBoxingOperation(Body b, soot.Value v, ASTNode location) {
+  protected soot.Value emitBoxingOperation(final Body b, final soot.Value v, final ASTNode location) {
     // Box the value on the stack into this Reference type
     ArrayList parameters = new ArrayList();
     parameters.add(unboxed().getSootType());
@@ -1268,11 +1361,11 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
     return b.newStaticInvokeExpr(ref, args, location);
   }
   /**
-   * @ast method 
+   * @ast method
    * @aspect AutoBoxingCodegen
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/Jimple1.5Backend/AutoBoxingCodegen.jrag:83
    */
-  protected soot.Value emitUnboxingOperation(Body b, soot.Value v, ASTNode location) {
+  protected soot.Value emitUnboxingOperation(final Body b, final soot.Value v, final ASTNode location) {
     // Unbox the value on the stack from this Reference type
     SootMethodRef ref = Scene.v().makeMethodRef(
       getSootClassDecl(),
@@ -1284,16 +1377,16 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
     return b.newVirtualInvokeExpr(asLocal(b, v), ref, new ArrayList(), location);
   }
   /**
-   * @ast method 
+   * @ast method
    * @aspect EnumsCodegen
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/Jimple1.5Backend/EnumsCodegen.jrag:85
    */
-  
+
   // compute index of enum constants
   private HashMap createEnumIndexMap = null;
   /**
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
   public TypeDecl() {
     super();
@@ -1305,63 +1398,66 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * Initializes List and Opt nta children.
    * @apilevel internal
    * @ast method
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
-  public void init$Children() {
+  @Override
+public void init$Children() {
     children = new ASTNode[2];
     setChild(new List(), 1);
   }
   /**
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
-  public TypeDecl(Modifiers p0, String p1, List<BodyDecl> p2) {
+  public TypeDecl(final Modifiers p0, final String p1, final List<BodyDecl> p2) {
     setChild(p0, 0);
     setID(p1);
     setChild(p2, 1);
   }
   /**
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
-  public TypeDecl(Modifiers p0, beaver.Symbol p1, List<BodyDecl> p2) {
+  public TypeDecl(final Modifiers p0, final beaver.Symbol p1, final List<BodyDecl> p2) {
     setChild(p0, 0);
     setID(p1);
     setChild(p2, 1);
   }
   /**
    * @apilevel low-level
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
-  protected int numChildren() {
+  @Override
+protected int numChildren() {
     return 2;
   }
   /**
    * @apilevel internal
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
-  public boolean mayHaveRewrite() {
+  @Override
+public boolean mayHaveRewrite() {
     return false;
   }
   /**
    * Replaces the Modifiers child.
    * @param node The new node to replace the Modifiers child.
    * @apilevel high-level
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
-  public void setModifiers(Modifiers node) {
+  public void setModifiers(final Modifiers node) {
     setChild(node, 0);
   }
   /**
    * Retrieves the Modifiers child.
    * @return The current node used as the Modifiers child.
    * @apilevel high-level
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
   public Modifiers getModifiers() {
     return (Modifiers)getChild(0);
@@ -1371,8 +1467,8 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * <p><em>This method does not invoke AST transformations.</em></p>
    * @return The current node used as the Modifiers child.
    * @apilevel low-level
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
   public Modifiers getModifiersNoTransform() {
     return (Modifiers)getChildNoTransform(0);
@@ -1381,43 +1477,44 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * Replaces the lexeme ID.
    * @param value The new value for the lexeme ID.
    * @apilevel high-level
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
-  public void setID(String value) {
+  public void setID(final String value) {
     tokenString_ID = value;
   }
   /**
    * @apilevel internal
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
-  
+
   /**
    * @apilevel internal
    */
   protected String tokenString_ID;
   /**
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
-  
+
   public int IDstart;
   /**
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
-  
+
   public int IDend;
   /**
    * JastAdd-internal setter for lexeme ID using the Beaver parser.
    * @apilevel internal
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
-  public void setID(beaver.Symbol symbol) {
-    if(symbol.value != null && !(symbol.value instanceof String))
-      throw new UnsupportedOperationException("setID is only valid for String lexemes");
+  public void setID(final beaver.Symbol symbol) {
+    if(symbol.value != null && !(symbol.value instanceof String)) {
+		throw new UnsupportedOperationException("setID is only valid for String lexemes");
+	}
     tokenString_ID = (String)symbol.value;
     IDstart = symbol.getStart();
     IDend = symbol.getEnd();
@@ -1426,8 +1523,8 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * Retrieves the value for the lexeme ID.
    * @return The value for the lexeme ID.
    * @apilevel high-level
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
   public String getID() {
     return tokenString_ID != null ? tokenString_ID : "";
@@ -1436,18 +1533,18 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * Replaces the BodyDecl list.
    * @param list The new list node to be used as the BodyDecl list.
    * @apilevel high-level
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
-  public void setBodyDeclList(List<BodyDecl> list) {
+  public void setBodyDeclList(final List<BodyDecl> list) {
     setChild(list, 1);
   }
   /**
    * Retrieves the number of children in the BodyDecl list.
    * @return Number of children in the BodyDecl list.
    * @apilevel high-level
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
   public int getNumBodyDecl() {
     return getBodyDeclList().getNumChild();
@@ -1457,8 +1554,8 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * Calling this method will not trigger rewrites..
    * @return Number of children in the BodyDecl list.
    * @apilevel low-level
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
   public int getNumBodyDeclNoTransform() {
     return getBodyDeclListNoTransform().getNumChildNoTransform();
@@ -1468,30 +1565,30 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @param i Index of the element to return.
    * @return The element at position {@code i} in the BodyDecl list.
    * @apilevel high-level
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
   @SuppressWarnings({"unchecked", "cast"})
-  public BodyDecl getBodyDecl(int i) {
-    return (BodyDecl)getBodyDeclList().getChild(i);
+  public BodyDecl getBodyDecl(final int i) {
+    return getBodyDeclList().getChild(i);
   }
   /**
    * Append an element to the BodyDecl list.
    * @param node The element to append to the BodyDecl list.
    * @apilevel high-level
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
-  public void addBodyDecl(BodyDecl node) {
+  public void addBodyDecl(final BodyDecl node) {
     List<BodyDecl> list = (parent == null || state == null) ? getBodyDeclListNoTransform() : getBodyDeclList();
     list.addChild(node);
   }
   /**
    * @apilevel low-level
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
-  public void addBodyDeclNoTransform(BodyDecl node) {
+  public void addBodyDeclNoTransform(final BodyDecl node) {
     List<BodyDecl> list = getBodyDeclListNoTransform();
     list.addChild(node);
   }
@@ -1500,10 +1597,10 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @param node The new node to replace the old list element.
    * @param i The list index of the node to be replaced.
    * @apilevel high-level
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
-  public void setBodyDecl(BodyDecl node, int i) {
+  public void setBodyDecl(final BodyDecl node, final int i) {
     List<BodyDecl> list = getBodyDeclList();
     list.setChild(node, i);
   }
@@ -1511,8 +1608,8 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * Retrieves the BodyDecl list.
    * @return The node representing the BodyDecl list.
    * @apilevel high-level
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
   public List<BodyDecl> getBodyDecls() {
     return getBodyDeclList();
@@ -1522,8 +1619,8 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * <p><em>This method does not invoke AST transformations.</em></p>
    * @return The node representing the BodyDecl list.
    * @apilevel low-level
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
   public List<BodyDecl> getBodyDeclsNoTransform() {
     return getBodyDeclListNoTransform();
@@ -1532,8 +1629,8 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * Retrieves the BodyDecl list.
    * @return The node representing the BodyDecl list.
    * @apilevel high-level
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
   @SuppressWarnings({"unchecked", "cast"})
   public List<BodyDecl> getBodyDeclList() {
@@ -1546,19 +1643,20 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * <p><em>This method does not invoke AST transformations.</em></p>
    * @return The node representing the BodyDecl list.
    * @apilevel low-level
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
   @SuppressWarnings({"unchecked", "cast"})
   public List<BodyDecl> getBodyDeclListNoTransform() {
     return (List<BodyDecl>)getChildNoTransform(1);
   }
   /**
-   * @ast method 
+   * @ast method
    * @aspect GenericsTypeCheck
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:359
    */
-    public void typeCheck() {
+    @Override
+	public void typeCheck() {
     refined_TypeHierarchyCheck_TypeDecl_typeCheck();
     ArrayList list = new ArrayList();
     list.addAll(implementedInterfaces());
@@ -1570,72 +1668,76 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
           InterfaceDecl decl2 = (InterfaceDecl)i2.next();
           if(decl2 instanceof ParInterfaceDecl) {
             ParInterfaceDecl q = (ParInterfaceDecl)decl2;
-            if(p != q && p.genericDecl() == q.genericDecl() && !p.sameArgument(q))
-              error(p.genericDecl().name() + " cannot be inherited with different arguments: " +
-                p.typeName() + " and " + q.typeName());
+            if(p != q && p.genericDecl() == q.genericDecl() && !p.sameArgument(q)) {
+				error(p.genericDecl().name() + " cannot be inherited with different arguments: " +
+				    p.typeName() + " and " + q.typeName());
+			}
           }
         }
       }
     }
   }
   /**
-   * @ast method 
+   * @ast method
    * @aspect AutoBoxingCodegen
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/Jimple1.5Backend/AutoBoxingCodegen.jrag:42
    */
-    public soot.Value emitCastTo(Body b, Expr expr, TypeDecl type) {
-    if(type instanceof LUBType || type instanceof GLBType || type instanceof AbstractWildcardType)
-      type = typeObject();
-    else if(expr.isConstant() && isPrimitive() && type.isReferenceType())
-    	  return boxed().emitBoxingOperation(b, emitConstant(cast(expr.constant())), expr);
-    else if(expr.isConstant() && !expr.type().isEnumDecl()) {
-      if(type.isPrimitive())
-        return emitConstant(type.cast(expr.constant()));
-      else
-        return emitConstant(expr.constant());
+    public soot.Value emitCastTo(final Body b, final Expr expr, TypeDecl type) {
+    if(type instanceof LUBType || type instanceof GLBType || type instanceof AbstractWildcardType) {
+		type = typeObject();
+	} else if(expr.isConstant() && isPrimitive() && type.isReferenceType()) {
+		return boxed().emitBoxingOperation(b, emitConstant(cast(expr.constant())), expr);
+	} else if(expr.isConstant() && !expr.type().isEnumDecl()) {
+      if(type.isPrimitive()) {
+		return emitConstant(type.cast(expr.constant()));
+	} else {
+		return emitConstant(expr.constant());
+	}
     }
     return emitCastTo(b, expr.eval(b), type, expr);
   }
   /**
-   * @ast method 
+   * @ast method
    * @aspect TypeConversion
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:59
    */
-  private boolean refined_TypeConversion_TypeDecl_assignConversionTo_TypeDecl_Expr(TypeDecl type, Expr expr)
+  private boolean refined_TypeConversion_TypeDecl_assignConversionTo_TypeDecl_Expr(final TypeDecl type, final Expr expr)
 {
     //System.out.println("@@@ " + fullName() + " assign conversion to " + type.fullName() + ", expr: " + expr);
     boolean sourceIsConstant = expr != null ? expr.isConstant() : false;
     //System.out.println("@@@ sourceIsConstant: " + sourceIsConstant);
-    if(identityConversionTo(type) || wideningConversionTo(type))
-      return true;
+    if(identityConversionTo(type) || wideningConversionTo(type)) {
+		return true;
+	}
     //System.out.println("@@@ narrowing conversion needed");
     //System.out.println("@@@ value: " + expr.value());
     if(sourceIsConstant && (isInt() || isChar() || isShort() || isByte()) &&
         (type.isByte() || type.isShort() || type.isChar()) &&
-        narrowingConversionTo(type) && expr.representableIn(type))
-      return true;
+        narrowingConversionTo(type) && expr.representableIn(type)) {
+		return true;
+	}
     //System.out.println("@@@ false");
     return false;
   }
   /**
-   * @ast method 
+   * @ast method
    * @aspect TypeConversion
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:76
    */
-  private boolean refined_TypeConversion_TypeDecl_methodInvocationConversionTo_TypeDecl(TypeDecl type)
+  private boolean refined_TypeConversion_TypeDecl_methodInvocationConversionTo_TypeDecl(final TypeDecl type)
 {
     return identityConversionTo(type) || wideningConversionTo(type);
   }
   /**
-   * @ast method 
+   * @ast method
    * @aspect TypeConversion
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:81
    */
-  private boolean refined_TypeConversion_TypeDecl_castingConversionTo_TypeDecl(TypeDecl type)
+  private boolean refined_TypeConversion_TypeDecl_castingConversionTo_TypeDecl(final TypeDecl type)
 { return identityConversionTo(type) ||
     wideningConversionTo(type) || narrowingConversionTo(type); }
   /**
-   * @ast method 
+   * @ast method
    * @aspect EmitJimple
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/EmitJimple.jrag:32
    */
@@ -1645,22 +1747,23 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
       return sootClass();
     }
     else {
-      if(options().verbose())
-        System.out.println("Loading .class file " + jvmName());
+      if(options().verbose()) {
+		System.out.println("Loading .class file " + jvmName());
+	}
       SootClass sc = Scene.v().loadClass(jvmName(), SootClass.SIGNATURES);
       sc.setLibraryClass();
       return sc;
     }
   }
   /**
-   * @ast method 
+   * @ast method
    * @aspect EmitJimple
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/EmitJimple.jrag:46
    */
   private Type refined_EmitJimple_TypeDecl_getSootType()
 { return getSootClassDecl().getType(); }
   /**
-   * @ast method 
+   * @ast method
    * @aspect EmitJimple
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/EmitJimple.jrag:65
    */
@@ -1671,11 +1774,11 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @aspect ConstantExpression
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/ConstantExpression.jrag:160
    */
-  public Constant cast(Constant c) {
+  public Constant cast(final Constant c) {
     ASTNode$State state = state();
     try {
     throw new UnsupportedOperationException("ConstantExpression operation cast" +
-      " not supported for type " + getClass().getName()); 
+      " not supported for type " + getClass().getName());
   }
     finally {
     }
@@ -1685,11 +1788,11 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @aspect ConstantExpression
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/ConstantExpression.jrag:174
    */
-  public Constant plus(Constant c) {
+  public Constant plus(final Constant c) {
     ASTNode$State state = state();
     try {
     throw new UnsupportedOperationException("ConstantExpression operation plus" +
-      " not supported for type " + getClass().getName()); 
+      " not supported for type " + getClass().getName());
   }
     finally {
     }
@@ -1699,11 +1802,11 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @aspect ConstantExpression
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/ConstantExpression.jrag:183
    */
-  public Constant minus(Constant c) {
+  public Constant minus(final Constant c) {
     ASTNode$State state = state();
     try {
     throw new UnsupportedOperationException("ConstantExpression operation minus" +
-      " not supported for type " + getClass().getName()); 
+      " not supported for type " + getClass().getName());
   }
     finally {
     }
@@ -1713,11 +1816,11 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @aspect ConstantExpression
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/ConstantExpression.jrag:192
    */
-  public Constant bitNot(Constant c) {
+  public Constant bitNot(final Constant c) {
     ASTNode$State state = state();
     try {
     throw new UnsupportedOperationException("ConstantExpression operation bitNot" +
-      " not supported for type " + getClass().getName()); 
+      " not supported for type " + getClass().getName());
   }
     finally {
     }
@@ -1727,11 +1830,11 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @aspect ConstantExpression
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/ConstantExpression.jrag:199
    */
-  public Constant mul(Constant c1, Constant c2) {
+  public Constant mul(final Constant c1, final Constant c2) {
     ASTNode$State state = state();
     try {
     throw new UnsupportedOperationException("ConstantExpression operation mul" +
-      " not supported for type " + getClass().getName()); 
+      " not supported for type " + getClass().getName());
   }
     finally {
     }
@@ -1741,11 +1844,11 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @aspect ConstantExpression
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/ConstantExpression.jrag:208
    */
-  public Constant div(Constant c1, Constant c2) {
+  public Constant div(final Constant c1, final Constant c2) {
     ASTNode$State state = state();
     try {
     throw new UnsupportedOperationException("ConstantExpression operation div" +
-      " not supported for type " + getClass().getName()); 
+      " not supported for type " + getClass().getName());
   }
     finally {
     }
@@ -1755,11 +1858,11 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @aspect ConstantExpression
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/ConstantExpression.jrag:217
    */
-  public Constant mod(Constant c1, Constant c2) {
+  public Constant mod(final Constant c1, final Constant c2) {
     ASTNode$State state = state();
     try {
     throw new UnsupportedOperationException("ConstantExpression operation mod" +
-      " not supported for type " + getClass().getName()); 
+      " not supported for type " + getClass().getName());
   }
     finally {
     }
@@ -1769,11 +1872,11 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @aspect ConstantExpression
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/ConstantExpression.jrag:226
    */
-  public Constant add(Constant c1, Constant c2) {
+  public Constant add(final Constant c1, final Constant c2) {
     ASTNode$State state = state();
     try {
     throw new UnsupportedOperationException("ConstantExpression operation add" +
-      " not supported for type " + getClass().getName()); 
+      " not supported for type " + getClass().getName());
   }
     finally {
     }
@@ -1783,11 +1886,11 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @aspect ConstantExpression
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/ConstantExpression.jrag:236
    */
-  public Constant sub(Constant c1, Constant c2) {
+  public Constant sub(final Constant c1, final Constant c2) {
     ASTNode$State state = state();
     try {
     throw new UnsupportedOperationException("ConstantExpression operation sub" +
-      " not supported for type " + getClass().getName()); 
+      " not supported for type " + getClass().getName());
   }
     finally {
     }
@@ -1797,11 +1900,11 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @aspect ConstantExpression
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/ConstantExpression.jrag:245
    */
-  public Constant lshift(Constant c1, Constant c2) {
+  public Constant lshift(final Constant c1, final Constant c2) {
     ASTNode$State state = state();
     try {
     throw new UnsupportedOperationException("ConstantExpression operation lshift" +
-      " not supported for type " + getClass().getName()); 
+      " not supported for type " + getClass().getName());
   }
     finally {
     }
@@ -1811,11 +1914,11 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @aspect ConstantExpression
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/ConstantExpression.jrag:252
    */
-  public Constant rshift(Constant c1, Constant c2) {
+  public Constant rshift(final Constant c1, final Constant c2) {
     ASTNode$State state = state();
     try {
     throw new UnsupportedOperationException("ConstantExpression operation rshift" +
-      " not supported for type " + getClass().getName()); 
+      " not supported for type " + getClass().getName());
   }
     finally {
     }
@@ -1825,11 +1928,11 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @aspect ConstantExpression
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/ConstantExpression.jrag:259
    */
-  public Constant urshift(Constant c1, Constant c2) {
+  public Constant urshift(final Constant c1, final Constant c2) {
     ASTNode$State state = state();
     try {
     throw new UnsupportedOperationException("ConstantExpression operation urshift" +
-      " not supported for type " + getClass().getName()); 
+      " not supported for type " + getClass().getName());
   }
     finally {
     }
@@ -1839,11 +1942,11 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @aspect ConstantExpression
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/ConstantExpression.jrag:266
    */
-  public Constant andBitwise(Constant c1, Constant c2) {
+  public Constant andBitwise(final Constant c1, final Constant c2) {
     ASTNode$State state = state();
     try {
     throw new UnsupportedOperationException("ConstantExpression operation andBitwise" +
-      " not supported for type " + getClass().getName()); 
+      " not supported for type " + getClass().getName());
   }
     finally {
     }
@@ -1853,11 +1956,11 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @aspect ConstantExpression
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/ConstantExpression.jrag:274
    */
-  public Constant xorBitwise(Constant c1, Constant c2) {
+  public Constant xorBitwise(final Constant c1, final Constant c2) {
     ASTNode$State state = state();
     try {
     throw new UnsupportedOperationException("ConstantExpression operation xorBitwise" +
-      " not supported for type " + getClass().getName()); 
+      " not supported for type " + getClass().getName());
   }
     finally {
     }
@@ -1867,11 +1970,11 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @aspect ConstantExpression
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/ConstantExpression.jrag:282
    */
-  public Constant orBitwise(Constant c1, Constant c2) {
+  public Constant orBitwise(final Constant c1, final Constant c2) {
     ASTNode$State state = state();
     try {
     throw new UnsupportedOperationException("ConstantExpression operation orBitwise" +
-      " not supported for type " + getClass().getName()); 
+      " not supported for type " + getClass().getName());
   }
     finally {
     }
@@ -1881,11 +1984,11 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @aspect ConstantExpression
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/ConstantExpression.jrag:290
    */
-  public Constant questionColon(Constant cond, Constant c1, Constant c2) {
+  public Constant questionColon(final Constant cond, final Constant c1, final Constant c2) {
     ASTNode$State state = state();
     try {
     throw new UnsupportedOperationException("ConstantExpression operation questionColon" +
-      " not supported for type " + getClass().getName()); 
+      " not supported for type " + getClass().getName());
   }
     finally {
     }
@@ -1895,7 +1998,7 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @aspect ConstantExpression
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/ConstantExpression.jrag:394
    */
-  public boolean eqIsTrue(Expr left, Expr right) {
+  public boolean eqIsTrue(final Expr left, final Expr right) {
     ASTNode$State state = state();
     try {
     System.err.println("Evaluation eqIsTrue for unknown type: " + getClass().getName());
@@ -1909,7 +2012,7 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @aspect ConstantExpression
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/ConstantExpression.jrag:405
    */
-  public boolean ltIsTrue(Expr left, Expr right) {
+  public boolean ltIsTrue(final Expr left, final Expr right) {
     ASTNode$State state = state();
     try {  return false;  }
     finally {
@@ -1920,7 +2023,7 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @aspect ConstantExpression
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/ConstantExpression.jrag:411
    */
-  public boolean leIsTrue(Expr left, Expr right) {
+  public boolean leIsTrue(final Expr left, final Expr right) {
     ASTNode$State state = state();
     try {  return false;  }
     finally {
@@ -1933,9 +2036,11 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/AccessControl.jrag:15
    */
   @SuppressWarnings({"unchecked", "cast"})
-  public boolean accessibleFromPackage(String packageName) {
+  public boolean accessibleFromPackage(final String packageName) {
     Object _parameters = packageName;
-    if(accessibleFromPackage_String_values == null) accessibleFromPackage_String_values = new java.util.HashMap(4);
+    if(accessibleFromPackage_String_values == null) {
+		accessibleFromPackage_String_values = new java.util.HashMap(4);
+	}
     if(accessibleFromPackage_String_values.containsKey(_parameters)) {
       return ((Boolean)accessibleFromPackage_String_values.get(_parameters)).booleanValue();
     }
@@ -1943,13 +2048,15 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     boolean accessibleFromPackage_String_value = accessibleFromPackage_compute(packageName);
-      if(isFinal && num == state().boundariesCrossed) accessibleFromPackage_String_values.put(_parameters, Boolean.valueOf(accessibleFromPackage_String_value));
+      if(isFinal && num == state().boundariesCrossed) {
+		accessibleFromPackage_String_values.put(_parameters, Boolean.valueOf(accessibleFromPackage_String_value));
+	}
     return accessibleFromPackage_String_value;
   }
   /**
    * @apilevel internal
    */
-  private boolean accessibleFromPackage_compute(String packageName) {  return !isPrivate() && (isPublic() || hostPackage().equals(packageName));  }
+  private boolean accessibleFromPackage_compute(final String packageName) {  return !isPrivate() && (isPublic() || hostPackage().equals(packageName));  }
   protected java.util.Map accessibleFromExtend_TypeDecl_values;
   /**
    * @attribute syn
@@ -1957,9 +2064,11 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/AccessControl.jrag:18
    */
   @SuppressWarnings({"unchecked", "cast"})
-  public boolean accessibleFromExtend(TypeDecl type) {
+  public boolean accessibleFromExtend(final TypeDecl type) {
     Object _parameters = type;
-    if(accessibleFromExtend_TypeDecl_values == null) accessibleFromExtend_TypeDecl_values = new java.util.HashMap(4);
+    if(accessibleFromExtend_TypeDecl_values == null) {
+		accessibleFromExtend_TypeDecl_values = new java.util.HashMap(4);
+	}
     if(accessibleFromExtend_TypeDecl_values.containsKey(_parameters)) {
       return ((Boolean)accessibleFromExtend_TypeDecl_values.get(_parameters)).booleanValue();
     }
@@ -1967,36 +2076,40 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     boolean accessibleFromExtend_TypeDecl_value = accessibleFromExtend_compute(type);
-      if(isFinal && num == state().boundariesCrossed) accessibleFromExtend_TypeDecl_values.put(_parameters, Boolean.valueOf(accessibleFromExtend_TypeDecl_value));
+      if(isFinal && num == state().boundariesCrossed) {
+		accessibleFromExtend_TypeDecl_values.put(_parameters, Boolean.valueOf(accessibleFromExtend_TypeDecl_value));
+	}
     return accessibleFromExtend_TypeDecl_value;
   }
   /**
    * @apilevel internal
    */
-  private boolean accessibleFromExtend_compute(TypeDecl type) {
-    if(type == this)
-      return true;
-    if(isInnerType()) { 
+  private boolean accessibleFromExtend_compute(final TypeDecl type) {
+    if(type == this) {
+		return true;
+	}
+    if(isInnerType()) {
       if(!enclosingType().accessibleFrom(type)) {
         return false;
       }
     }
-    if(isPublic()) 
-      return true;
-    else if(isProtected()) {
+    if(isPublic()) {
+		return true;
+	} else if(isProtected()) {
       // isProtected implies a nested type
       if(hostPackage().equals(type.hostPackage())) {
         return true;
       }
-      if(type.isNestedType() && type.enclosingType().withinBodyThatSubclasses(enclosingType()) != null)
-        return true;
+      if(type.isNestedType() && type.enclosingType().withinBodyThatSubclasses(enclosingType()) != null) {
+		return true;
+	}
       return false;
     }
     else if(isPrivate()) {
       return topLevelType() == type.topLevelType();
-    }
-    else
-      return hostPackage().equals(type.hostPackage());
+    } else {
+		return hostPackage().equals(type.hostPackage());
+	}
   }
   protected java.util.Map accessibleFrom_TypeDecl_values;
   /**
@@ -2005,9 +2118,11 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/AccessControl.jrag:44
    */
   @SuppressWarnings({"unchecked", "cast"})
-  public boolean accessibleFrom(TypeDecl type) {
+  public boolean accessibleFrom(final TypeDecl type) {
     Object _parameters = type;
-    if(accessibleFrom_TypeDecl_values == null) accessibleFrom_TypeDecl_values = new java.util.HashMap(4);
+    if(accessibleFrom_TypeDecl_values == null) {
+		accessibleFrom_TypeDecl_values = new java.util.HashMap(4);
+	}
     if(accessibleFrom_TypeDecl_values.containsKey(_parameters)) {
       return ((Boolean)accessibleFrom_TypeDecl_values.get(_parameters)).booleanValue();
     }
@@ -2015,21 +2130,24 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     boolean accessibleFrom_TypeDecl_value = accessibleFrom_compute(type);
-      if(isFinal && num == state().boundariesCrossed) accessibleFrom_TypeDecl_values.put(_parameters, Boolean.valueOf(accessibleFrom_TypeDecl_value));
+      if(isFinal && num == state().boundariesCrossed) {
+		accessibleFrom_TypeDecl_values.put(_parameters, Boolean.valueOf(accessibleFrom_TypeDecl_value));
+	}
     return accessibleFrom_TypeDecl_value;
   }
   /**
    * @apilevel internal
    */
-  private boolean accessibleFrom_compute(TypeDecl type) {
-    if(type == this)
-      return true;
-    if(isInnerType()) { 
+  private boolean accessibleFrom_compute(final TypeDecl type) {
+    if(type == this) {
+		return true;
+	}
+    if(isInnerType()) {
       if(!enclosingType().accessibleFrom(type)) {
         return false;
       }
     }
-    if(isPublic()) {  
+    if(isPublic()) {
       return true;
     }
     else if(isProtected()) {
@@ -2038,8 +2156,9 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
       }
       if(isMemberType()) {
         TypeDecl typeDecl = type;
-        while(typeDecl != null && !typeDecl.instanceOf(enclosingType()))
-          typeDecl = typeDecl.enclosingType();
+        while(typeDecl != null && !typeDecl.instanceOf(enclosingType())) {
+			typeDecl = typeDecl.enclosingType();
+		}
         if(typeDecl != null) {
           return true;
         }
@@ -2075,7 +2194,9 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     dimension_value = dimension_compute();
-      if(isFinal && num == state().boundariesCrossed) dimension_computed = true;
+      if(isFinal && num == state().boundariesCrossed) {
+		dimension_computed = true;
+	}
     return dimension_value;
   }
   /**
@@ -2104,7 +2225,9 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     elementType_value = elementType_compute();
-      if(isFinal && num == state().boundariesCrossed) elementType_computed = true;
+      if(isFinal && num == state().boundariesCrossed) {
+		elementType_computed = true;
+	}
     return elementType_value;
   }
   /**
@@ -2135,7 +2258,9 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
     arrayType_value = arrayType_compute();
     arrayType_value.setParent(this);
     arrayType_value.is$Final = true;
-      if(true) arrayType_computed = true;
+      if(true) {
+		arrayType_computed = true;
+	}
     return arrayType_value;
   }
   /**
@@ -2158,8 +2283,9 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
     for(int i = 0; clone == null && i < typeObject.getNumBodyDecl(); i++) {
       if(typeObject.getBodyDecl(i) instanceof MethodDecl) {
         MethodDecl m = (MethodDecl)typeObject.getBodyDecl(i);
-        if(m.name().equals("clone"))
-          clone = m;
+        if(m.name().equals("clone")) {
+			clone = m;
+		}
       }
     }
     if(clone != null) {
@@ -2194,7 +2320,8 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @aspect DataStructures
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DataStructures.jrag:134
    */
-  public int size() {
+  @Override
+public int size() {
     ASTNode$State state = state();
     try {  return 1;  }
     finally {
@@ -2205,7 +2332,8 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @aspect DataStructures
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DataStructures.jrag:135
    */
-  public boolean isEmpty() {
+  @Override
+public boolean isEmpty() {
     ASTNode$State state = state();
     try {  return false;  }
     finally {
@@ -2216,7 +2344,8 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @aspect DataStructures
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DataStructures.jrag:139
    */
-  public boolean contains(Object o) {
+  @Override
+public boolean contains(final Object o) {
     ASTNode$State state = state();
     try {  return this == o;  }
     finally {
@@ -2244,7 +2373,9 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     isException_value = isException_compute();
-      if(isFinal && num == state().boundariesCrossed) isException_computed = true;
+      if(isFinal && num == state().boundariesCrossed) {
+		isException_computed = true;
+	}
     return isException_value;
   }
   /**
@@ -2277,7 +2408,9 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     isCheckedException_value = isCheckedException_compute();
-      if(isFinal && num == state().boundariesCrossed) isCheckedException_computed = true;
+      if(isFinal && num == state().boundariesCrossed) {
+		isCheckedException_computed = true;
+	}
     return isCheckedException_value;
   }
   /**
@@ -2311,7 +2444,9 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     isUncheckedException_value = isUncheckedException_compute();
-      if(isFinal && num == state().boundariesCrossed) isUncheckedException_computed = true;
+      if(isFinal && num == state().boundariesCrossed) {
+		isUncheckedException_computed = true;
+	}
     return isUncheckedException_value;
   }
   /**
@@ -2325,9 +2460,11 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ExceptionHandling.jrag:250
    */
   @SuppressWarnings({"unchecked", "cast"})
-  public boolean mayCatch(TypeDecl thrownType) {
+  public boolean mayCatch(final TypeDecl thrownType) {
     Object _parameters = thrownType;
-    if(mayCatch_TypeDecl_values == null) mayCatch_TypeDecl_values = new java.util.HashMap(4);
+    if(mayCatch_TypeDecl_values == null) {
+		mayCatch_TypeDecl_values = new java.util.HashMap(4);
+	}
     if(mayCatch_TypeDecl_values.containsKey(_parameters)) {
       return ((Boolean)mayCatch_TypeDecl_values.get(_parameters)).booleanValue();
     }
@@ -2335,13 +2472,15 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     boolean mayCatch_TypeDecl_value = mayCatch_compute(thrownType);
-      if(isFinal && num == state().boundariesCrossed) mayCatch_TypeDecl_values.put(_parameters, Boolean.valueOf(mayCatch_TypeDecl_value));
+      if(isFinal && num == state().boundariesCrossed) {
+		mayCatch_TypeDecl_values.put(_parameters, Boolean.valueOf(mayCatch_TypeDecl_value));
+	}
     return mayCatch_TypeDecl_value;
   }
   /**
    * @apilevel internal
    */
-  private boolean mayCatch_compute(TypeDecl thrownType) {  return thrownType.instanceOf(this) || this.instanceOf(thrownType);  }
+  private boolean mayCatch_compute(final TypeDecl thrownType) {  return thrownType.instanceOf(this) || this.instanceOf(thrownType);  }
   /**
    * @attribute syn
    * @aspect ConstructScope
@@ -2375,7 +2514,9 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     constructors_value = constructors_compute();
-      if(isFinal && num == state().boundariesCrossed) constructors_computed = true;
+      if(isFinal && num == state().boundariesCrossed) {
+		constructors_computed = true;
+	}
     return constructors_value;
   }
   /**
@@ -2397,9 +2538,11 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupMethod.jrag:36
    */
   @SuppressWarnings({"unchecked", "cast"})
-  public Collection unqualifiedLookupMethod(String name) {
+  public Collection unqualifiedLookupMethod(final String name) {
     Object _parameters = name;
-    if(unqualifiedLookupMethod_String_values == null) unqualifiedLookupMethod_String_values = new java.util.HashMap(4);
+    if(unqualifiedLookupMethod_String_values == null) {
+		unqualifiedLookupMethod_String_values = new java.util.HashMap(4);
+	}
     if(unqualifiedLookupMethod_String_values.containsKey(_parameters)) {
       return (Collection)unqualifiedLookupMethod_String_values.get(_parameters);
     }
@@ -2407,17 +2550,22 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     Collection unqualifiedLookupMethod_String_value = unqualifiedLookupMethod_compute(name);
-      if(isFinal && num == state().boundariesCrossed) unqualifiedLookupMethod_String_values.put(_parameters, unqualifiedLookupMethod_String_value);
+      if(isFinal && num == state().boundariesCrossed) {
+		unqualifiedLookupMethod_String_values.put(_parameters, unqualifiedLookupMethod_String_value);
+	}
     return unqualifiedLookupMethod_String_value;
   }
   /**
    * @apilevel internal
    */
-  private Collection unqualifiedLookupMethod_compute(String name) {
+  private Collection unqualifiedLookupMethod_compute(final String name) {
     Collection c = memberMethods(name);
-    if(!c.isEmpty()) return c;
-    if(isInnerType())
-      return lookupMethod(name);
+    if(!c.isEmpty()) {
+		return c;
+	}
+    if(isInnerType()) {
+		return lookupMethod(name);
+	}
     return removeInstanceMethods(lookupMethod(name));
   }
   /**
@@ -2425,11 +2573,13 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @aspect MemberMethods
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupMethod.jrag:210
    */
-  public Collection memberMethods(String name) {
+  public Collection memberMethods(final String name) {
     ASTNode$State state = state();
     try {
     Collection c = (Collection)methodsNameMap().get(name);
-    if(c != null) return c;
+    if(c != null) {
+		return c;
+	}
     return Collections.EMPTY_LIST;
   }
     finally {
@@ -2457,7 +2607,9 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     methodsNameMap_value = methodsNameMap_compute();
-      if(isFinal && num == state().boundariesCrossed) methodsNameMap_computed = true;
+      if(isFinal && num == state().boundariesCrossed) {
+		methodsNameMap_computed = true;
+	}
     return methodsNameMap_value;
   }
   /**
@@ -2481,11 +2633,13 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @aspect MemberMethods
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupMethod.jrag:247
    */
-  public SimpleSet localMethodsSignature(String signature) {
+  public SimpleSet localMethodsSignature(final String signature) {
     ASTNode$State state = state();
     try {
     SimpleSet set = (SimpleSet)localMethodsSignatureMap().get(signature);
-    if(set != null) return set;
+    if(set != null) {
+		return set;
+	}
     return SimpleSet.emptySet;
   }
     finally {
@@ -2513,7 +2667,9 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     localMethodsSignatureMap_value = localMethodsSignatureMap_compute();
-      if(isFinal && num == state().boundariesCrossed) localMethodsSignatureMap_computed = true;
+      if(isFinal && num == state().boundariesCrossed) {
+		localMethodsSignatureMap_computed = true;
+	}
     return localMethodsSignatureMap_value;
   }
   /**
@@ -2534,11 +2690,13 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @aspect MemberMethods
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupMethod.jrag:315
    */
-  public SimpleSet methodsSignature(String signature) {
+  public SimpleSet methodsSignature(final String signature) {
     ASTNode$State state = state();
     try {
     SimpleSet set = (SimpleSet)methodsSignatureMap().get(signature);
-    if(set != null) return set;
+    if(set != null) {
+		return set;
+	}
     return SimpleSet.emptySet;
   }
     finally {
@@ -2566,7 +2724,9 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     methodsSignatureMap_value = methodsSignatureMap_compute();
-      if(isFinal && num == state().boundariesCrossed) methodsSignatureMap_computed = true;
+      if(isFinal && num == state().boundariesCrossed) {
+		methodsSignatureMap_computed = true;
+	}
     return methodsSignatureMap_value;
   }
   /**
@@ -2580,9 +2740,11 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupMethod.jrag:378
    */
   @SuppressWarnings({"unchecked", "cast"})
-  public SimpleSet ancestorMethods(String signature) {
+  public SimpleSet ancestorMethods(final String signature) {
     Object _parameters = signature;
-    if(ancestorMethods_String_values == null) ancestorMethods_String_values = new java.util.HashMap(4);
+    if(ancestorMethods_String_values == null) {
+		ancestorMethods_String_values = new java.util.HashMap(4);
+	}
     if(ancestorMethods_String_values.containsKey(_parameters)) {
       return (SimpleSet)ancestorMethods_String_values.get(_parameters);
     }
@@ -2590,19 +2752,21 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     SimpleSet ancestorMethods_String_value = ancestorMethods_compute(signature);
-      if(isFinal && num == state().boundariesCrossed) ancestorMethods_String_values.put(_parameters, ancestorMethods_String_value);
+      if(isFinal && num == state().boundariesCrossed) {
+		ancestorMethods_String_values.put(_parameters, ancestorMethods_String_value);
+	}
     return ancestorMethods_String_value;
   }
   /**
    * @apilevel internal
    */
-  private SimpleSet ancestorMethods_compute(String signature) {  return SimpleSet.emptySet;  }
+  private SimpleSet ancestorMethods_compute(final String signature) {  return SimpleSet.emptySet;  }
   /**
    * @attribute syn
    * @aspect TypeScopePropagation
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupType.jrag:478
    */
-  public boolean hasType(String name) {
+  public boolean hasType(final String name) {
     ASTNode$State state = state();
     try {  return !memberTypes(name).isEmpty();  }
     finally {
@@ -2615,9 +2779,11 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupType.jrag:489
    */
   @SuppressWarnings({"unchecked", "cast"})
-  public SimpleSet localTypeDecls(String name) {
+  public SimpleSet localTypeDecls(final String name) {
     Object _parameters = name;
-    if(localTypeDecls_String_values == null) localTypeDecls_String_values = new java.util.HashMap(4);
+    if(localTypeDecls_String_values == null) {
+		localTypeDecls_String_values = new java.util.HashMap(4);
+	}
     if(localTypeDecls_String_values.containsKey(_parameters)) {
       return (SimpleSet)localTypeDecls_String_values.get(_parameters);
     }
@@ -2625,17 +2791,21 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     SimpleSet localTypeDecls_String_value = localTypeDecls_compute(name);
-      if(isFinal && num == state().boundariesCrossed) localTypeDecls_String_values.put(_parameters, localTypeDecls_String_value);
+      if(isFinal && num == state().boundariesCrossed) {
+		localTypeDecls_String_values.put(_parameters, localTypeDecls_String_value);
+	}
     return localTypeDecls_String_value;
   }
   /**
    * @apilevel internal
    */
-  private SimpleSet localTypeDecls_compute(String name) {
+  private SimpleSet localTypeDecls_compute(final String name) {
     SimpleSet set = SimpleSet.emptySet;
-    for(int i = 0; i < getNumBodyDecl(); i++)
-      if(getBodyDecl(i).declaresType(name))
-        set = set.add(getBodyDecl(i).type(name));
+    for(int i = 0; i < getNumBodyDecl(); i++) {
+		if(getBodyDecl(i).declaresType(name)) {
+			set = set.add(getBodyDecl(i).type(name));
+		}
+	}
     return set;
   }
   protected java.util.Map memberTypes_String_values;
@@ -2645,9 +2815,11 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupType.jrag:497
    */
   @SuppressWarnings({"unchecked", "cast"})
-  public SimpleSet memberTypes(String name) {
+  public SimpleSet memberTypes(final String name) {
     Object _parameters = name;
-    if(memberTypes_String_values == null) memberTypes_String_values = new java.util.HashMap(4);
+    if(memberTypes_String_values == null) {
+		memberTypes_String_values = new java.util.HashMap(4);
+	}
     if(memberTypes_String_values.containsKey(_parameters)) {
       return (SimpleSet)memberTypes_String_values.get(_parameters);
     }
@@ -2655,13 +2827,15 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     SimpleSet memberTypes_String_value = memberTypes_compute(name);
-      if(isFinal && num == state().boundariesCrossed) memberTypes_String_values.put(_parameters, memberTypes_String_value);
+      if(isFinal && num == state().boundariesCrossed) {
+		memberTypes_String_values.put(_parameters, memberTypes_String_value);
+	}
     return memberTypes_String_value;
   }
   /**
    * @apilevel internal
    */
-  private SimpleSet memberTypes_compute(String name) {  return SimpleSet.emptySet;  }
+  private SimpleSet memberTypes_compute(final String name) {  return SimpleSet.emptySet;  }
   protected java.util.Map localFields_String_values;
   /**
    * @attribute syn
@@ -2669,9 +2843,11 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupVariable.jrag:266
    */
   @SuppressWarnings({"unchecked", "cast"})
-  public SimpleSet localFields(String name) {
+  public SimpleSet localFields(final String name) {
     Object _parameters = name;
-    if(localFields_String_values == null) localFields_String_values = new java.util.HashMap(4);
+    if(localFields_String_values == null) {
+		localFields_String_values = new java.util.HashMap(4);
+	}
     if(localFields_String_values.containsKey(_parameters)) {
       return (SimpleSet)localFields_String_values.get(_parameters);
     }
@@ -2679,13 +2855,15 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     SimpleSet localFields_String_value = localFields_compute(name);
-      if(isFinal && num == state().boundariesCrossed) localFields_String_values.put(_parameters, localFields_String_value);
+      if(isFinal && num == state().boundariesCrossed) {
+		localFields_String_values.put(_parameters, localFields_String_value);
+	}
     return localFields_String_value;
   }
   /**
    * @apilevel internal
    */
-  private SimpleSet localFields_compute(String name) {  return localFieldsMap().containsKey(name) ? (SimpleSet)localFieldsMap().get(name) : SimpleSet.emptySet;  }
+  private SimpleSet localFields_compute(final String name) {  return localFieldsMap().containsKey(name) ? (SimpleSet)localFieldsMap().get(name) : SimpleSet.emptySet;  }
   /**
    * @apilevel internal
    */
@@ -2708,7 +2886,9 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     localFieldsMap_value = localFieldsMap_compute();
-      if(isFinal && num == state().boundariesCrossed) localFieldsMap_computed = true;
+      if(isFinal && num == state().boundariesCrossed) {
+		localFieldsMap_computed = true;
+	}
     return localFieldsMap_value;
   }
   /**
@@ -2720,7 +2900,9 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
       if(getBodyDecl(i) instanceof FieldDeclaration) {
         FieldDeclaration decl = (FieldDeclaration)getBodyDecl(i);
         SimpleSet fields = (SimpleSet)map.get(decl.name());
-        if(fields == null) fields = SimpleSet.emptySet;
+        if(fields == null) {
+			fields = SimpleSet.emptySet;
+		}
         fields = fields.add(decl);
         map.put(decl.name(), fields);
       }
@@ -2749,7 +2931,9 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     memberFieldsMap_value = memberFieldsMap_compute();
-      if(isFinal && num == state().boundariesCrossed) memberFieldsMap_computed = true;
+      if(isFinal && num == state().boundariesCrossed) {
+		memberFieldsMap_computed = true;
+	}
     return memberFieldsMap_value;
   }
   /**
@@ -2763,9 +2947,11 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupVariable.jrag:331
    */
   @SuppressWarnings({"unchecked", "cast"})
-  public SimpleSet memberFields(String name) {
+  public SimpleSet memberFields(final String name) {
     Object _parameters = name;
-    if(memberFields_String_values == null) memberFields_String_values = new java.util.HashMap(4);
+    if(memberFields_String_values == null) {
+		memberFields_String_values = new java.util.HashMap(4);
+	}
     if(memberFields_String_values.containsKey(_parameters)) {
       return (SimpleSet)memberFields_String_values.get(_parameters);
     }
@@ -2773,13 +2959,15 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     SimpleSet memberFields_String_value = memberFields_compute(name);
-      if(isFinal && num == state().boundariesCrossed) memberFields_String_values.put(_parameters, memberFields_String_value);
+      if(isFinal && num == state().boundariesCrossed) {
+		memberFields_String_values.put(_parameters, memberFields_String_value);
+	}
     return memberFields_String_value;
   }
   /**
    * @apilevel internal
    */
-  private SimpleSet memberFields_compute(String name) {  return localFields(name);  }
+  private SimpleSet memberFields_compute(final String name) {  return localFields(name);  }
   /**
    * @apilevel internal
    */
@@ -2802,7 +2990,9 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     hasAbstract_value = hasAbstract_compute();
-      if(isFinal && num == state().boundariesCrossed) hasAbstract_computed = true;
+      if(isFinal && num == state().boundariesCrossed) {
+		hasAbstract_computed = true;
+	}
     return hasAbstract_value;
   }
   /**
@@ -2831,7 +3021,9 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     unimplementedMethods_value = unimplementedMethods_compute();
-      if(isFinal && num == state().boundariesCrossed) unimplementedMethods_computed = true;
+      if(isFinal && num == state().boundariesCrossed) {
+		unimplementedMethods_computed = true;
+	}
     return unimplementedMethods_value;
   }
   /**
@@ -2860,7 +3052,9 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     isPublic_value = isPublic_compute();
-      if(isFinal && num == state().boundariesCrossed) isPublic_computed = true;
+      if(isFinal && num == state().boundariesCrossed) {
+		isPublic_computed = true;
+	}
     return isPublic_value;
   }
   /**
@@ -2922,7 +3116,9 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     isStatic_value = isStatic_compute();
-      if(isFinal && num == state().boundariesCrossed) isStatic_computed = true;
+      if(isFinal && num == state().boundariesCrossed) {
+		isStatic_computed = true;
+	}
     return isStatic_value;
   }
   /**
@@ -2967,7 +3163,7 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @aspect NameCheck
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:274
    */
-  public boolean hasEnclosingTypeDecl(String name) {
+  public boolean hasEnclosingTypeDecl(final String name) {
     ASTNode$State state = state();
     try {
     TypeDecl enclosingType = enclosingType();
@@ -2995,7 +3191,8 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @aspect PrettyPrint
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/PrettyPrint.jadd:758
    */
-  public boolean addsIndentationLevel() {
+  @Override
+public boolean addsIndentationLevel() {
     ASTNode$State state = state();
     try {  return true;  }
     finally {
@@ -3006,7 +3203,8 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @aspect PrettyPrint
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/PrettyPrint.jadd:800
    */
-  public String dumpString() {
+  @Override
+public String dumpString() {
     ASTNode$State state = state();
     try {  return getClass().getName() + " [" + getID() + "]";  }
     finally {
@@ -3045,18 +3243,22 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     fullName_value = fullName_compute();
-      if(isFinal && num == state().boundariesCrossed) fullName_computed = true;
+      if(isFinal && num == state().boundariesCrossed) {
+		fullName_computed = true;
+	}
     return fullName_value;
   }
   /**
    * @apilevel internal
    */
   private String fullName_compute() {
-    if(isNestedType())
-      return enclosingType().fullName() + "." + name();
+    if(isNestedType()) {
+		return enclosingType().fullName() + "." + name();
+	}
     String packageName = packageName();
-    if(packageName.equals(""))
-      return name();
+    if(packageName.equals("")) {
+		return name();
+	}
     return packageName + "." + name();
   }
   /**
@@ -3081,18 +3283,22 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     typeName_value = typeName_compute();
-      if(isFinal && num == state().boundariesCrossed) typeName_computed = true;
+      if(isFinal && num == state().boundariesCrossed) {
+		typeName_computed = true;
+	}
     return typeName_value;
   }
   /**
    * @apilevel internal
    */
   private String typeName_compute() {
-    if(isNestedType())
-      return enclosingType().typeName() + "." + name();
+    if(isNestedType()) {
+		return enclosingType().typeName() + "." + name();
+	}
     String packageName = packageName();
-    if(packageName.equals("") || packageName.equals(PRIMITIVE_PACKAGE_NAME))
-      return name();
+    if(packageName.equals("") || packageName.equals(PRIMITIVE_PACKAGE_NAME)) {
+		return name();
+	}
     return packageName + "." + name();
   }
   /**
@@ -3100,7 +3306,7 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @aspect TypeConversion
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:15
    */
-  public boolean identityConversionTo(TypeDecl type) {
+  public boolean identityConversionTo(final TypeDecl type) {
     ASTNode$State state = state();
     try {  return this == type;  }
     finally {
@@ -3111,7 +3317,7 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @aspect TypeConversion
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:17
    */
-  public boolean wideningConversionTo(TypeDecl type) {
+  public boolean wideningConversionTo(final TypeDecl type) {
     ASTNode$State state = state();
     try {  return instanceOf(type);  }
     finally {
@@ -3124,9 +3330,11 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:18
    */
   @SuppressWarnings({"unchecked", "cast"})
-  public boolean narrowingConversionTo(TypeDecl type) {
+  public boolean narrowingConversionTo(final TypeDecl type) {
     Object _parameters = type;
-    if(narrowingConversionTo_TypeDecl_values == null) narrowingConversionTo_TypeDecl_values = new java.util.HashMap(4);
+    if(narrowingConversionTo_TypeDecl_values == null) {
+		narrowingConversionTo_TypeDecl_values = new java.util.HashMap(4);
+	}
     if(narrowingConversionTo_TypeDecl_values.containsKey(_parameters)) {
       return ((Boolean)narrowingConversionTo_TypeDecl_values.get(_parameters)).booleanValue();
     }
@@ -3134,13 +3342,15 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     boolean narrowingConversionTo_TypeDecl_value = narrowingConversionTo_compute(type);
-      if(isFinal && num == state().boundariesCrossed) narrowingConversionTo_TypeDecl_values.put(_parameters, Boolean.valueOf(narrowingConversionTo_TypeDecl_value));
+      if(isFinal && num == state().boundariesCrossed) {
+		narrowingConversionTo_TypeDecl_values.put(_parameters, Boolean.valueOf(narrowingConversionTo_TypeDecl_value));
+	}
     return narrowingConversionTo_TypeDecl_value;
   }
   /**
    * @apilevel internal
    */
-  private boolean narrowingConversionTo_compute(TypeDecl type) {  return instanceOf(type);  }
+  private boolean narrowingConversionTo_compute(final TypeDecl type) {  return instanceOf(type);  }
   /**
    * @attribute syn
    * @aspect TypeConversion
@@ -3157,11 +3367,12 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @aspect TypeConversion
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:59
    */
-  public boolean assignConversionTo(TypeDecl type, Expr expr) {
+  public boolean assignConversionTo(final TypeDecl type, final Expr expr) {
     ASTNode$State state = state();
     try {
-    if(refined_TypeConversion_TypeDecl_assignConversionTo_TypeDecl_Expr(type, expr))
-      return true;
+    if(refined_TypeConversion_TypeDecl_assignConversionTo_TypeDecl_Expr(type, expr)) {
+		return true;
+	}
     boolean canBoxThis = this instanceof PrimitiveType;
     boolean canBoxType = type instanceof PrimitiveType;
     boolean canUnboxThis = !unboxed().isUnknown();
@@ -3170,12 +3381,14 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
     boolean sourceIsConstant = expr != null ? expr.isConstant() : false;
     if(sourceIsConstant && (isInt() || isChar() || isShort() || isByte()) &&
         (t.isByte() || t.isShort() || t.isChar()) &&
-        narrowingConversionTo(t) && expr.representableIn(t))
-      return true;
-    if(canBoxThis && !canBoxType && boxed().wideningConversionTo(type))
-      return true;
-    else if(canUnboxThis && !canUnboxType && unboxed().wideningConversionTo(type))
-      return true;
+        narrowingConversionTo(t) && expr.representableIn(t)) {
+		return true;
+	}
+    if(canBoxThis && !canBoxType && boxed().wideningConversionTo(type)) {
+		return true;
+	} else if(canUnboxThis && !canUnboxType && unboxed().wideningConversionTo(type)) {
+		return true;
+	}
 
     return false;
   }
@@ -3189,9 +3402,11 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/AutoBoxing.jrag:99
    */
   @SuppressWarnings({"unchecked", "cast"})
-  public boolean methodInvocationConversionTo(TypeDecl type) {
+  public boolean methodInvocationConversionTo(final TypeDecl type) {
     Object _parameters = type;
-    if(methodInvocationConversionTo_TypeDecl_values == null) methodInvocationConversionTo_TypeDecl_values = new java.util.HashMap(4);
+    if(methodInvocationConversionTo_TypeDecl_values == null) {
+		methodInvocationConversionTo_TypeDecl_values = new java.util.HashMap(4);
+	}
     if(methodInvocationConversionTo_TypeDecl_values.containsKey(_parameters)) {
       return ((Boolean)methodInvocationConversionTo_TypeDecl_values.get(_parameters)).booleanValue();
     }
@@ -3199,23 +3414,27 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     boolean methodInvocationConversionTo_TypeDecl_value = methodInvocationConversionTo_compute(type);
-      if(isFinal && num == state().boundariesCrossed) methodInvocationConversionTo_TypeDecl_values.put(_parameters, Boolean.valueOf(methodInvocationConversionTo_TypeDecl_value));
+      if(isFinal && num == state().boundariesCrossed) {
+		methodInvocationConversionTo_TypeDecl_values.put(_parameters, Boolean.valueOf(methodInvocationConversionTo_TypeDecl_value));
+	}
     return methodInvocationConversionTo_TypeDecl_value;
   }
   /**
    * @apilevel internal
    */
-  private boolean methodInvocationConversionTo_compute(TypeDecl type) {
-    if(refined_TypeConversion_TypeDecl_methodInvocationConversionTo_TypeDecl(type))
-      return true;
+  private boolean methodInvocationConversionTo_compute(final TypeDecl type) {
+    if(refined_TypeConversion_TypeDecl_methodInvocationConversionTo_TypeDecl(type)) {
+		return true;
+	}
     boolean canBoxThis = this instanceof PrimitiveType;
     boolean canBoxType = type instanceof PrimitiveType;
     boolean canUnboxThis = !unboxed().isUnknown();
     boolean canUnboxType = !type.unboxed().isUnknown();
-    if(canBoxThis && !canBoxType)
-      return boxed().wideningConversionTo(type);
-    else if(canUnboxThis && !canUnboxType)
-      return unboxed().wideningConversionTo(type);
+    if(canBoxThis && !canBoxType) {
+		return boxed().wideningConversionTo(type);
+	} else if(canUnboxThis && !canUnboxType) {
+		return unboxed().wideningConversionTo(type);
+	}
     return false;
   }
   protected java.util.Map castingConversionTo_TypeDecl_values;
@@ -3225,9 +3444,11 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/AutoBoxing.jrag:114
    */
   @SuppressWarnings({"unchecked", "cast"})
-  public boolean castingConversionTo(TypeDecl type) {
+  public boolean castingConversionTo(final TypeDecl type) {
     Object _parameters = type;
-    if(castingConversionTo_TypeDecl_values == null) castingConversionTo_TypeDecl_values = new java.util.HashMap(4);
+    if(castingConversionTo_TypeDecl_values == null) {
+		castingConversionTo_TypeDecl_values = new java.util.HashMap(4);
+	}
     if(castingConversionTo_TypeDecl_values.containsKey(_parameters)) {
       return ((Boolean)castingConversionTo_TypeDecl_values.get(_parameters)).booleanValue();
     }
@@ -3235,23 +3456,27 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     boolean castingConversionTo_TypeDecl_value = castingConversionTo_compute(type);
-      if(isFinal && num == state().boundariesCrossed) castingConversionTo_TypeDecl_values.put(_parameters, Boolean.valueOf(castingConversionTo_TypeDecl_value));
+      if(isFinal && num == state().boundariesCrossed) {
+		castingConversionTo_TypeDecl_values.put(_parameters, Boolean.valueOf(castingConversionTo_TypeDecl_value));
+	}
     return castingConversionTo_TypeDecl_value;
   }
   /**
    * @apilevel internal
    */
-  private boolean castingConversionTo_compute(TypeDecl type) {
-    if(refined_TypeConversion_TypeDecl_castingConversionTo_TypeDecl(type))
-      return true;
+  private boolean castingConversionTo_compute(final TypeDecl type) {
+    if(refined_TypeConversion_TypeDecl_castingConversionTo_TypeDecl(type)) {
+		return true;
+	}
     boolean canBoxThis = this instanceof PrimitiveType;
     boolean canBoxType = type instanceof PrimitiveType;
     boolean canUnboxThis = !unboxed().isUnknown();
     boolean canUnboxType = !type.unboxed().isUnknown();
-    if(canBoxThis && !canBoxType)
-      return boxed().wideningConversionTo(type);
-    else if(canUnboxThis && !canUnboxType)
-      return unboxed().wideningConversionTo(type);
+    if(canBoxThis && !canBoxType) {
+		return boxed().wideningConversionTo(type);
+	} else if(canUnboxThis && !canUnboxType) {
+		return unboxed().wideningConversionTo(type);
+	}
     return false;
     /*
     else if(boxingConversionTo(type))
@@ -3277,7 +3502,7 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @aspect NumericPromotion
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:154
    */
-  public TypeDecl binaryNumericPromotion(TypeDecl type) {
+  public TypeDecl binaryNumericPromotion(final TypeDecl type) {
     ASTNode$State state = state();
     try {  return unknownType();  }
     finally {
@@ -3503,7 +3728,9 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     isString_value = isString_compute();
-      if(isFinal && num == state().boundariesCrossed) isString_computed = true;
+      if(isFinal && num == state().boundariesCrossed) {
+		isString_computed = true;
+	}
     return isString_value;
   }
   /**
@@ -3532,7 +3759,9 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     isObject_value = isObject_compute();
-      if(isFinal && num == state().boundariesCrossed) isObject_computed = true;
+      if(isFinal && num == state().boundariesCrossed) {
+		isObject_computed = true;
+	}
     return isObject_value;
   }
   /**
@@ -3557,9 +3786,11 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericsSubtype.jrag:386
    */
   @SuppressWarnings({"unchecked", "cast"})
-  public boolean instanceOf(TypeDecl type) {
+  public boolean instanceOf(final TypeDecl type) {
     Object _parameters = type;
-    if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.util.HashMap(4);
+    if(instanceOf_TypeDecl_values == null) {
+		instanceOf_TypeDecl_values = new java.util.HashMap(4);
+	}
     if(instanceOf_TypeDecl_values.containsKey(_parameters)) {
       return ((Boolean)instanceOf_TypeDecl_values.get(_parameters)).booleanValue();
     }
@@ -3567,19 +3798,21 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     boolean instanceOf_TypeDecl_value = instanceOf_compute(type);
-      if(isFinal && num == state().boundariesCrossed) instanceOf_TypeDecl_values.put(_parameters, Boolean.valueOf(instanceOf_TypeDecl_value));
+      if(isFinal && num == state().boundariesCrossed) {
+		instanceOf_TypeDecl_values.put(_parameters, Boolean.valueOf(instanceOf_TypeDecl_value));
+	}
     return instanceOf_TypeDecl_value;
   }
   /**
    * @apilevel internal
    */
-  private boolean instanceOf_compute(TypeDecl type) { return subtype(type); }
+  private boolean instanceOf_compute(final TypeDecl type) { return subtype(type); }
   /**
    * @attribute syn
    * @aspect TypeWideningAndIdentity
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:423
    */
-  public boolean isSupertypeOfClassDecl(ClassDecl type) {
+  public boolean isSupertypeOfClassDecl(final ClassDecl type) {
     ASTNode$State state = state();
     try {  return type == this;  }
     finally {
@@ -3590,7 +3823,7 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @aspect TypeWideningAndIdentity
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:440
    */
-  public boolean isSupertypeOfInterfaceDecl(InterfaceDecl type) {
+  public boolean isSupertypeOfInterfaceDecl(final InterfaceDecl type) {
     ASTNode$State state = state();
     try {  return type == this;  }
     finally {
@@ -3601,7 +3834,7 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @aspect TypeWideningAndIdentity
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:453
    */
-  public boolean isSupertypeOfArrayDecl(ArrayDecl type) {
+  public boolean isSupertypeOfArrayDecl(final ArrayDecl type) {
     ASTNode$State state = state();
     try {  return this == type;  }
     finally {
@@ -3612,7 +3845,7 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @aspect TypeWideningAndIdentity
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:475
    */
-  public boolean isSupertypeOfPrimitiveType(PrimitiveType type) {
+  public boolean isSupertypeOfPrimitiveType(final PrimitiveType type) {
     ASTNode$State state = state();
     try {  return type == this;  }
     finally {
@@ -3623,7 +3856,7 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @aspect TypeWideningAndIdentity
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:482
    */
-  public boolean isSupertypeOfNullType(NullType type) {
+  public boolean isSupertypeOfNullType(final NullType type) {
     ASTNode$State state = state();
     try {  return false;  }
     finally {
@@ -3634,7 +3867,7 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @aspect TypeWideningAndIdentity
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:486
    */
-  public boolean isSupertypeOfVoidType(VoidType type) {
+  public boolean isSupertypeOfVoidType(final VoidType type) {
     ASTNode$State state = state();
     try {  return false;  }
     finally {
@@ -3648,8 +3881,9 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
   public TypeDecl topLevelType() {
     ASTNode$State state = state();
     try {
-    if(isTopLevelType())
-      return this;
+    if(isTopLevelType()) {
+		return this;
+	}
     return enclosingType().topLevelType();
   }
     finally {
@@ -3693,7 +3927,7 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @aspect NestedTypes
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:538
    */
-  public boolean isInnerTypeOf(TypeDecl typeDecl) {
+  public boolean isInnerTypeOf(final TypeDecl typeDecl) {
     ASTNode$State state = state();
     try {  return typeDecl == this || (isInnerType() && enclosingType().isInnerTypeOf(typeDecl));  }
     finally {
@@ -3704,13 +3938,15 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @aspect NestedTypes
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:545
    */
-  public TypeDecl withinBodyThatSubclasses(TypeDecl type) {
+  public TypeDecl withinBodyThatSubclasses(final TypeDecl type) {
     ASTNode$State state = state();
     try {
-    if(instanceOf(type))
-      return this;
-    if(!isTopLevelType())
-      return enclosingType().withinBodyThatSubclasses(type);
+    if(instanceOf(type)) {
+		return this;
+	}
+    if(!isTopLevelType()) {
+		return enclosingType().withinBodyThatSubclasses(type);
+	}
     return null;
   }
     finally {
@@ -3721,7 +3957,7 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @aspect NestedTypes
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:553
    */
-  public boolean encloses(TypeDecl type) {
+  public boolean encloses(final TypeDecl type) {
     ASTNode$State state = state();
     try {  return type.enclosedBy(this);  }
     finally {
@@ -3732,13 +3968,15 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @aspect NestedTypes
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:555
    */
-  public boolean enclosedBy(TypeDecl type) {
+  public boolean enclosedBy(final TypeDecl type) {
     ASTNode$State state = state();
     try {
-    if(this == type)
-      return true;
-    if(isTopLevelType())
-      return false;
+    if(this == type) {
+		return true;
+	}
+    if(isTopLevelType()) {
+		return false;
+	}
     return enclosingType().enclosedBy(type);
   }
     finally {
@@ -3794,9 +4032,10 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
         isCircular_visited = state.CIRCLE_INDEX;
         state.CHANGE = false;
         boolean new_isCircular_value = isCircular_compute();
-        if (new_isCircular_value!=isCircular_value)
-          state.CHANGE = true;
-        isCircular_value = new_isCircular_value; 
+        if (new_isCircular_value!=isCircular_value) {
+			state.CHANGE = true;
+		}
+        isCircular_value = new_isCircular_value;
         state.CIRCLE_INDEX++;
       } while (state.CHANGE);
         if(isFinal && num == state().boundariesCrossed) {
@@ -3809,7 +4048,7 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
         isCircular_computed = false;
         isCircular_initialized = false;
       }
-      state.IN_CIRCLE = false; 
+      state.IN_CIRCLE = false;
       return isCircular_value;
     }
     if(isCircular_visited != state.CIRCLE_INDEX) {
@@ -3821,9 +4060,10 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
         return isCircular_value;
       }
       boolean new_isCircular_value = isCircular_compute();
-      if (new_isCircular_value!=isCircular_value)
-        state.CHANGE = true;
-      isCircular_value = new_isCircular_value; 
+      if (new_isCircular_value!=isCircular_value) {
+		state.CHANGE = true;
+	}
+      isCircular_value = new_isCircular_value;
       return isCircular_value;
     }
     return isCircular_value;
@@ -3850,7 +4090,7 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @aspect Annotations
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:225
    */
-  public Annotation annotation(TypeDecl typeDecl) {
+  public Annotation annotation(final TypeDecl typeDecl) {
     ASTNode$State state = state();
     try {  return getModifiers().annotation(typeDecl);  }
     finally {
@@ -3861,7 +4101,7 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @aspect Annotations
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:282
    */
-  public boolean hasAnnotationSuppressWarnings(String s) {
+  public boolean hasAnnotationSuppressWarnings(final String s) {
     ASTNode$State state = state();
     try {  return getModifiers().hasAnnotationSuppressWarnings(s);  }
     finally {
@@ -3881,7 +4121,7 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
   /* An element type T is commensurate with an element value V if and only if one of the following conditions is true:
     * T is an array type E[] and either:
           o V is an ElementValueArrayInitializer and each ElementValueInitializer (analogous to a variable initializer in an array initializer) in V is commensurate with E. Or
-          o V is an ElementValue that is commensurate with T. 
+          o V is an ElementValue that is commensurate with T.
     * The type of V is assignment compatible (\ufffd5.2) with T and, furthermore:
           o If T is a primitive type or String, V is a constant expression (\ufffd15.28).
           o V is not null.
@@ -3890,7 +4130,7 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @aspect Annotations
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:474
    */
-  public boolean commensurateWith(ElementValue value) {
+  public boolean commensurateWith(final ElementValue value) {
     ASTNode$State state = state();
     try {  return value.commensurateWithTypeDecl(this);  }
     finally {
@@ -3917,12 +4157,12 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
        numeric operations that do not use these kinds of conversions and promotions explicitly need to be refined
      BooleanTypes:
        assignmentConversion, methodInvocationConversion, castingConversion
-       
+
   * @attribute syn
    * @aspect AutoBoxing
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/AutoBoxing.jrag:31
    */
-  public boolean boxingConversionTo(TypeDecl typeDecl) {
+  public boolean boxingConversionTo(final TypeDecl typeDecl) {
     ASTNode$State state = state();
     try {  return false;  }
     finally {
@@ -3950,7 +4190,9 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     boxed_value = boxed_compute();
-      if(isFinal && num == state().boundariesCrossed) boxed_computed = true;
+      if(isFinal && num == state().boundariesCrossed) {
+		boxed_computed = true;
+	}
     return boxed_value;
   }
   /**
@@ -3962,7 +4204,7 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @aspect AutoBoxing
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/AutoBoxing.jrag:47
    */
-  public boolean unboxingConversionTo(TypeDecl typeDecl) {
+  public boolean unboxingConversionTo(final TypeDecl typeDecl) {
     ASTNode$State state = state();
     try {  return false;  }
     finally {
@@ -3990,7 +4232,9 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     unboxed_value = unboxed_compute();
-      if(isFinal && num == state().boundariesCrossed) unboxed_computed = true;
+      if(isFinal && num == state().boundariesCrossed) {
+		unboxed_computed = true;
+	}
     return unboxed_value;
   }
   /**
@@ -4021,14 +4265,16 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     isIterable_value = isIterable_compute();
-      if(isFinal && num == state().boundariesCrossed) isIterable_computed = true;
+      if(isFinal && num == state().boundariesCrossed) {
+		isIterable_computed = true;
+	}
     return isIterable_value;
   }
   /**
    * @apilevel internal
    */
   private boolean isIterable_compute() {  return instanceOf(lookupType("java.lang", "Iterable"));  }
-  /* 
+  /*
      1) It is a compile-time error to attempt to explicitly instantiate an enum type
      (\ufffd\ufffd\ufffd15.9.1).
   * @attribute syn
@@ -4091,9 +4337,10 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
         involvesTypeParameters_visited = state.CIRCLE_INDEX;
         state.CHANGE = false;
         boolean new_involvesTypeParameters_value = involvesTypeParameters_compute();
-        if (new_involvesTypeParameters_value!=involvesTypeParameters_value)
-          state.CHANGE = true;
-        involvesTypeParameters_value = new_involvesTypeParameters_value; 
+        if (new_involvesTypeParameters_value!=involvesTypeParameters_value) {
+			state.CHANGE = true;
+		}
+        involvesTypeParameters_value = new_involvesTypeParameters_value;
         state.CIRCLE_INDEX++;
       } while (state.CHANGE);
         if(isFinal && num == state().boundariesCrossed) {
@@ -4106,7 +4353,7 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
         involvesTypeParameters_computed = false;
         involvesTypeParameters_initialized = false;
       }
-      state.IN_CIRCLE = false; 
+      state.IN_CIRCLE = false;
       return involvesTypeParameters_value;
     }
     if(involvesTypeParameters_visited != state.CIRCLE_INDEX) {
@@ -4118,9 +4365,10 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
         return involvesTypeParameters_value;
       }
       boolean new_involvesTypeParameters_value = involvesTypeParameters_compute();
-      if (new_involvesTypeParameters_value!=involvesTypeParameters_value)
-        state.CHANGE = true;
-      involvesTypeParameters_value = new_involvesTypeParameters_value; 
+      if (new_involvesTypeParameters_value!=involvesTypeParameters_value) {
+		state.CHANGE = true;
+	}
+      involvesTypeParameters_value = new_involvesTypeParameters_value;
       return involvesTypeParameters_value;
     }
     return involvesTypeParameters_value;
@@ -4184,17 +4432,21 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     erasure_value = erasure_compute();
-      if(isFinal && num == state().boundariesCrossed) erasure_computed = true;
+      if(isFinal && num == state().boundariesCrossed) {
+		erasure_computed = true;
+	}
     return erasure_value;
   }
   /**
    * @apilevel internal
    */
   private TypeDecl erasure_compute() {
-    if(isAnonymous() || isLocalClass())
-      return this;
-    if(!isNestedType())
-      return this;
+    if(isAnonymous() || isLocalClass()) {
+		return this;
+	}
+    if(!isNestedType()) {
+		return this;
+	}
     return extractSingleType(enclosingType().erasure().memberTypes(name()));
   }
   /**
@@ -4219,7 +4471,9 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     implementedInterfaces_value = implementedInterfaces_compute();
-      if(isFinal && num == state().boundariesCrossed) implementedInterfaces_computed = true;
+      if(isFinal && num == state().boundariesCrossed) {
+		implementedInterfaces_computed = true;
+	}
     return implementedInterfaces_value;
   }
   /**
@@ -4231,11 +4485,15 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @aspect LookupParTypeDecl
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:571
    */
-  public boolean sameSignature(Access a) {
+  public boolean sameSignature(final Access a) {
     ASTNode$State state = state();
     try {
-    if(a instanceof ParTypeAccess) return false;
-    if(a instanceof AbstractWildcard) return false;
+    if(a instanceof ParTypeAccess) {
+		return false;
+	}
+    if(a instanceof AbstractWildcard) {
+		return false;
+	}
     return this == a.type();
   }
     finally {
@@ -4262,7 +4520,8 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @aspect LookupParTypeDecl
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1068
    */
-  @SuppressWarnings({"unchecked", "cast"})
+  @Override
+@SuppressWarnings({"unchecked", "cast"})
   public boolean usesTypeVariable() {
     if(usesTypeVariable_computed) {
       return usesTypeVariable_value;
@@ -4280,9 +4539,10 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
         usesTypeVariable_visited = state.CIRCLE_INDEX;
         state.CHANGE = false;
         boolean new_usesTypeVariable_value = usesTypeVariable_compute();
-        if (new_usesTypeVariable_value!=usesTypeVariable_value)
-          state.CHANGE = true;
-        usesTypeVariable_value = new_usesTypeVariable_value; 
+        if (new_usesTypeVariable_value!=usesTypeVariable_value) {
+			state.CHANGE = true;
+		}
+        usesTypeVariable_value = new_usesTypeVariable_value;
         state.CIRCLE_INDEX++;
       } while (state.CHANGE);
         if(isFinal && num == state().boundariesCrossed) {
@@ -4295,7 +4555,7 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
         usesTypeVariable_computed = false;
         usesTypeVariable_initialized = false;
       }
-      state.IN_CIRCLE = false; 
+      state.IN_CIRCLE = false;
       return usesTypeVariable_value;
     }
     if(usesTypeVariable_visited != state.CIRCLE_INDEX) {
@@ -4307,9 +4567,10 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
         return usesTypeVariable_value;
       }
       boolean new_usesTypeVariable_value = usesTypeVariable_compute();
-      if (new_usesTypeVariable_value!=usesTypeVariable_value)
-        state.CHANGE = true;
-      usesTypeVariable_value = new_usesTypeVariable_value; 
+      if (new_usesTypeVariable_value!=usesTypeVariable_value) {
+		state.CHANGE = true;
+	}
+      usesTypeVariable_value = new_usesTypeVariable_value;
       return usesTypeVariable_value;
     }
     return usesTypeVariable_value;
@@ -4373,7 +4634,9 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     sourceTypeDecl_value = sourceTypeDecl_compute();
-      if(isFinal && num == state().boundariesCrossed) sourceTypeDecl_computed = true;
+      if(isFinal && num == state().boundariesCrossed) {
+		sourceTypeDecl_computed = true;
+	}
     return sourceTypeDecl_value;
   }
   /**
@@ -4396,7 +4659,7 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @aspect GenericsSubtype
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericsSubtype.jrag:14
    */
-  public boolean supertypeGenericClassDecl(GenericClassDecl type) {
+  public boolean supertypeGenericClassDecl(final GenericClassDecl type) {
     ASTNode$State state = state();
     try {  return supertypeClassDecl(type);  }
     finally {
@@ -4407,7 +4670,7 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @aspect GenericsSubtype
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericsSubtype.jrag:20
    */
-  public boolean supertypeGenericInterfaceDecl(GenericInterfaceDecl type) {
+  public boolean supertypeGenericInterfaceDecl(final GenericInterfaceDecl type) {
     ASTNode$State state = state();
     try {  return this == type || supertypeInterfaceDecl(type);  }
     finally {
@@ -4418,7 +4681,7 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @aspect GenericsSubtype
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericsSubtype.jrag:26
    */
-  public boolean supertypeRawClassDecl(RawClassDecl type) {
+  public boolean supertypeRawClassDecl(final RawClassDecl type) {
     ASTNode$State state = state();
     try {  return supertypeParClassDecl(type);  }
     finally {
@@ -4429,7 +4692,7 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @aspect GenericsSubtype
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericsSubtype.jrag:30
    */
-  public boolean supertypeRawInterfaceDecl(RawInterfaceDecl type) {
+  public boolean supertypeRawInterfaceDecl(final RawInterfaceDecl type) {
     ASTNode$State state = state();
     try {  return supertypeParInterfaceDecl(type);  }
     finally {
@@ -4440,7 +4703,7 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @aspect GenericsSubtype
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericsSubtype.jrag:46
    */
-  public boolean supertypeWildcard(WildcardType type) {
+  public boolean supertypeWildcard(final WildcardType type) {
     ASTNode$State state = state();
     try {  return false;  }
     finally {
@@ -4451,7 +4714,7 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @aspect GenericsSubtype
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericsSubtype.jrag:57
    */
-  public boolean supertypeWildcardExtends(WildcardExtendsType type) {
+  public boolean supertypeWildcardExtends(final WildcardExtendsType type) {
     ASTNode$State state = state();
     try {  return false;  }
     finally {
@@ -4462,7 +4725,7 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @aspect GenericsSubtype
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericsSubtype.jrag:66
    */
-  public boolean supertypeWildcardSuper(WildcardSuperType type) {
+  public boolean supertypeWildcardSuper(final WildcardSuperType type) {
     ASTNode$State state = state();
     try {  return false;  }
     finally {
@@ -4484,7 +4747,7 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @aspect GenericsSubtype
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericsSubtype.jrag:125
    */
-  public boolean supertypeParClassDecl(ParClassDecl type) {
+  public boolean supertypeParClassDecl(final ParClassDecl type) {
     ASTNode$State state = state();
     try {  return supertypeClassDecl(type);  }
     finally {
@@ -4495,7 +4758,7 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @aspect GenericsSubtype
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericsSubtype.jrag:129
    */
-  public boolean supertypeParInterfaceDecl(ParInterfaceDecl type) {
+  public boolean supertypeParInterfaceDecl(final ParInterfaceDecl type) {
     ASTNode$State state = state();
     try {  return supertypeInterfaceDecl(type);  }
     finally {
@@ -4508,17 +4771,19 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericsSubtype.jrag:141
    */
   @SuppressWarnings({"unchecked", "cast"})
-  public boolean containedIn(TypeDecl type) {
+  public boolean containedIn(final TypeDecl type) {
     Object _parameters = type;
-    if(containedIn_TypeDecl_values == null) containedIn_TypeDecl_values = new java.util.HashMap(4);
+    if(containedIn_TypeDecl_values == null) {
+		containedIn_TypeDecl_values = new java.util.HashMap(4);
+	}
     ASTNode$State.CircularValue _value;
     if(containedIn_TypeDecl_values.containsKey(_parameters)) {
       Object _o = containedIn_TypeDecl_values.get(_parameters);
       if(!(_o instanceof ASTNode$State.CircularValue)) {
         return ((Boolean)_o).booleanValue();
-      }
-      else
-        _value = (ASTNode$State.CircularValue)_o;
+      } else {
+		_value = (ASTNode$State.CircularValue)_o;
+	}
     }
     else {
       _value = new ASTNode$State.CircularValue();
@@ -4550,7 +4815,7 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
       containedIn_compute(type);
       state.RESET_CYCLE = false;
       }
-      state.IN_CIRCLE = false; 
+      state.IN_CIRCLE = false;
       return new_containedIn_TypeDecl_value;
     }
     if(!new Integer(state.CIRCLE_INDEX).equals(_value.visited)) {
@@ -4570,15 +4835,16 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
   /**
    * @apilevel internal
    */
-  private boolean containedIn_compute(TypeDecl type) {
-    if(type == this || type instanceof WildcardType) 
-      return true;
-    else if(type instanceof WildcardExtendsType)
-      return this.subtype(((WildcardExtendsType)type).extendsType());
-    else if(type instanceof WildcardSuperType)
-      return ((WildcardSuperType)type).superType().subtype(this);
-    else if(type instanceof TypeVariable)
-      return subtype(type);
+  private boolean containedIn_compute(final TypeDecl type) {
+    if(type == this || type instanceof WildcardType) {
+		return true;
+	} else if(type instanceof WildcardExtendsType) {
+		return this.subtype(((WildcardExtendsType)type).extendsType());
+	} else if(type instanceof WildcardSuperType) {
+		return ((WildcardSuperType)type).superType().subtype(this);
+	} else if(type instanceof TypeVariable) {
+		return subtype(type);
+	}
     return sameStructure(type);
     //return false;
   }
@@ -4589,17 +4855,19 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericsSubtype.jrag:178
    */
   @SuppressWarnings({"unchecked", "cast"})
-  public boolean sameStructure(TypeDecl t) {
+  public boolean sameStructure(final TypeDecl t) {
     Object _parameters = t;
-    if(sameStructure_TypeDecl_values == null) sameStructure_TypeDecl_values = new java.util.HashMap(4);
+    if(sameStructure_TypeDecl_values == null) {
+		sameStructure_TypeDecl_values = new java.util.HashMap(4);
+	}
     ASTNode$State.CircularValue _value;
     if(sameStructure_TypeDecl_values.containsKey(_parameters)) {
       Object _o = sameStructure_TypeDecl_values.get(_parameters);
       if(!(_o instanceof ASTNode$State.CircularValue)) {
         return ((Boolean)_o).booleanValue();
-      }
-      else
-        _value = (ASTNode$State.CircularValue)_o;
+      } else {
+		_value = (ASTNode$State.CircularValue)_o;
+	}
     }
     else {
       _value = new ASTNode$State.CircularValue();
@@ -4631,7 +4899,7 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
       sameStructure_compute(t);
       state.RESET_CYCLE = false;
       }
-      state.IN_CIRCLE = false; 
+      state.IN_CIRCLE = false;
       return new_sameStructure_TypeDecl_value;
     }
     if(!new Integer(state.CIRCLE_INDEX).equals(_value.visited)) {
@@ -4651,20 +4919,23 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
   /**
    * @apilevel internal
    */
-  private boolean sameStructure_compute(TypeDecl t) {  return t == this;  }
+  private boolean sameStructure_compute(final TypeDecl t) {  return t == this;  }
   /**
    * @attribute syn
    * @aspect GenericsSubtype
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericsSubtype.jrag:291
    */
-  public boolean supertypeTypeVariable(TypeVariable type) {
+  public boolean supertypeTypeVariable(final TypeVariable type) {
     ASTNode$State state = state();
     try {
-    if(type == this)
-      return true;
-    for(int i = 0; i < type.getNumTypeBound(); i++)
-      if(type.getTypeBound(i).type().subtype(this))
-        return true;
+    if(type == this) {
+		return true;
+	}
+    for(int i = 0; i < type.getNumTypeBound(); i++) {
+		if(type.getTypeBound(i).type().subtype(this)) {
+			return true;
+		}
+	}
     return false;
   }
     finally {
@@ -4675,12 +4946,14 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @aspect GenericsSubtype
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericsSubtype.jrag:347
    */
-  public boolean supertypeLUBType(LUBType type) {
+  public boolean supertypeLUBType(final LUBType type) {
     ASTNode$State state = state();
     try {
-    for(int i = 0; i < type.getNumTypeBound(); i++)
-      if(!type.getTypeBound(i).type().subtype(this))
-        return false;
+    for(int i = 0; i < type.getNumTypeBound(); i++) {
+		if(!type.getTypeBound(i).type().subtype(this)) {
+			return false;
+		}
+	}
     return true;
   }
     finally {
@@ -4691,13 +4964,15 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @aspect GenericsSubtype
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericsSubtype.jrag:366
    */
-  public boolean supertypeGLBType(GLBType type) {
+  public boolean supertypeGLBType(final GLBType type) {
     ASTNode$State state = state();
     try {
-    // T1 && .. && Tn <: this, if exists  0 < i <= n Ti <: this 
-    for(int i = 0; i < type.getNumTypeBound(); i++)
-      if(type.getTypeBound(i).type().subtype(this))
-        return true;
+    // T1 && .. && Tn <: this, if exists  0 < i <= n Ti <: this
+    for(int i = 0; i < type.getNumTypeBound(); i++) {
+		if(type.getTypeBound(i).type().subtype(this)) {
+			return true;
+		}
+	}
     return false;
   }
     finally {
@@ -4710,17 +4985,19 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericsSubtype.jrag:405
    */
   @SuppressWarnings({"unchecked", "cast"})
-  public boolean subtype(TypeDecl type) {
+  public boolean subtype(final TypeDecl type) {
     Object _parameters = type;
-    if(subtype_TypeDecl_values == null) subtype_TypeDecl_values = new java.util.HashMap(4);
+    if(subtype_TypeDecl_values == null) {
+		subtype_TypeDecl_values = new java.util.HashMap(4);
+	}
     ASTNode$State.CircularValue _value;
     if(subtype_TypeDecl_values.containsKey(_parameters)) {
       Object _o = subtype_TypeDecl_values.get(_parameters);
       if(!(_o instanceof ASTNode$State.CircularValue)) {
         return ((Boolean)_o).booleanValue();
-      }
-      else
-        _value = (ASTNode$State.CircularValue)_o;
+      } else {
+		_value = (ASTNode$State.CircularValue)_o;
+	}
     }
     else {
       _value = new ASTNode$State.CircularValue();
@@ -4752,7 +5029,7 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
       subtype_compute(type);
       state.RESET_CYCLE = false;
       }
-      state.IN_CIRCLE = false; 
+      state.IN_CIRCLE = false;
       return new_subtype_TypeDecl_value;
     }
     if(!new Integer(state.CIRCLE_INDEX).equals(_value.visited)) {
@@ -4772,13 +5049,13 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
   /**
    * @apilevel internal
    */
-  private boolean subtype_compute(TypeDecl type) {  return type == this;  }
+  private boolean subtype_compute(final TypeDecl type) {  return type == this;  }
   /**
    * @attribute syn
    * @aspect GenericsSubtype
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericsSubtype.jrag:421
    */
-  public boolean supertypeClassDecl(ClassDecl type) {
+  public boolean supertypeClassDecl(final ClassDecl type) {
     ASTNode$State state = state();
     try {  return type == this;  }
     finally {
@@ -4789,7 +5066,7 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @aspect GenericsSubtype
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericsSubtype.jrag:437
    */
-  public boolean supertypeInterfaceDecl(InterfaceDecl type) {
+  public boolean supertypeInterfaceDecl(final InterfaceDecl type) {
     ASTNode$State state = state();
     try {  return type == this;  }
     finally {
@@ -4800,7 +5077,7 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @aspect GenericsSubtype
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericsSubtype.jrag:450
    */
-  public boolean supertypeArrayDecl(ArrayDecl type) {
+  public boolean supertypeArrayDecl(final ArrayDecl type) {
     ASTNode$State state = state();
     try {  return this == type;  }
     finally {
@@ -4811,7 +5088,7 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @aspect GenericsSubtype
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericsSubtype.jrag:472
    */
-  public boolean supertypePrimitiveType(PrimitiveType type) {
+  public boolean supertypePrimitiveType(final PrimitiveType type) {
     ASTNode$State state = state();
     try {  return type == this;  }
     finally {
@@ -4822,7 +5099,7 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @aspect GenericsSubtype
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericsSubtype.jrag:479
    */
-  public boolean supertypeNullType(NullType type) {
+  public boolean supertypeNullType(final NullType type) {
     ASTNode$State state = state();
     try {  return false;  }
     finally {
@@ -4833,7 +5110,7 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @aspect GenericsSubtype
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericsSubtype.jrag:483
    */
-  public boolean supertypeVoidType(VoidType type) {
+  public boolean supertypeVoidType(final VoidType type) {
     ASTNode$State state = state();
     try {  return false;  }
     finally {
@@ -4844,7 +5121,7 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @aspect GenericsSubtype
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericsSubtype.jrag:493
    */
-  public boolean supertypeClassDeclSubstituted(ClassDeclSubstituted type) {
+  public boolean supertypeClassDeclSubstituted(final ClassDeclSubstituted type) {
     ASTNode$State state = state();
     try {  return type.original() == this || supertypeClassDecl(type);  }
     finally {
@@ -4855,7 +5132,7 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @aspect GenericsSubtype
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericsSubtype.jrag:503
    */
-  public boolean supertypeInterfaceDeclSubstituted(InterfaceDeclSubstituted type) {
+  public boolean supertypeInterfaceDeclSubstituted(final InterfaceDeclSubstituted type) {
     ASTNode$State state = state();
     try {  return type.original() == this || supertypeInterfaceDecl(type);  }
     finally {
@@ -4866,7 +5143,7 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @aspect GenericsSubtype
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericsSubtype.jrag:513
    */
-  public boolean supertypeGenericClassDeclSubstituted(GenericClassDeclSubstituted type) {
+  public boolean supertypeGenericClassDeclSubstituted(final GenericClassDeclSubstituted type) {
     ASTNode$State state = state();
     try {  return type.original() == this || supertypeGenericClassDecl(type);  }
     finally {
@@ -4877,7 +5154,7 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @aspect GenericsSubtype
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericsSubtype.jrag:523
    */
-  public boolean supertypeGenericInterfaceDeclSubstituted(GenericInterfaceDeclSubstituted type) {
+  public boolean supertypeGenericInterfaceDeclSubstituted(final GenericInterfaceDeclSubstituted type) {
     ASTNode$State state = state();
     try {  return type.original() == this || supertypeGenericInterfaceDecl(type);  }
     finally {
@@ -4899,15 +5176,17 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @aspect InnerClasses
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Backend/InnerClasses.jrag:94
    */
-  public MethodDecl methodWithArgs(String name, TypeDecl[] args) {
+  public MethodDecl methodWithArgs(final String name, final TypeDecl[] args) {
     ASTNode$State state = state();
     try {
     for(Iterator iter = memberMethods(name).iterator(); iter.hasNext(); ) {
       MethodDecl m = (MethodDecl)iter.next();
       if(m.getNumParameter() == args.length) {
-        for(int i = 0; i < args.length; i++)
-          if(m.getParameter(i).type() == args[i])
-            return m;
+        for(int i = 0; i < args.length; i++) {
+			if(m.getParameter(i).type() == args[i]) {
+				return m;
+			}
+		}
       }
     }
     return null;
@@ -4937,7 +5216,9 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     enclosingVariables_value = enclosingVariables_compute();
-      if(isFinal && num == state().boundariesCrossed) enclosingVariables_computed = true;
+      if(isFinal && num == state().boundariesCrossed) {
+		enclosingVariables_computed = true;
+	}
     return enclosingVariables_value;
   }
   /**
@@ -4945,13 +5226,16 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    */
   private Collection enclosingVariables_compute() {
     HashSet set = new HashSet();
-    for(TypeDecl e = this; e != null; e = e.enclosingType())
-      if(e.isLocalClass() || e.isAnonymous())
-        collectEnclosingVariables(set, e.enclosingType());
+    for(TypeDecl e = this; e != null; e = e.enclosingType()) {
+		if(e.isLocalClass() || e.isAnonymous()) {
+			collectEnclosingVariables(set, e.enclosingType());
+		}
+	}
     if(isClassDecl()) {
       ClassDecl classDecl = (ClassDecl)this;
-      if(classDecl.isNestedType() && classDecl.hasSuperclass())
-        set.addAll(classDecl.superclass().enclosingVariables());
+      if(classDecl.isNestedType() && classDecl.hasSuperclass()) {
+		set.addAll(classDecl.superclass().enclosingVariables());
+	}
     }
     return set;
   }
@@ -4963,7 +5247,7 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
   public boolean isAnonymousInNonStaticContext() {
     ASTNode$State state = state();
     try {
-    return isAnonymous() && 
+    return isAnonymous() &&
            !((ClassInstanceExpr)getParent().getParent()).unqualifiedScope().inStaticContext()
            && (!inExplicitConstructorInvocation() || enclosingBodyDecl().hostType().isInnerType());
   }
@@ -4978,12 +5262,13 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
   public boolean needsEnclosing() {
     ASTNode$State state = state();
     try {
-    if(isAnonymous())
-      return isAnonymousInNonStaticContext();
-    else if(isLocalClass())
-      return !inStaticContext();
-    else if(isInnerType())
-      return true;
+    if(isAnonymous()) {
+		return isAnonymousInNonStaticContext();
+	} else if(isLocalClass()) {
+		return !inStaticContext();
+	} else if(isInnerType()) {
+		return true;
+	}
     return false;
   }
     finally {
@@ -4997,15 +5282,18 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
   public boolean needsSuperEnclosing() {
     ASTNode$State state = state();
     try {
-    if(!isAnonymous())
-      return false;
+    if(!isAnonymous()) {
+		return false;
+	}
     TypeDecl superClass = ((ClassDecl)this).superclass();
-    if(superClass.isLocalClass())
-      return !superClass.inStaticContext();
-    else if(superClass.isInnerType())
-      return true;
-    if(needsEnclosing() && enclosing() == superEnclosing())
-      return false;
+    if(superClass.isLocalClass()) {
+		return !superClass.inStaticContext();
+	} else if(superClass.isInnerType()) {
+		return true;
+	}
+    if(needsEnclosing() && enclosing() == superEnclosing()) {
+		return false;
+	}
     return false;
   }
     finally {
@@ -5019,11 +5307,13 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
   public TypeDecl enclosing() {
     ASTNode$State state = state();
     try {
-    if(!needsEnclosing())
-      return null;
+    if(!needsEnclosing()) {
+		return null;
+	}
     TypeDecl typeDecl = enclosingType();
-    if(isAnonymous() && inExplicitConstructorInvocation())
-      typeDecl = typeDecl.enclosingType();
+    if(isAnonymous() && inExplicitConstructorInvocation()) {
+		typeDecl = typeDecl.enclosingType();
+	}
     return typeDecl;
   }
     finally {
@@ -5062,7 +5352,9 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     uniqueIndex_value = uniqueIndex_compute();
-      if(isFinal && num == state().boundariesCrossed) uniqueIndex_computed = true;
+      if(isFinal && num == state().boundariesCrossed) {
+		uniqueIndex_computed = true;
+	}
     return uniqueIndex_value;
   }
   /**
@@ -5091,7 +5383,9 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     jvmName_value = jvmName_compute();
-      if(isFinal && num == state().boundariesCrossed) jvmName_computed = true;
+      if(isFinal && num == state().boundariesCrossed) {
+		jvmName_computed = true;
+	}
     return jvmName_value;
   }
   /**
@@ -5148,21 +5442,25 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     getSootClassDecl_value = getSootClassDecl_compute();
-      if(isFinal && num == state().boundariesCrossed) getSootClassDecl_computed = true;
+      if(isFinal && num == state().boundariesCrossed) {
+		getSootClassDecl_computed = true;
+	}
     return getSootClassDecl_value;
   }
   /**
    * @apilevel internal
    */
   private SootClass getSootClassDecl_compute() {
-    if(erasure() != this)
-      return erasure().getSootClassDecl();
+    if(erasure() != this) {
+		return erasure().getSootClassDecl();
+	}
     if(compilationUnit().fromSource()) {
       return sootClass();
     }
     else {
-      if(options().verbose())
-        System.out.println("Loading .class file " + jvmName());
+      if(options().verbose()) {
+		System.out.println("Loading .class file " + jvmName());
+	}
       return SootResolver.v().makeClassRef(jvmName());
       /*
 
@@ -5171,7 +5469,7 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
       if( type != null ) toReturn = type.getSootClass();
       if(toReturn != null) {
         return toReturn;
-      } 
+      }
       SootClass c = new SootClass(jvmName());
       c.setPhantom(true);
       Scene.v().addClass(c);
@@ -5210,14 +5508,17 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     getSootType_value = getSootType_compute();
-      if(isFinal && num == state().boundariesCrossed) getSootType_computed = true;
+      if(isFinal && num == state().boundariesCrossed) {
+		getSootType_computed = true;
+	}
     return getSootType_value;
   }
   /**
    * @apilevel internal
    */
   private Type getSootType_compute() {
-    return RefType.v(erasure().jvmName());
+    RefType type = RefType.v(erasure().jvmName());
+    return type;
   }
   /**
    * @attribute syn
@@ -5252,7 +5553,9 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     sootClass_value = sootClass_compute();
-      if(isFinal && num == state().boundariesCrossed) sootClass_computed = true;
+      if(isFinal && num == state().boundariesCrossed) {
+		sootClass_computed = true;
+	}
     return sootClass_value;
   }
   /**
@@ -5289,13 +5592,25 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
       result |= soot.Modifier.PUBLIC;
     }
     else {
-      if(isPublic()) result |= soot.Modifier.PUBLIC;
-      if(isProtected()) result |= soot.Modifier.PROTECTED;
-      if(isPrivate()) result |= soot.Modifier.PRIVATE;
+      if(isPublic()) {
+		result |= soot.Modifier.PUBLIC;
+	}
+      if(isProtected()) {
+		result |= soot.Modifier.PROTECTED;
+	}
+      if(isPrivate()) {
+		result |= soot.Modifier.PRIVATE;
+	}
     }
-    if(isFinal()) result |= soot.Modifier.FINAL;
-    if(isStatic()) result |= soot.Modifier.STATIC;
-    if(isAbstract()) result |= soot.Modifier.ABSTRACT;
+    if(isFinal()) {
+		result |= soot.Modifier.FINAL;
+	}
+    if(isStatic()) {
+		result |= soot.Modifier.STATIC;
+	}
+    if(isAbstract()) {
+		result |= soot.Modifier.ABSTRACT;
+	}
     return result;
   }
     finally {
@@ -5323,7 +5638,9 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     needsClinit_value = needsClinit_compute();
-      if(isFinal && num == state().boundariesCrossed) needsClinit_computed = true;
+      if(isFinal && num == state().boundariesCrossed) {
+		needsClinit_computed = true;
+	}
     return needsClinit_value;
   }
   /**
@@ -5366,7 +5683,9 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     innerClassesAttributeEntries_value = innerClassesAttributeEntries_compute();
-      if(isFinal && num == state().boundariesCrossed) innerClassesAttributeEntries_computed = true;
+      if(isFinal && num == state().boundariesCrossed) {
+		innerClassesAttributeEntries_computed = true;
+	}
     return innerClassesAttributeEntries_value;
   }
   /**
@@ -5374,12 +5693,15 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    */
   private Collection innerClassesAttributeEntries_compute() {
     HashSet list = new HashSet();
-    if(isNestedType())
-      list.add(this);
-    for(Iterator iter = nestedTypes().iterator(); iter.hasNext(); )
-      list.add(iter.next());
-    for(Iterator iter = usedNestedTypes().iterator(); iter.hasNext(); )
-      list.add(iter.next());
+    if(isNestedType()) {
+		list.add(this);
+	}
+    for(Iterator iter = nestedTypes().iterator(); iter.hasNext(); ) {
+		list.add(iter.next());
+	}
+    for(Iterator iter = usedNestedTypes().iterator(); iter.hasNext(); ) {
+		list.add(iter.next());
+	}
     return list;
   }
   protected java.util.Map getSootField_String_TypeDecl_values;
@@ -5389,11 +5711,13 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/EmitJimple.jrag:996
    */
   @SuppressWarnings({"unchecked", "cast"})
-  public SootField getSootField(String name, TypeDecl type) {
+  public SootField getSootField(final String name, final TypeDecl type) {
     java.util.List _parameters = new java.util.ArrayList(2);
     _parameters.add(name);
     _parameters.add(type);
-    if(getSootField_String_TypeDecl_values == null) getSootField_String_TypeDecl_values = new java.util.HashMap(4);
+    if(getSootField_String_TypeDecl_values == null) {
+		getSootField_String_TypeDecl_values = new java.util.HashMap(4);
+	}
     if(getSootField_String_TypeDecl_values.containsKey(_parameters)) {
       return (SootField)getSootField_String_TypeDecl_values.get(_parameters);
     }
@@ -5401,13 +5725,15 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     SootField getSootField_String_TypeDecl_value = getSootField_compute(name, type);
-      if(isFinal && num == state().boundariesCrossed) getSootField_String_TypeDecl_values.put(_parameters, getSootField_String_TypeDecl_value);
+      if(isFinal && num == state().boundariesCrossed) {
+		getSootField_String_TypeDecl_values.put(_parameters, getSootField_String_TypeDecl_value);
+	}
     return getSootField_String_TypeDecl_value;
   }
   /**
    * @apilevel internal
    */
-  private SootField getSootField_compute(String name, TypeDecl type) {
+  private SootField getSootField_compute(final String name, final TypeDecl type) {
     SootField f = new SootField(name, type.getSootType(), 0);
     getSootClassDecl().addField(f);
     return f;
@@ -5441,9 +5767,11 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/Jimple1.5Backend/EnumsCodegen.jrag:42
    */
   @SuppressWarnings({"unchecked", "cast"})
-  public MethodDecl createEnumMethod(TypeDecl enumDecl) {
+  public MethodDecl createEnumMethod(final TypeDecl enumDecl) {
     Object _parameters = enumDecl;
-    if(createEnumMethod_TypeDecl_values == null) createEnumMethod_TypeDecl_values = new java.util.HashMap(4);
+    if(createEnumMethod_TypeDecl_values == null) {
+		createEnumMethod_TypeDecl_values = new java.util.HashMap(4);
+	}
     if(createEnumMethod_TypeDecl_values.containsKey(_parameters)) {
       return (MethodDecl)createEnumMethod_TypeDecl_values.get(_parameters);
     }
@@ -5451,13 +5779,15 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     MethodDecl createEnumMethod_TypeDecl_value = createEnumMethod_compute(enumDecl);
-      if(isFinal && num == state().boundariesCrossed) createEnumMethod_TypeDecl_values.put(_parameters, createEnumMethod_TypeDecl_value);
+      if(isFinal && num == state().boundariesCrossed) {
+		createEnumMethod_TypeDecl_values.put(_parameters, createEnumMethod_TypeDecl_value);
+	}
     return createEnumMethod_TypeDecl_value;
   }
   /**
    * @apilevel internal
    */
-  private MethodDecl createEnumMethod_compute(TypeDecl enumDecl) {
+  private MethodDecl createEnumMethod_compute(final TypeDecl enumDecl) {
     MethodDecl m = new MethodDecl(
       new Modifiers(new List().add(new Modifier("static")).add(new Modifier("final")).add(new Modifier("private"))),
       typeInt().arrayType().createQualifiedAccess(),
@@ -5506,9 +5836,11 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/Jimple1.5Backend/EnumsCodegen.jrag:86
    */
   @SuppressWarnings({"unchecked", "cast"})
-  public int createEnumIndex(EnumConstant e) {
+  public int createEnumIndex(final EnumConstant e) {
     Object _parameters = e;
-    if(createEnumIndex_EnumConstant_values == null) createEnumIndex_EnumConstant_values = new java.util.HashMap(4);
+    if(createEnumIndex_EnumConstant_values == null) {
+		createEnumIndex_EnumConstant_values = new java.util.HashMap(4);
+	}
     if(createEnumIndex_EnumConstant_values.containsKey(_parameters)) {
       return ((Integer)createEnumIndex_EnumConstant_values.get(_parameters)).intValue();
     }
@@ -5516,17 +5848,21 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     int createEnumIndex_EnumConstant_value = createEnumIndex_compute(e);
-      if(isFinal && num == state().boundariesCrossed) createEnumIndex_EnumConstant_values.put(_parameters, Integer.valueOf(createEnumIndex_EnumConstant_value));
+      if(isFinal && num == state().boundariesCrossed) {
+		createEnumIndex_EnumConstant_values.put(_parameters, Integer.valueOf(createEnumIndex_EnumConstant_value));
+	}
     return createEnumIndex_EnumConstant_value;
   }
   /**
    * @apilevel internal
    */
-  private int createEnumIndex_compute(EnumConstant e) {
-    if(createEnumIndexMap == null)
-      createEnumIndexMap = new HashMap();
-    if(!createEnumIndexMap.containsKey(e.hostType()))
-      createEnumIndexMap.put(e.hostType(), new Integer(0));
+  private int createEnumIndex_compute(final EnumConstant e) {
+    if(createEnumIndexMap == null) {
+		createEnumIndexMap = new HashMap();
+	}
+    if(!createEnumIndexMap.containsKey(e.hostType())) {
+		createEnumIndexMap.put(e.hostType(), new Integer(0));
+	}
     Integer i = (Integer)createEnumIndexMap.get(e.hostType());
     i = new Integer(i.intValue() + 1);
     createEnumIndexMap.put(e.hostType(), i);
@@ -5571,9 +5907,11 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/Jimple1.5Backend/EnumsCodegen.jrag:129
    */
   @SuppressWarnings({"unchecked", "cast"})
-  public FieldDeclaration createEnumArray(TypeDecl enumDecl) {
+  public FieldDeclaration createEnumArray(final TypeDecl enumDecl) {
     Object _parameters = enumDecl;
-    if(createEnumArray_TypeDecl_values == null) createEnumArray_TypeDecl_values = new java.util.HashMap(4);
+    if(createEnumArray_TypeDecl_values == null) {
+		createEnumArray_TypeDecl_values = new java.util.HashMap(4);
+	}
     if(createEnumArray_TypeDecl_values.containsKey(_parameters)) {
       return (FieldDeclaration)createEnumArray_TypeDecl_values.get(_parameters);
     }
@@ -5581,13 +5919,15 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     FieldDeclaration createEnumArray_TypeDecl_value = createEnumArray_compute(enumDecl);
-      if(isFinal && num == state().boundariesCrossed) createEnumArray_TypeDecl_values.put(_parameters, createEnumArray_TypeDecl_value);
+      if(isFinal && num == state().boundariesCrossed) {
+		createEnumArray_TypeDecl_values.put(_parameters, createEnumArray_TypeDecl_value);
+	}
     return createEnumArray_TypeDecl_value;
   }
   /**
    * @apilevel internal
    */
-  private FieldDeclaration createEnumArray_compute(TypeDecl enumDecl) {
+  private FieldDeclaration createEnumArray_compute(final TypeDecl enumDecl) {
     FieldDeclaration f = new FieldDeclaration(
       new Modifiers(new List().add(new Modifier("static")).add(new Modifier("final")).add(new Modifier("private"))),
       typeInt().arrayType().createQualifiedAccess(),
@@ -5604,7 +5944,7 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @aspect GenericsCodegen
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/Jimple1.5Backend/GenericsCodegen.jrag:333
    */
-  public SimpleSet bridgeCandidates(String signature) {
+  public SimpleSet bridgeCandidates(final String signature) {
     ASTNode$State state = state();
     try {  return SimpleSet.emptySet;  }
     finally {
@@ -5645,7 +5985,7 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @aspect UncheckedConversion
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/UncheckedConversion.jrag:50
    */
-  public boolean isUncheckedConversionTo(TypeDecl dest) {
+  public boolean isUncheckedConversionTo(final TypeDecl dest) {
     ASTNode$State state = state();
     try {  return (!dest.isRawType()) && this.isRawType();  }
     finally {
@@ -5673,7 +6013,9 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     componentType_value = getParent().Define_TypeDecl_componentType(this, null);
-      if(isFinal && num == state().boundariesCrossed) componentType_computed = true;
+      if(isFinal && num == state().boundariesCrossed) {
+		componentType_computed = true;
+	}
     return componentType_value;
   }
   /**
@@ -5703,7 +6045,8 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @aspect ClassPath
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ClassPath.jrag:31
    */
-  @SuppressWarnings({"unchecked", "cast"})
+  @Override
+@SuppressWarnings({"unchecked", "cast"})
   public CompilationUnit compilationUnit() {
     ASTNode$State state = state();
     CompilationUnit compilationUnit_value = getParent().Define_CompilationUnit_compilationUnit(this, null);
@@ -5716,9 +6059,11 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:240
    */
   @SuppressWarnings({"unchecked", "cast"})
-  public boolean isDAbefore(Variable v) {
+  public boolean isDAbefore(final Variable v) {
     Object _parameters = v;
-    if(isDAbefore_Variable_values == null) isDAbefore_Variable_values = new java.util.HashMap(4);
+    if(isDAbefore_Variable_values == null) {
+		isDAbefore_Variable_values = new java.util.HashMap(4);
+	}
     if(isDAbefore_Variable_values.containsKey(_parameters)) {
       return ((Boolean)isDAbefore_Variable_values.get(_parameters)).booleanValue();
     }
@@ -5726,7 +6071,9 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     boolean isDAbefore_Variable_value = getParent().Define_boolean_isDAbefore(this, null, v);
-      if(isFinal && num == state().boundariesCrossed) isDAbefore_Variable_values.put(_parameters, Boolean.valueOf(isDAbefore_Variable_value));
+      if(isFinal && num == state().boundariesCrossed) {
+		isDAbefore_Variable_values.put(_parameters, Boolean.valueOf(isDAbefore_Variable_value));
+	}
     return isDAbefore_Variable_value;
   }
   protected java.util.Map isDUbefore_Variable_values;
@@ -5736,9 +6083,11 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:705
    */
   @SuppressWarnings({"unchecked", "cast"})
-  public boolean isDUbefore(Variable v) {
+  public boolean isDUbefore(final Variable v) {
     Object _parameters = v;
-    if(isDUbefore_Variable_values == null) isDUbefore_Variable_values = new java.util.HashMap(4);
+    if(isDUbefore_Variable_values == null) {
+		isDUbefore_Variable_values = new java.util.HashMap(4);
+	}
     if(isDUbefore_Variable_values.containsKey(_parameters)) {
       return ((Boolean)isDUbefore_Variable_values.get(_parameters)).booleanValue();
     }
@@ -5746,7 +6095,9 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     boolean isDUbefore_Variable_value = getParent().Define_boolean_isDUbefore(this, null, v);
-      if(isFinal && num == state().boundariesCrossed) isDUbefore_Variable_values.put(_parameters, Boolean.valueOf(isDUbefore_Variable_value));
+      if(isFinal && num == state().boundariesCrossed) {
+		isDUbefore_Variable_values.put(_parameters, Boolean.valueOf(isDUbefore_Variable_value));
+	}
     return isDUbefore_Variable_value;
   }
   /**
@@ -5771,7 +6122,9 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     typeException_value = getParent().Define_TypeDecl_typeException(this, null);
-      if(isFinal && num == state().boundariesCrossed) typeException_computed = true;
+      if(isFinal && num == state().boundariesCrossed) {
+		typeException_computed = true;
+	}
     return typeException_value;
   }
   /**
@@ -5796,7 +6149,9 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     typeRuntimeException_value = getParent().Define_TypeDecl_typeRuntimeException(this, null);
-      if(isFinal && num == state().boundariesCrossed) typeRuntimeException_computed = true;
+      if(isFinal && num == state().boundariesCrossed) {
+		typeRuntimeException_computed = true;
+	}
     return typeRuntimeException_value;
   }
   /**
@@ -5821,7 +6176,9 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     typeError_value = getParent().Define_TypeDecl_typeError(this, null);
-      if(isFinal && num == state().boundariesCrossed) typeError_computed = true;
+      if(isFinal && num == state().boundariesCrossed) {
+		typeError_computed = true;
+	}
     return typeError_value;
   }
   protected java.util.Map lookupMethod_String_values;
@@ -5831,9 +6188,11 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupMethod.jrag:26
    */
   @SuppressWarnings({"unchecked", "cast"})
-  public Collection lookupMethod(String name) {
+  public Collection lookupMethod(final String name) {
     Object _parameters = name;
-    if(lookupMethod_String_values == null) lookupMethod_String_values = new java.util.HashMap(4);
+    if(lookupMethod_String_values == null) {
+		lookupMethod_String_values = new java.util.HashMap(4);
+	}
     if(lookupMethod_String_values.containsKey(_parameters)) {
       return (Collection)lookupMethod_String_values.get(_parameters);
     }
@@ -5841,7 +6200,9 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     Collection lookupMethod_String_value = getParent().Define_Collection_lookupMethod(this, null, name);
-      if(isFinal && num == state().boundariesCrossed) lookupMethod_String_values.put(_parameters, lookupMethod_String_value);
+      if(isFinal && num == state().boundariesCrossed) {
+		lookupMethod_String_values.put(_parameters, lookupMethod_String_value);
+	}
     return lookupMethod_String_value;
   }
   /**
@@ -5877,7 +6238,9 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     typeObject_value = getParent().Define_TypeDecl_typeObject(this, null);
-      if(isFinal && num == state().boundariesCrossed) typeObject_computed = true;
+      if(isFinal && num == state().boundariesCrossed) {
+		typeObject_computed = true;
+	}
     return typeObject_value;
   }
   /**
@@ -5886,7 +6249,7 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupType.jrag:98
    */
   @SuppressWarnings({"unchecked", "cast"})
-  public TypeDecl lookupType(String packageName, String typeName) {
+  public TypeDecl lookupType(final String packageName, final String typeName) {
     ASTNode$State state = state();
     TypeDecl lookupType_String_String_value = getParent().Define_TypeDecl_lookupType(this, null, packageName, typeName);
     return lookupType_String_String_value;
@@ -5898,9 +6261,11 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupType.jrag:260
    */
   @SuppressWarnings({"unchecked", "cast"})
-  public SimpleSet lookupType(String name) {
+  public SimpleSet lookupType(final String name) {
     Object _parameters = name;
-    if(lookupType_String_values == null) lookupType_String_values = new java.util.HashMap(4);
+    if(lookupType_String_values == null) {
+		lookupType_String_values = new java.util.HashMap(4);
+	}
     if(lookupType_String_values.containsKey(_parameters)) {
       return (SimpleSet)lookupType_String_values.get(_parameters);
     }
@@ -5908,7 +6273,9 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     SimpleSet lookupType_String_value = getParent().Define_SimpleSet_lookupType(this, null, name);
-      if(isFinal && num == state().boundariesCrossed) lookupType_String_values.put(_parameters, lookupType_String_value);
+      if(isFinal && num == state().boundariesCrossed) {
+		lookupType_String_values.put(_parameters, lookupType_String_value);
+	}
     return lookupType_String_value;
   }
   protected java.util.Map lookupVariable_String_values;
@@ -5917,10 +6284,13 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @aspect VariableScope
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupVariable.jrag:14
    */
-  @SuppressWarnings({"unchecked", "cast"})
-  public SimpleSet lookupVariable(String name) {
+  @Override
+@SuppressWarnings({"unchecked", "cast"})
+  public SimpleSet lookupVariable(final String name) {
     Object _parameters = name;
-    if(lookupVariable_String_values == null) lookupVariable_String_values = new java.util.HashMap(4);
+    if(lookupVariable_String_values == null) {
+		lookupVariable_String_values = new java.util.HashMap(4);
+	}
     if(lookupVariable_String_values.containsKey(_parameters)) {
       return (SimpleSet)lookupVariable_String_values.get(_parameters);
     }
@@ -5928,7 +6298,9 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     SimpleSet lookupVariable_String_value = getParent().Define_SimpleSet_lookupVariable(this, null, name);
-      if(isFinal && num == state().boundariesCrossed) lookupVariable_String_values.put(_parameters, lookupVariable_String_value);
+      if(isFinal && num == state().boundariesCrossed) {
+		lookupVariable_String_values.put(_parameters, lookupVariable_String_value);
+	}
     return lookupVariable_String_value;
   }
   /**
@@ -5937,7 +6309,7 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:242
    */
   @SuppressWarnings({"unchecked", "cast"})
-  public boolean hasPackage(String packageName) {
+  public boolean hasPackage(final String packageName) {
     ASTNode$State state = state();
     boolean hasPackage_String_value = getParent().Define_boolean_hasPackage(this, null, packageName);
     return hasPackage_String_value;
@@ -5975,7 +6347,9 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     packageName_value = getParent().Define_String_packageName(this, null);
-      if(isFinal && num == state().boundariesCrossed) packageName_computed = true;
+      if(isFinal && num == state().boundariesCrossed) {
+		packageName_computed = true;
+	}
     return packageName_value;
   }
   /**
@@ -6000,7 +6374,9 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     isAnonymous_value = getParent().Define_boolean_isAnonymous(this, null);
-      if(isFinal && num == state().boundariesCrossed) isAnonymous_computed = true;
+      if(isFinal && num == state().boundariesCrossed) {
+		isAnonymous_computed = true;
+	}
     return isAnonymous_value;
   }
   /**
@@ -6091,7 +6467,9 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     unknownType_value = getParent().Define_TypeDecl_unknownType(this, null);
-      if(isFinal && num == state().boundariesCrossed) unknownType_computed = true;
+      if(isFinal && num == state().boundariesCrossed) {
+		unknownType_computed = true;
+	}
     return unknownType_value;
   }
   /**
@@ -6138,7 +6516,9 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     inExplicitConstructorInvocation_value = getParent().Define_boolean_inExplicitConstructorInvocation(this, null);
-      if(isFinal && num == state().boundariesCrossed) inExplicitConstructorInvocation_computed = true;
+      if(isFinal && num == state().boundariesCrossed) {
+		inExplicitConstructorInvocation_computed = true;
+	}
     return inExplicitConstructorInvocation_value;
   }
   /**
@@ -6163,7 +6543,9 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     inStaticContext_value = getParent().Define_boolean_inStaticContext(this, null);
-      if(isFinal && num == state().boundariesCrossed) inStaticContext_computed = true;
+      if(isFinal && num == state().boundariesCrossed) {
+		inStaticContext_computed = true;
+	}
     return inStaticContext_value;
   }
   /**
@@ -6172,7 +6554,7 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:280
    */
   @SuppressWarnings({"unchecked", "cast"})
-  public boolean withinSuppressWarnings(String s) {
+  public boolean withinSuppressWarnings(final String s) {
     ASTNode$State state = state();
     boolean withinSuppressWarnings_String_value = getParent().Define_boolean_withinSuppressWarnings(this, null, s);
     return withinSuppressWarnings_String_value;
@@ -6205,7 +6587,7 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1397
    */
   @SuppressWarnings({"unchecked", "cast"})
-  public TypeDecl lookupWildcardExtends(TypeDecl typeDecl) {
+  public TypeDecl lookupWildcardExtends(final TypeDecl typeDecl) {
     ASTNode$State state = state();
     TypeDecl lookupWildcardExtends_TypeDecl_value = getParent().Define_TypeDecl_lookupWildcardExtends(this, null, typeDecl);
     return lookupWildcardExtends_TypeDecl_value;
@@ -6216,7 +6598,7 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1410
    */
   @SuppressWarnings({"unchecked", "cast"})
-  public TypeDecl lookupWildcardSuper(TypeDecl typeDecl) {
+  public TypeDecl lookupWildcardSuper(final TypeDecl typeDecl) {
     ASTNode$State state = state();
     TypeDecl lookupWildcardSuper_TypeDecl_value = getParent().Define_TypeDecl_lookupWildcardSuper(this, null, typeDecl);
     return lookupWildcardSuper_TypeDecl_value;
@@ -6227,7 +6609,7 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1430
    */
   @SuppressWarnings({"unchecked", "cast"})
-  public LUBType lookupLUBType(Collection bounds) {
+  public LUBType lookupLUBType(final Collection bounds) {
     ASTNode$State state = state();
     LUBType lookupLUBType_Collection_value = getParent().Define_LUBType_lookupLUBType(this, null, bounds);
     return lookupLUBType_Collection_value;
@@ -6238,7 +6620,7 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1468
    */
   @SuppressWarnings({"unchecked", "cast"})
-  public GLBType lookupGLBType(ArrayList bounds) {
+  public GLBType lookupGLBType(final ArrayList bounds) {
     ASTNode$State state = state();
     GLBType lookupGLBType_ArrayList_value = getParent().Define_GLBType_lookupGLBType(this, null, bounds);
     return lookupGLBType_ArrayList_value;
@@ -6247,7 +6629,8 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/Arrays.jrag:20
    * @apilevel internal
    */
-  public TypeDecl Define_TypeDecl_componentType(ASTNode caller, ASTNode child) {
+  @Override
+public TypeDecl Define_TypeDecl_componentType(final ASTNode caller, final ASTNode child) {
     if(caller == arrayType_value){
       return this;
     }
@@ -6258,7 +6641,8 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:20
    * @apilevel internal
    */
-  public boolean Define_boolean_isDest(ASTNode caller, ASTNode child) {
+  @Override
+public boolean Define_boolean_isDest(final ASTNode caller, final ASTNode child) {
     if(caller == getBodyDeclListNoTransform())  {
     int childIndex = caller.getIndexOfChild(child);
     return false;
@@ -6270,7 +6654,8 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:30
    * @apilevel internal
    */
-  public boolean Define_boolean_isSource(ASTNode caller, ASTNode child) {
+  @Override
+public boolean Define_boolean_isSource(final ASTNode caller, final ASTNode child) {
     if(caller == getBodyDeclListNoTransform())  {
     int childIndex = caller.getIndexOfChild(child);
     return true;
@@ -6282,32 +6667,38 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:245
    * @apilevel internal
    */
-  public boolean Define_boolean_isDAbefore(ASTNode caller, ASTNode child, Variable v) {
-    if(caller == getBodyDeclListNoTransform())  { 
+  @Override
+public boolean Define_boolean_isDAbefore(final ASTNode caller, final ASTNode child, final Variable v) {
+    if(caller == getBodyDeclListNoTransform())  {
     int childIndex = caller.getIndexOfChild(child);
     {
     BodyDecl b = getBodyDecl(childIndex);
     //if(b instanceof MethodDecl || b instanceof MemberTypeDecl) {
     if(!v.isInstanceVariable() && !v.isClassVariable()) {
-      if(v.hostType() != this)
-        return isDAbefore(v);
+      if(v.hostType() != this) {
+		return isDAbefore(v);
+	}
       return false;
     }
-    if(b instanceof FieldDeclaration && !((FieldDeclaration)b).isStatic() && v.isClassVariable())
-      return true;
+    if(b instanceof FieldDeclaration && !((FieldDeclaration)b).isStatic() && v.isClassVariable()) {
+		return true;
+	}
 
     if(b instanceof MethodDecl) {
       return true;
     }
-    if(b instanceof MemberTypeDecl && v.isBlank() && v.isFinal() && v.hostType() == this)
-      return true;
+    if(b instanceof MemberTypeDecl && v.isBlank() && v.isFinal() && v.hostType() == this) {
+		return true;
+	}
     if(v.isClassVariable() || v.isInstanceVariable()) {
-      if(v.isFinal() &&  v.hostType() != this && instanceOf(v.hostType()))
-        return true;
+      if(v.isFinal() &&  v.hostType() != this && instanceOf(v.hostType())) {
+		return true;
+	}
       int index = childIndex - 1;
-      if(b instanceof ConstructorDecl)
-        index = getNumBodyDecl() - 1;
-        
+      if(b instanceof ConstructorDecl) {
+		index = getNumBodyDecl() - 1;
+	}
+
       for(int i = index; i >= 0; i--) {
         b = getBodyDecl(i);
         if(b instanceof FieldDeclaration) {
@@ -6339,8 +6730,9 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:712
    * @apilevel internal
    */
-  public boolean Define_boolean_isDUbefore(ASTNode caller, ASTNode child, Variable v) {
-    if(caller == getBodyDeclListNoTransform())  { 
+  @Override
+public boolean Define_boolean_isDUbefore(final ASTNode caller, final ASTNode child, final Variable v) {
+    if(caller == getBodyDeclListNoTransform())  {
     int childIndex = caller.getIndexOfChild(child);
     {
     BodyDecl b = getBodyDecl(childIndex);
@@ -6349,19 +6741,23 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
     }
     if(v.isClassVariable() || v.isInstanceVariable()) {
       int index = childIndex - 1;
-      if(b instanceof ConstructorDecl)
-        index = getNumBodyDecl() - 1;
-        
+      if(b instanceof ConstructorDecl) {
+		index = getNumBodyDecl() - 1;
+	}
+
       for(int i = index; i >= 0; i--) {
         b = getBodyDecl(i);
         if(b instanceof FieldDeclaration) {
           FieldDeclaration f = (FieldDeclaration)b;
           //System.err.println("  working on field " + f.name() + " which is child " + i);
-          if(f == v)
-            return !f.hasInit();
+          if(f == v) {
+			return !f.hasInit();
+		}
           if((v.isClassVariable() && f.isStatic()) || (v.isInstanceVariable() && !f.isStatic()))
-            return f.isDUafter(v);
+		 {
+			return f.isDUafter(v);
           //System.err.println("  field " + f.name() + " can not affect " + v.name());
+		}
         }
         else if(b instanceof StaticInitializer && v.isClassVariable()) {
           StaticInitializer si = (StaticInitializer)b;
@@ -6386,7 +6782,8 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupConstructor.jrag:16
    * @apilevel internal
    */
-  public Collection Define_Collection_lookupConstructor(ASTNode caller, ASTNode child) {
+  @Override
+public Collection Define_Collection_lookupConstructor(final ASTNode caller, final ASTNode child) {
     if(caller == getBodyDeclListNoTransform())  {
     int childIndex = caller.getIndexOfChild(child);
     return constructors();
@@ -6398,7 +6795,8 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupConstructor.jrag:20
    * @apilevel internal
    */
-  public Collection Define_Collection_lookupSuperConstructor(ASTNode caller, ASTNode child) {
+  @Override
+public Collection Define_Collection_lookupSuperConstructor(final ASTNode caller, final ASTNode child) {
     if(caller == getBodyDeclListNoTransform())  {
     int childIndex = caller.getIndexOfChild(child);
     return lookupSuperConstructor();
@@ -6410,7 +6808,8 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupMethod.jrag:34
    * @apilevel internal
    */
-  public Collection Define_Collection_lookupMethod(ASTNode caller, ASTNode child, String name) {
+  @Override
+public Collection Define_Collection_lookupMethod(final ASTNode caller, final ASTNode child, final String name) {
     if(caller == getBodyDeclListNoTransform())  {
     int i = caller.getIndexOfChild(child);
     return unqualifiedLookupMethod(name);
@@ -6422,15 +6821,18 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupType.jrag:358
    * @apilevel internal
    */
-  public SimpleSet Define_SimpleSet_lookupType(ASTNode caller, ASTNode child, String name) {
-    if(caller == getBodyDeclListNoTransform())  { 
+  @Override
+public SimpleSet Define_SimpleSet_lookupType(final ASTNode caller, final ASTNode child, final String name) {
+    if(caller == getBodyDeclListNoTransform())  {
     int childIndex = caller.getIndexOfChild(child);
     {
     SimpleSet c = memberTypes(name);
-    if(!c.isEmpty()) 
-      return c;
-    if(name().equals(name))
-      return SimpleSet.emptySet.add(this);
+    if(!c.isEmpty()) {
+		return c;
+	}
+    if(name().equals(name)) {
+		return SimpleSet.emptySet.add(this);
+	}
 
     c = lookupType(name);
     // 8.5.2
@@ -6454,15 +6856,19 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupVariable.jrag:27
    * @apilevel internal
    */
-  public SimpleSet Define_SimpleSet_lookupVariable(ASTNode caller, ASTNode child, String name) {
-    if(caller == getBodyDeclListNoTransform())  { 
+  @Override
+public SimpleSet Define_SimpleSet_lookupVariable(final ASTNode caller, final ASTNode child, final String name) {
+    if(caller == getBodyDeclListNoTransform())  {
     int i = caller.getIndexOfChild(child);
     {
     SimpleSet list = memberFields(name);
-    if(!list.isEmpty()) return list;
+    if(!list.isEmpty()) {
+		return list;
+	}
     list = lookupVariable(name);
-    if(inStaticContext() || isStatic())
-      list = removeInstanceVariables(list);
+    if(inStaticContext() || isStatic()) {
+		list = removeInstanceVariables(list);
+	}
     return list;
   }
   }
@@ -6473,7 +6879,8 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/Modifiers.jrag:301
    * @apilevel internal
    */
-  public boolean Define_boolean_mayBePublic(ASTNode caller, ASTNode child) {
+  @Override
+public boolean Define_boolean_mayBePublic(final ASTNode caller, final ASTNode child) {
     if(caller == getBodyDeclListNoTransform())  {
     int childIndex = caller.getIndexOfChild(child);
     return false;
@@ -6488,7 +6895,8 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/Modifiers.jrag:302
    * @apilevel internal
    */
-  public boolean Define_boolean_mayBeProtected(ASTNode caller, ASTNode child) {
+  @Override
+public boolean Define_boolean_mayBeProtected(final ASTNode caller, final ASTNode child) {
     if(caller == getBodyDeclListNoTransform())  {
     int childIndex = caller.getIndexOfChild(child);
     return false;
@@ -6503,7 +6911,8 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/Modifiers.jrag:303
    * @apilevel internal
    */
-  public boolean Define_boolean_mayBePrivate(ASTNode caller, ASTNode child) {
+  @Override
+public boolean Define_boolean_mayBePrivate(final ASTNode caller, final ASTNode child) {
     if(caller == getBodyDeclListNoTransform())  {
     int childIndex = caller.getIndexOfChild(child);
     return false;
@@ -6518,7 +6927,8 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/Modifiers.jrag:306
    * @apilevel internal
    */
-  public boolean Define_boolean_mayBeAbstract(ASTNode caller, ASTNode child) {
+  @Override
+public boolean Define_boolean_mayBeAbstract(final ASTNode caller, final ASTNode child) {
     if(caller == getBodyDeclListNoTransform())  {
     int childIndex = caller.getIndexOfChild(child);
     return false;
@@ -6533,7 +6943,8 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/Modifiers.jrag:304
    * @apilevel internal
    */
-  public boolean Define_boolean_mayBeStatic(ASTNode caller, ASTNode child) {
+  @Override
+public boolean Define_boolean_mayBeStatic(final ASTNode caller, final ASTNode child) {
     if(caller == getBodyDeclListNoTransform())  {
     int childIndex = caller.getIndexOfChild(child);
     return false;
@@ -6548,7 +6959,8 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/Modifiers.jrag:309
    * @apilevel internal
    */
-  public boolean Define_boolean_mayBeStrictfp(ASTNode caller, ASTNode child) {
+  @Override
+public boolean Define_boolean_mayBeStrictfp(final ASTNode caller, final ASTNode child) {
     if(caller == getBodyDeclListNoTransform())  {
     int childIndex = caller.getIndexOfChild(child);
     return false;
@@ -6563,7 +6975,8 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/Modifiers.jrag:305
    * @apilevel internal
    */
-  public boolean Define_boolean_mayBeFinal(ASTNode caller, ASTNode child) {
+  @Override
+public boolean Define_boolean_mayBeFinal(final ASTNode caller, final ASTNode child) {
     if(caller == getBodyDeclListNoTransform())  {
     int childIndex = caller.getIndexOfChild(child);
     return false;
@@ -6575,7 +6988,8 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/Modifiers.jrag:307
    * @apilevel internal
    */
-  public boolean Define_boolean_mayBeVolatile(ASTNode caller, ASTNode child) {
+  @Override
+public boolean Define_boolean_mayBeVolatile(final ASTNode caller, final ASTNode child) {
     if(caller == getBodyDeclListNoTransform())  {
     int childIndex = caller.getIndexOfChild(child);
     return false;
@@ -6587,7 +7001,8 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/Modifiers.jrag:308
    * @apilevel internal
    */
-  public boolean Define_boolean_mayBeTransient(ASTNode caller, ASTNode child) {
+  @Override
+public boolean Define_boolean_mayBeTransient(final ASTNode caller, final ASTNode child) {
     if(caller == getBodyDeclListNoTransform())  {
     int childIndex = caller.getIndexOfChild(child);
     return false;
@@ -6599,7 +7014,8 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/Modifiers.jrag:310
    * @apilevel internal
    */
-  public boolean Define_boolean_mayBeSynchronized(ASTNode caller, ASTNode child) {
+  @Override
+public boolean Define_boolean_mayBeSynchronized(final ASTNode caller, final ASTNode child) {
     if(caller == getBodyDeclListNoTransform())  {
     int childIndex = caller.getIndexOfChild(child);
     return false;
@@ -6611,7 +7027,8 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/Modifiers.jrag:311
    * @apilevel internal
    */
-  public boolean Define_boolean_mayBeNative(ASTNode caller, ASTNode child) {
+  @Override
+public boolean Define_boolean_mayBeNative(final ASTNode caller, final ASTNode child) {
     if(caller == getBodyDeclListNoTransform())  {
     int childIndex = caller.getIndexOfChild(child);
     return false;
@@ -6623,7 +7040,8 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:297
    * @apilevel internal
    */
-  public VariableScope Define_VariableScope_outerScope(ASTNode caller, ASTNode child) {
+  @Override
+public VariableScope Define_VariableScope_outerScope(final ASTNode caller, final ASTNode child) {
     if(caller == getBodyDeclListNoTransform())  {
     int childIndex = caller.getIndexOfChild(child);
     return this;
@@ -6635,7 +7053,8 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:369
    * @apilevel internal
    */
-  public boolean Define_boolean_insideLoop(ASTNode caller, ASTNode child) {
+  @Override
+public boolean Define_boolean_insideLoop(final ASTNode caller, final ASTNode child) {
     if(caller == getBodyDeclListNoTransform())  {
     int i = caller.getIndexOfChild(child);
     return false;
@@ -6647,7 +7066,8 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:376
    * @apilevel internal
    */
-  public boolean Define_boolean_insideSwitch(ASTNode caller, ASTNode child) {
+  @Override
+public boolean Define_boolean_insideSwitch(final ASTNode caller, final ASTNode child) {
     if(caller == getBodyDeclListNoTransform())  {
     int i = caller.getIndexOfChild(child);
     return false;
@@ -6659,7 +7079,8 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/SyntacticClassification.jrag:118
    * @apilevel internal
    */
-  public NameType Define_NameType_nameType(ASTNode caller, ASTNode child) {
+  @Override
+public NameType Define_NameType_nameType(final ASTNode caller, final ASTNode child) {
     if(caller == getBodyDeclListNoTransform())  {
     int childIndex = caller.getIndexOfChild(child);
     return NameType.EXPRESSION_NAME;
@@ -6671,7 +7092,8 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:218
    * @apilevel internal
    */
-  public boolean Define_boolean_isAnonymous(ASTNode caller, ASTNode child) {
+  @Override
+public boolean Define_boolean_isAnonymous(final ASTNode caller, final ASTNode child) {
     if(caller == getBodyDeclListNoTransform())  {
     int childIndex = caller.getIndexOfChild(child);
     return false;
@@ -6683,7 +7105,8 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:494
    * @apilevel internal
    */
-  public TypeDecl Define_TypeDecl_enclosingType(ASTNode caller, ASTNode child) {
+  @Override
+public TypeDecl Define_TypeDecl_enclosingType(final ASTNode caller, final ASTNode child) {
     if(caller == getBodyDeclListNoTransform())  {
     int childIndex = caller.getIndexOfChild(child);
     return this;
@@ -6695,7 +7118,8 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:520
    * @apilevel internal
    */
-  public boolean Define_boolean_isNestedType(ASTNode caller, ASTNode child) {
+  @Override
+public boolean Define_boolean_isNestedType(final ASTNode caller, final ASTNode child) {
     if(caller == getBodyDeclListNoTransform())  {
     int childIndex = caller.getIndexOfChild(child);
     return true;
@@ -6707,7 +7131,8 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:542
    * @apilevel internal
    */
-  public boolean Define_boolean_isLocalClass(ASTNode caller, ASTNode child) {
+  @Override
+public boolean Define_boolean_isLocalClass(final ASTNode caller, final ASTNode child) {
     if(caller == getBodyDeclListNoTransform())  {
     int childIndex = caller.getIndexOfChild(child);
     return false;
@@ -6719,7 +7144,8 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:575
    * @apilevel internal
    */
-  public TypeDecl Define_TypeDecl_hostType(ASTNode caller, ASTNode child) {
+  @Override
+public TypeDecl Define_TypeDecl_hostType(final ASTNode caller, final ASTNode child) {
     if(caller == getModifiersNoTransform()) {
       return hostType();
     }
@@ -6736,7 +7162,8 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeCheck.jrag:404
    * @apilevel internal
    */
-  public TypeDecl Define_TypeDecl_returnType(ASTNode caller, ASTNode child) {
+  @Override
+public TypeDecl Define_TypeDecl_returnType(final ASTNode caller, final ASTNode child) {
     if(caller == getBodyDeclListNoTransform())  {
     int childIndex = caller.getIndexOfChild(child);
     return typeVoid();
@@ -6748,14 +7175,17 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeCheck.jrag:509
    * @apilevel internal
    */
-  public TypeDecl Define_TypeDecl_enclosingInstance(ASTNode caller, ASTNode child) {
-    if(caller == getBodyDeclListNoTransform())  { 
+  @Override
+public TypeDecl Define_TypeDecl_enclosingInstance(final ASTNode caller, final ASTNode child) {
+    if(caller == getBodyDeclListNoTransform())  {
     int childIndex = caller.getIndexOfChild(child);
     {
-    if(getBodyDecl(childIndex) instanceof MemberTypeDecl && !((MemberTypeDecl)getBodyDecl(childIndex)).typeDecl().isInnerType())
-      return null;
-    if(getBodyDecl(childIndex) instanceof ConstructorDecl)
-      return enclosingInstance();
+    if(getBodyDecl(childIndex) instanceof MemberTypeDecl && !((MemberTypeDecl)getBodyDecl(childIndex)).typeDecl().isInnerType()) {
+		return null;
+	}
+    if(getBodyDecl(childIndex) instanceof ConstructorDecl) {
+		return enclosingInstance();
+	}
     return this;
   }
   }
@@ -6766,7 +7196,8 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeHierarchyCheck.jrag:12
    * @apilevel internal
    */
-  public String Define_String_methodHost(ASTNode caller, ASTNode child) {
+  @Override
+public String Define_String_methodHost(final ASTNode caller, final ASTNode child) {
     if(caller == getBodyDeclListNoTransform())  {
     int childIndex = caller.getIndexOfChild(child);
     return typeName();
@@ -6778,7 +7209,8 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeHierarchyCheck.jrag:138
    * @apilevel internal
    */
-  public boolean Define_boolean_inStaticContext(ASTNode caller, ASTNode child) {
+  @Override
+public boolean Define_boolean_inStaticContext(final ASTNode caller, final ASTNode child) {
     if(caller == getBodyDeclListNoTransform())  {
     int childIndex = caller.getIndexOfChild(child);
     return isStatic() || inStaticContext();
@@ -6790,7 +7222,8 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/UnreachableStatements.jrag:159
    * @apilevel internal
    */
-  public boolean Define_boolean_reportUnreachable(ASTNode caller, ASTNode child) {
+  @Override
+public boolean Define_boolean_reportUnreachable(final ASTNode caller, final ASTNode child) {
      {
       int childIndex = this.getIndexOfChild(caller);
       return true;
@@ -6800,7 +7233,8 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:74
    * @apilevel internal
    */
-  public boolean Define_boolean_mayUseAnnotationTarget(ASTNode caller, ASTNode child, String name) {
+  @Override
+public boolean Define_boolean_mayUseAnnotationTarget(final ASTNode caller, final ASTNode child, final String name) {
     if(caller == getModifiersNoTransform()) {
       return name.equals("TYPE");
     }
@@ -6811,7 +7245,8 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:271
    * @apilevel internal
    */
-  public boolean Define_boolean_withinSuppressWarnings(ASTNode caller, ASTNode child, String s) {
+  @Override
+public boolean Define_boolean_withinSuppressWarnings(final ASTNode caller, final ASTNode child, final String s) {
     if(caller == getBodyDeclListNoTransform())  {
     int i = caller.getIndexOfChild(child);
     return getBodyDecl(i).hasAnnotationSuppressWarnings(s) || hasAnnotationSuppressWarnings(s) ||
@@ -6824,7 +7259,8 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:374
    * @apilevel internal
    */
-  public boolean Define_boolean_withinDeprecatedAnnotation(ASTNode caller, ASTNode child) {
+  @Override
+public boolean Define_boolean_withinDeprecatedAnnotation(final ASTNode caller, final ASTNode child) {
     if(caller == getBodyDeclListNoTransform())  {
     int i = caller.getIndexOfChild(child);
     return getBodyDecl(i).isDeprecated() || isDeprecated() || withinDeprecatedAnnotation();
@@ -6836,7 +7272,8 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/Statements.jrag:350
    * @apilevel internal
    */
-  public boolean Define_boolean_enclosedByExceptionHandler(ASTNode caller, ASTNode child) {
+  @Override
+public boolean Define_boolean_enclosedByExceptionHandler(final ASTNode caller, final ASTNode child) {
     if(caller == getBodyDeclListNoTransform())  {
     int childIndex = caller.getIndexOfChild(child);
     return false;
@@ -6847,7 +7284,8 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
   /**
    * @apilevel internal
    */
-  public ASTNode rewriteTo() {
+  @Override
+public ASTNode rewriteTo() {
     return super.rewriteTo();
   }
 }
