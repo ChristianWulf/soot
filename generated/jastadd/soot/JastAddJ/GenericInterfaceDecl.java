@@ -1,23 +1,10 @@
 /* This file was generated with JastAdd2 (http://jastadd.org) version R20130212 (r1031) */
 package soot.JastAddJ;
 
-import java.util.HashSet;
-import java.io.File;
-import java.util.*;
-import beaver.*;
 import java.util.ArrayList;
-import java.util.zip.*;
-import java.io.*;
-import java.io.FileNotFoundException;
-import java.util.Collection;
-import soot.*;
-import soot.util.*;
-import soot.jimple.*;
-import soot.coffi.ClassFile;
-import soot.coffi.method_info;
-import soot.coffi.CONSTANT_Utf8_info;
-import soot.tagkit.SourceFileTag;
-import soot.coffi.CoffiMethodSource;
+import java.util.Iterator;
+
+import soot.javaToJimple.jj.extension.TypeParametersTag;
 
 /**
  * @production GenericInterfaceDecl : {@link InterfaceDecl} ::= <span class="component">{@link Modifiers}</span> <span class="component">&lt;ID:String&gt;</span> <span class="component">SuperInterfaceId:{@link Access}*</span> <span class="component">{@link BodyDecl}*</span> <span class="component">TypeParameter:{@link TypeVariable}*</span>;
@@ -28,7 +15,8 @@ public class GenericInterfaceDecl extends InterfaceDecl implements Cloneable, Ge
   /**
    * @apilevel low-level
    */
-  public void flushCache() {
+  @Override
+public void flushCache() {
     super.flushCache();
     rawType_computed = false;
     rawType_value = null;
@@ -43,13 +31,15 @@ public class GenericInterfaceDecl extends InterfaceDecl implements Cloneable, Ge
   /**
    * @apilevel internal
    */
-  public void flushCollectionCache() {
+  @Override
+public void flushCollectionCache() {
     super.flushCollectionCache();
   }
   /**
    * @apilevel internal
    */
-  @SuppressWarnings({"unchecked", "cast"})
+  @Override
+@SuppressWarnings({"unchecked", "cast"})
   public GenericInterfaceDecl clone() throws CloneNotSupportedException {
     GenericInterfaceDecl node = (GenericInterfaceDecl)super.clone();
     node.rawType_computed = false;
@@ -68,13 +58,15 @@ public class GenericInterfaceDecl extends InterfaceDecl implements Cloneable, Ge
   /**
    * @apilevel internal
    */
-  @SuppressWarnings({"unchecked", "cast"})
+  @Override
+@SuppressWarnings({"unchecked", "cast"})
   public GenericInterfaceDecl copy() {
     try {
-      GenericInterfaceDecl node = (GenericInterfaceDecl) clone();
+      GenericInterfaceDecl node = clone();
       node.parent = null;
-      if(children != null)
-        node.children = (ASTNode[]) children.clone();
+      if(children != null) {
+		node.children = children.clone();
+	}
       return node;
     } catch (CloneNotSupportedException e) {
       throw new Error("Error: clone not supported for " +
@@ -87,12 +79,13 @@ public class GenericInterfaceDecl extends InterfaceDecl implements Cloneable, Ge
    * @return dangling copy of the subtree at this node
    * @apilevel low-level
    */
-  @SuppressWarnings({"unchecked", "cast"})
+  @Override
+@SuppressWarnings({"unchecked", "cast"})
   public GenericInterfaceDecl fullCopy() {
-    GenericInterfaceDecl tree = (GenericInterfaceDecl) copy();
+    GenericInterfaceDecl tree = copy();
     if (children != null) {
       for (int i = 0; i < children.length; ++i) {
-        ASTNode child = (ASTNode) children[i];
+        ASTNode child = children[i];
         if(child != null) {
           child = child.fullCopy();
           tree.setChild(child, i);
@@ -102,23 +95,26 @@ public class GenericInterfaceDecl extends InterfaceDecl implements Cloneable, Ge
     return tree;
   }
   /**
-   * @ast method 
+   * @ast method
    * @aspect GenericsTypeCheck
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:430
    */
-  public void typeCheck() {
+  @Override
+public void typeCheck() {
     super.typeCheck();
-    if(instanceOf(typeThrowable()))
-      error(" generic interface " + typeName() + " may not directly or indirectly inherit java.lang.Throwable");
+    if(instanceOf(typeThrowable())) {
+		error(" generic interface " + typeName() + " may not directly or indirectly inherit java.lang.Throwable");
+	}
   }
   /**
-   * @ast method 
+   * @ast method
    * @aspect LookupParTypeDecl
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1346
    */
-  public InterfaceDecl substitutedInterfaceDecl(Parameterization parTypeDecl) {
+  @Override
+public InterfaceDecl substitutedInterfaceDecl(final Parameterization parTypeDecl) {
     GenericInterfaceDecl c = new GenericInterfaceDeclSubstituted(
-      (Modifiers)getModifiers().fullCopy(),
+      getModifiers().fullCopy(),
       getID(),
       getSuperInterfaceIdList().substitute(parTypeDecl),
      // ES:  new List(),
@@ -128,11 +124,12 @@ public class GenericInterfaceDecl extends InterfaceDecl implements Cloneable, Ge
     return c;
   }
   /**
-   * @ast method 
+   * @ast method
    * @aspect GenericsPrettyPrint
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericsPrettyPrint.jrag:115
    */
-  public void toString(StringBuffer s) {
+  @Override
+public void toString(final StringBuffer s) {
 		getModifiers().toString(s);
 		s.append("interface " + getID());
 		s.append('<');
@@ -167,9 +164,9 @@ public class GenericInterfaceDecl extends InterfaceDecl implements Cloneable, Ge
       s.append(">");
     }
     */
-    
+
 		ppBodyDecls(s);
-    
+
     /*
     for(int i = 0; i < getNumParTypeDecl(); i++) {
       ParInterfaceDecl decl = getParTypeDecl(i);
@@ -178,50 +175,57 @@ public class GenericInterfaceDecl extends InterfaceDecl implements Cloneable, Ge
     */
 	}
   /**
-   * @ast method 
+   * @ast method
    * @aspect Generics
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:235
    */
-  public TypeDecl makeGeneric(Signatures.ClassSignature s) {
-    return (TypeDecl)this;
+  @Override
+public TypeDecl makeGeneric(final Signatures.ClassSignature s) {
+    return this;
   }
   /**
-   * @ast method 
+   * @ast method
    * @aspect GenericsNameBinding
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:489
    */
-  public SimpleSet addTypeVariables(SimpleSet c, String name) {
+  @Override
+public SimpleSet addTypeVariables(SimpleSet c, final String name) {
     GenericTypeDecl original = (GenericTypeDecl)original();
     for(int i = 0; i < original.getNumTypeParameter(); i++) {
       TypeVariable p = original.getTypeParameter(i);
-      if(p.name().equals(name))
-        c = c.add(p);
+      if(p.name().equals(name)) {
+		c = c.add(p);
+	}
     }
     return c;
   }
   /**
-   * @ast method 
+   * @ast method
    * @aspect LookupParTypeDecl
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:799
    */
-  public List createArgumentList(ArrayList params) {
+  @Override
+public List createArgumentList(final ArrayList params) {
     GenericTypeDecl original = (GenericTypeDecl)original();
     List list = new List();
     if(params.isEmpty()) {
-      // Change: Don't add any thing to the list. 
-      // Concern: The previous version seem to add the erasure of the type variable for some reason,  
-      // maybe this is how the raw type is represented (?), but this doesn't really comply with the 
+      // Change: Don't add any thing to the list.
+      // Concern: The previous version seem to add the erasure of the type variable for some reason,
+      // maybe this is how the raw type is represented (?), but this doesn't really comply with the
       // claim that raw types don't have any type variables...?
-      for(int i = 0; i < original.getNumTypeParameter(); i++)
-        list.add(original.getTypeParameter(i).erasure().createBoundAccess());
-    } else
-      for(Iterator iter = params.iterator(); iter.hasNext(); )
-        list.add(((TypeDecl)iter.next()).createBoundAccess());
+      for(int i = 0; i < original.getNumTypeParameter(); i++) {
+		list.add(original.getTypeParameter(i).erasure().createBoundAccess());
+	}
+    } else {
+		for(Iterator iter = params.iterator(); iter.hasNext(); ) {
+			list.add(((TypeDecl)iter.next()).createBoundAccess());
+		}
+	}
     return list;
   }
   /**
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
   public GenericInterfaceDecl() {
     super();
@@ -233,20 +237,21 @@ public class GenericInterfaceDecl extends InterfaceDecl implements Cloneable, Ge
    * Initializes List and Opt nta children.
    * @apilevel internal
    * @ast method
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
-  public void init$Children() {
+  @Override
+public void init$Children() {
     children = new ASTNode[4];
     setChild(new List(), 1);
     setChild(new List(), 2);
     setChild(new List(), 3);
   }
   /**
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
-  public GenericInterfaceDecl(Modifiers p0, String p1, List<Access> p2, List<BodyDecl> p3, List<TypeVariable> p4) {
+  public GenericInterfaceDecl(final Modifiers p0, final String p1, final List<Access> p2, final List<BodyDecl> p3, final List<TypeVariable> p4) {
     setChild(p0, 0);
     setID(p1);
     setChild(p2, 1);
@@ -254,10 +259,10 @@ public class GenericInterfaceDecl extends InterfaceDecl implements Cloneable, Ge
     setChild(p4, 3);
   }
   /**
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
-  public GenericInterfaceDecl(Modifiers p0, beaver.Symbol p1, List<Access> p2, List<BodyDecl> p3, List<TypeVariable> p4) {
+  public GenericInterfaceDecl(final Modifiers p0, final beaver.Symbol p1, final List<Access> p2, final List<BodyDecl> p3, final List<TypeVariable> p4) {
     setChild(p0, 0);
     setID(p1);
     setChild(p2, 1);
@@ -266,38 +271,42 @@ public class GenericInterfaceDecl extends InterfaceDecl implements Cloneable, Ge
   }
   /**
    * @apilevel low-level
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
-  protected int numChildren() {
+  @Override
+protected int numChildren() {
     return 4;
   }
   /**
    * @apilevel internal
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
-  public boolean mayHaveRewrite() {
+  @Override
+public boolean mayHaveRewrite() {
     return false;
   }
   /**
    * Replaces the Modifiers child.
    * @param node The new node to replace the Modifiers child.
    * @apilevel high-level
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
-  public void setModifiers(Modifiers node) {
+  @Override
+public void setModifiers(final Modifiers node) {
     setChild(node, 0);
   }
   /**
    * Retrieves the Modifiers child.
    * @return The current node used as the Modifiers child.
    * @apilevel high-level
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
-  public Modifiers getModifiers() {
+  @Override
+public Modifiers getModifiers() {
     return (Modifiers)getChild(0);
   }
   /**
@@ -305,31 +314,35 @@ public class GenericInterfaceDecl extends InterfaceDecl implements Cloneable, Ge
    * <p><em>This method does not invoke AST transformations.</em></p>
    * @return The current node used as the Modifiers child.
    * @apilevel low-level
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
-  public Modifiers getModifiersNoTransform() {
+  @Override
+public Modifiers getModifiersNoTransform() {
     return (Modifiers)getChildNoTransform(0);
   }
   /**
    * Replaces the lexeme ID.
    * @param value The new value for the lexeme ID.
    * @apilevel high-level
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
-  public void setID(String value) {
+  @Override
+public void setID(final String value) {
     tokenString_ID = value;
   }
   /**
    * JastAdd-internal setter for lexeme ID using the Beaver parser.
    * @apilevel internal
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
-  public void setID(beaver.Symbol symbol) {
-    if(symbol.value != null && !(symbol.value instanceof String))
-      throw new UnsupportedOperationException("setID is only valid for String lexemes");
+  @Override
+public void setID(final beaver.Symbol symbol) {
+    if(symbol.value != null && !(symbol.value instanceof String)) {
+		throw new UnsupportedOperationException("setID is only valid for String lexemes");
+	}
     tokenString_ID = (String)symbol.value;
     IDstart = symbol.getStart();
     IDend = symbol.getEnd();
@@ -338,30 +351,33 @@ public class GenericInterfaceDecl extends InterfaceDecl implements Cloneable, Ge
    * Retrieves the value for the lexeme ID.
    * @return The value for the lexeme ID.
    * @apilevel high-level
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
-  public String getID() {
+  @Override
+public String getID() {
     return tokenString_ID != null ? tokenString_ID : "";
   }
   /**
    * Replaces the SuperInterfaceId list.
    * @param list The new list node to be used as the SuperInterfaceId list.
    * @apilevel high-level
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
-  public void setSuperInterfaceIdList(List<Access> list) {
+  @Override
+public void setSuperInterfaceIdList(final List<Access> list) {
     setChild(list, 1);
   }
   /**
    * Retrieves the number of children in the SuperInterfaceId list.
    * @return Number of children in the SuperInterfaceId list.
    * @apilevel high-level
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
-  public int getNumSuperInterfaceId() {
+  @Override
+public int getNumSuperInterfaceId() {
     return getSuperInterfaceIdList().getNumChild();
   }
   /**
@@ -369,10 +385,11 @@ public class GenericInterfaceDecl extends InterfaceDecl implements Cloneable, Ge
    * Calling this method will not trigger rewrites..
    * @return Number of children in the SuperInterfaceId list.
    * @apilevel low-level
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
-  public int getNumSuperInterfaceIdNoTransform() {
+  @Override
+public int getNumSuperInterfaceIdNoTransform() {
     return getSuperInterfaceIdListNoTransform().getNumChildNoTransform();
   }
   /**
@@ -380,30 +397,33 @@ public class GenericInterfaceDecl extends InterfaceDecl implements Cloneable, Ge
    * @param i Index of the element to return.
    * @return The element at position {@code i} in the SuperInterfaceId list.
    * @apilevel high-level
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
-  @SuppressWarnings({"unchecked", "cast"})
-  public Access getSuperInterfaceId(int i) {
-    return (Access)getSuperInterfaceIdList().getChild(i);
+  @Override
+@SuppressWarnings({"unchecked", "cast"})
+  public Access getSuperInterfaceId(final int i) {
+    return getSuperInterfaceIdList().getChild(i);
   }
   /**
    * Append an element to the SuperInterfaceId list.
    * @param node The element to append to the SuperInterfaceId list.
    * @apilevel high-level
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
-  public void addSuperInterfaceId(Access node) {
+  @Override
+public void addSuperInterfaceId(final Access node) {
     List<Access> list = (parent == null || state == null) ? getSuperInterfaceIdListNoTransform() : getSuperInterfaceIdList();
     list.addChild(node);
   }
   /**
    * @apilevel low-level
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
-  public void addSuperInterfaceIdNoTransform(Access node) {
+  @Override
+public void addSuperInterfaceIdNoTransform(final Access node) {
     List<Access> list = getSuperInterfaceIdListNoTransform();
     list.addChild(node);
   }
@@ -412,10 +432,11 @@ public class GenericInterfaceDecl extends InterfaceDecl implements Cloneable, Ge
    * @param node The new node to replace the old list element.
    * @param i The list index of the node to be replaced.
    * @apilevel high-level
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
-  public void setSuperInterfaceId(Access node, int i) {
+  @Override
+public void setSuperInterfaceId(final Access node, final int i) {
     List<Access> list = getSuperInterfaceIdList();
     list.setChild(node, i);
   }
@@ -423,10 +444,11 @@ public class GenericInterfaceDecl extends InterfaceDecl implements Cloneable, Ge
    * Retrieves the SuperInterfaceId list.
    * @return The node representing the SuperInterfaceId list.
    * @apilevel high-level
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
-  public List<Access> getSuperInterfaceIds() {
+  @Override
+public List<Access> getSuperInterfaceIds() {
     return getSuperInterfaceIdList();
   }
   /**
@@ -434,20 +456,22 @@ public class GenericInterfaceDecl extends InterfaceDecl implements Cloneable, Ge
    * <p><em>This method does not invoke AST transformations.</em></p>
    * @return The node representing the SuperInterfaceId list.
    * @apilevel low-level
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
-  public List<Access> getSuperInterfaceIdsNoTransform() {
+  @Override
+public List<Access> getSuperInterfaceIdsNoTransform() {
     return getSuperInterfaceIdListNoTransform();
   }
   /**
    * Retrieves the SuperInterfaceId list.
    * @return The node representing the SuperInterfaceId list.
    * @apilevel high-level
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
-  @SuppressWarnings({"unchecked", "cast"})
+  @Override
+@SuppressWarnings({"unchecked", "cast"})
   public List<Access> getSuperInterfaceIdList() {
     List<Access> list = (List<Access>)getChild(1);
     list.getNumChild();
@@ -458,10 +482,11 @@ public class GenericInterfaceDecl extends InterfaceDecl implements Cloneable, Ge
    * <p><em>This method does not invoke AST transformations.</em></p>
    * @return The node representing the SuperInterfaceId list.
    * @apilevel low-level
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
-  @SuppressWarnings({"unchecked", "cast"})
+  @Override
+@SuppressWarnings({"unchecked", "cast"})
   public List<Access> getSuperInterfaceIdListNoTransform() {
     return (List<Access>)getChildNoTransform(1);
   }
@@ -469,20 +494,22 @@ public class GenericInterfaceDecl extends InterfaceDecl implements Cloneable, Ge
    * Replaces the BodyDecl list.
    * @param list The new list node to be used as the BodyDecl list.
    * @apilevel high-level
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
-  public void setBodyDeclList(List<BodyDecl> list) {
+  @Override
+public void setBodyDeclList(final List<BodyDecl> list) {
     setChild(list, 2);
   }
   /**
    * Retrieves the number of children in the BodyDecl list.
    * @return Number of children in the BodyDecl list.
    * @apilevel high-level
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
-  public int getNumBodyDecl() {
+  @Override
+public int getNumBodyDecl() {
     return getBodyDeclList().getNumChild();
   }
   /**
@@ -490,10 +517,11 @@ public class GenericInterfaceDecl extends InterfaceDecl implements Cloneable, Ge
    * Calling this method will not trigger rewrites..
    * @return Number of children in the BodyDecl list.
    * @apilevel low-level
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
-  public int getNumBodyDeclNoTransform() {
+  @Override
+public int getNumBodyDeclNoTransform() {
     return getBodyDeclListNoTransform().getNumChildNoTransform();
   }
   /**
@@ -501,30 +529,33 @@ public class GenericInterfaceDecl extends InterfaceDecl implements Cloneable, Ge
    * @param i Index of the element to return.
    * @return The element at position {@code i} in the BodyDecl list.
    * @apilevel high-level
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
-  @SuppressWarnings({"unchecked", "cast"})
-  public BodyDecl getBodyDecl(int i) {
-    return (BodyDecl)getBodyDeclList().getChild(i);
+  @Override
+@SuppressWarnings({"unchecked", "cast"})
+  public BodyDecl getBodyDecl(final int i) {
+    return getBodyDeclList().getChild(i);
   }
   /**
    * Append an element to the BodyDecl list.
    * @param node The element to append to the BodyDecl list.
    * @apilevel high-level
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
-  public void addBodyDecl(BodyDecl node) {
+  @Override
+public void addBodyDecl(final BodyDecl node) {
     List<BodyDecl> list = (parent == null || state == null) ? getBodyDeclListNoTransform() : getBodyDeclList();
     list.addChild(node);
   }
   /**
    * @apilevel low-level
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
-  public void addBodyDeclNoTransform(BodyDecl node) {
+  @Override
+public void addBodyDeclNoTransform(final BodyDecl node) {
     List<BodyDecl> list = getBodyDeclListNoTransform();
     list.addChild(node);
   }
@@ -533,10 +564,11 @@ public class GenericInterfaceDecl extends InterfaceDecl implements Cloneable, Ge
    * @param node The new node to replace the old list element.
    * @param i The list index of the node to be replaced.
    * @apilevel high-level
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
-  public void setBodyDecl(BodyDecl node, int i) {
+  @Override
+public void setBodyDecl(final BodyDecl node, final int i) {
     List<BodyDecl> list = getBodyDeclList();
     list.setChild(node, i);
   }
@@ -544,10 +576,11 @@ public class GenericInterfaceDecl extends InterfaceDecl implements Cloneable, Ge
    * Retrieves the BodyDecl list.
    * @return The node representing the BodyDecl list.
    * @apilevel high-level
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
-  public List<BodyDecl> getBodyDecls() {
+  @Override
+public List<BodyDecl> getBodyDecls() {
     return getBodyDeclList();
   }
   /**
@@ -555,20 +588,22 @@ public class GenericInterfaceDecl extends InterfaceDecl implements Cloneable, Ge
    * <p><em>This method does not invoke AST transformations.</em></p>
    * @return The node representing the BodyDecl list.
    * @apilevel low-level
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
-  public List<BodyDecl> getBodyDeclsNoTransform() {
+  @Override
+public List<BodyDecl> getBodyDeclsNoTransform() {
     return getBodyDeclListNoTransform();
   }
   /**
    * Retrieves the BodyDecl list.
    * @return The node representing the BodyDecl list.
    * @apilevel high-level
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
-  @SuppressWarnings({"unchecked", "cast"})
+  @Override
+@SuppressWarnings({"unchecked", "cast"})
   public List<BodyDecl> getBodyDeclList() {
     List<BodyDecl> list = (List<BodyDecl>)getChild(2);
     list.getNumChild();
@@ -579,10 +614,11 @@ public class GenericInterfaceDecl extends InterfaceDecl implements Cloneable, Ge
    * <p><em>This method does not invoke AST transformations.</em></p>
    * @return The node representing the BodyDecl list.
    * @apilevel low-level
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
-  @SuppressWarnings({"unchecked", "cast"})
+  @Override
+@SuppressWarnings({"unchecked", "cast"})
   public List<BodyDecl> getBodyDeclListNoTransform() {
     return (List<BodyDecl>)getChildNoTransform(2);
   }
@@ -590,20 +626,21 @@ public class GenericInterfaceDecl extends InterfaceDecl implements Cloneable, Ge
    * Replaces the TypeParameter list.
    * @param list The new list node to be used as the TypeParameter list.
    * @apilevel high-level
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
-  public void setTypeParameterList(List<TypeVariable> list) {
+  public void setTypeParameterList(final List<TypeVariable> list) {
     setChild(list, 3);
   }
   /**
    * Retrieves the number of children in the TypeParameter list.
    * @return Number of children in the TypeParameter list.
    * @apilevel high-level
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
-  public int getNumTypeParameter() {
+  @Override
+public int getNumTypeParameter() {
     return getTypeParameterList().getNumChild();
   }
   /**
@@ -611,8 +648,8 @@ public class GenericInterfaceDecl extends InterfaceDecl implements Cloneable, Ge
    * Calling this method will not trigger rewrites..
    * @return Number of children in the TypeParameter list.
    * @apilevel low-level
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
   public int getNumTypeParameterNoTransform() {
     return getTypeParameterListNoTransform().getNumChildNoTransform();
@@ -622,30 +659,31 @@ public class GenericInterfaceDecl extends InterfaceDecl implements Cloneable, Ge
    * @param i Index of the element to return.
    * @return The element at position {@code i} in the TypeParameter list.
    * @apilevel high-level
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
-  @SuppressWarnings({"unchecked", "cast"})
-  public TypeVariable getTypeParameter(int i) {
-    return (TypeVariable)getTypeParameterList().getChild(i);
+  @Override
+@SuppressWarnings({"unchecked", "cast"})
+  public TypeVariable getTypeParameter(final int i) {
+    return getTypeParameterList().getChild(i);
   }
   /**
    * Append an element to the TypeParameter list.
    * @param node The element to append to the TypeParameter list.
    * @apilevel high-level
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
-  public void addTypeParameter(TypeVariable node) {
+  public void addTypeParameter(final TypeVariable node) {
     List<TypeVariable> list = (parent == null || state == null) ? getTypeParameterListNoTransform() : getTypeParameterList();
     list.addChild(node);
   }
   /**
    * @apilevel low-level
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
-  public void addTypeParameterNoTransform(TypeVariable node) {
+  public void addTypeParameterNoTransform(final TypeVariable node) {
     List<TypeVariable> list = getTypeParameterListNoTransform();
     list.addChild(node);
   }
@@ -654,10 +692,10 @@ public class GenericInterfaceDecl extends InterfaceDecl implements Cloneable, Ge
    * @param node The new node to replace the old list element.
    * @param i The list index of the node to be replaced.
    * @apilevel high-level
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
-  public void setTypeParameter(TypeVariable node, int i) {
+  public void setTypeParameter(final TypeVariable node, final int i) {
     List<TypeVariable> list = getTypeParameterList();
     list.setChild(node, i);
   }
@@ -665,8 +703,8 @@ public class GenericInterfaceDecl extends InterfaceDecl implements Cloneable, Ge
    * Retrieves the TypeParameter list.
    * @return The node representing the TypeParameter list.
    * @apilevel high-level
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
   public List<TypeVariable> getTypeParameters() {
     return getTypeParameterList();
@@ -676,8 +714,8 @@ public class GenericInterfaceDecl extends InterfaceDecl implements Cloneable, Ge
    * <p><em>This method does not invoke AST transformations.</em></p>
    * @return The node representing the TypeParameter list.
    * @apilevel low-level
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
   public List<TypeVariable> getTypeParametersNoTransform() {
     return getTypeParameterListNoTransform();
@@ -686,10 +724,11 @@ public class GenericInterfaceDecl extends InterfaceDecl implements Cloneable, Ge
    * Retrieves the TypeParameter list.
    * @return The node representing the TypeParameter list.
    * @apilevel high-level
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
-  @SuppressWarnings({"unchecked", "cast"})
+  @Override
+@SuppressWarnings({"unchecked", "cast"})
   public List<TypeVariable> getTypeParameterList() {
     List<TypeVariable> list = (List<TypeVariable>)getChild(3);
     list.getNumChild();
@@ -700,8 +739,8 @@ public class GenericInterfaceDecl extends InterfaceDecl implements Cloneable, Ge
    * <p><em>This method does not invoke AST transformations.</em></p>
    * @return The node representing the TypeParameter list.
    * @apilevel low-level
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
   @SuppressWarnings({"unchecked", "cast"})
   public List<TypeVariable> getTypeParameterListNoTransform() {
@@ -720,7 +759,8 @@ public class GenericInterfaceDecl extends InterfaceDecl implements Cloneable, Ge
    * @aspect Generics
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:177
    */
-  @SuppressWarnings({"unchecked", "cast"})
+  @Override
+@SuppressWarnings({"unchecked", "cast"})
   public TypeDecl rawType() {
     if(rawType_computed) {
       return rawType_value;
@@ -729,7 +769,9 @@ public class GenericInterfaceDecl extends InterfaceDecl implements Cloneable, Ge
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     rawType_value = rawType_compute();
-      if(isFinal && num == state().boundariesCrossed) rawType_computed = true;
+      if(isFinal && num == state().boundariesCrossed) {
+		rawType_computed = true;
+	}
     return rawType_value;
   }
   /**
@@ -749,10 +791,13 @@ public class GenericInterfaceDecl extends InterfaceDecl implements Cloneable, Ge
    * @aspect LookupParTypeDecl
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:734
    */
-  @SuppressWarnings({"unchecked", "cast"})
-  public TypeDecl lookupParTypeDecl(ArrayList list) {
+  @Override
+@SuppressWarnings({"unchecked", "cast"})
+  public TypeDecl lookupParTypeDecl(final ArrayList list) {
     Object _parameters = list;
-    if(lookupParTypeDecl_ArrayList_values == null) lookupParTypeDecl_ArrayList_values = new java.util.HashMap(4);
+    if(lookupParTypeDecl_ArrayList_values == null) {
+		lookupParTypeDecl_ArrayList_values = new java.util.HashMap(4);
+	}
     if(lookupParTypeDecl_ArrayList_values.containsKey(_parameters)) {
       return (TypeDecl)lookupParTypeDecl_ArrayList_values.get(_parameters);
     }
@@ -769,13 +814,15 @@ public class GenericInterfaceDecl extends InterfaceDecl implements Cloneable, Ge
     if(lookupParTypeDecl_ArrayList_value != null) {
       lookupParTypeDecl_ArrayList_value.is$Final = true;
     }
-      if(true) lookupParTypeDecl_ArrayList_values.put(_parameters, lookupParTypeDecl_ArrayList_value);
+      if(true) {
+		lookupParTypeDecl_ArrayList_values.put(_parameters, lookupParTypeDecl_ArrayList_value);
+	}
     return lookupParTypeDecl_ArrayList_value;
   }
   /**
    * @apilevel internal
    */
-  private TypeDecl lookupParTypeDecl_compute(ArrayList list) {
+  private TypeDecl lookupParTypeDecl_compute(final ArrayList list) {
     /*
     int size = createParTypeDeclStub_ArrayList_list != null ? createParTypeDeclStub_ArrayList_list.numChildren : 0;
     ParInterfaceDecl typeDecl = (ParInterfaceDecl)createParTypeDeclStub(list);
@@ -784,15 +831,16 @@ public class GenericInterfaceDecl extends InterfaceDecl implements Cloneable, Ge
     }
     return typeDecl;
     */
-    
+
     ParInterfaceDecl typeDecl = list.size() == 0 ? new RawInterfaceDecl() : new ParInterfaceDecl();
-    typeDecl.setModifiers((Modifiers)getModifiers().fullCopy());
+    typeDecl.setModifiers(getModifiers().fullCopy());
     typeDecl.setID(getID());
     // ES: trying to only so this for ParInterfaceDecl and then later for RawInterfaceDecl
-    if (!(typeDecl instanceof RawInterfaceDecl)) 
-      typeDecl.setArgumentList(createArgumentList(list));
+    if (!(typeDecl instanceof RawInterfaceDecl)) {
+		typeDecl.setArgumentList(createArgumentList(list));
+	}
     return typeDecl;
-    
+
   }
   /**
    * @apilevel internal
@@ -815,7 +863,8 @@ public class GenericInterfaceDecl extends InterfaceDecl implements Cloneable, Ge
    * @aspect LookupParTypeDecl
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1078
    */
-  @SuppressWarnings({"unchecked", "cast"})
+  @Override
+@SuppressWarnings({"unchecked", "cast"})
   public boolean usesTypeVariable() {
     if(usesTypeVariable_computed) {
       return usesTypeVariable_value;
@@ -833,9 +882,10 @@ public class GenericInterfaceDecl extends InterfaceDecl implements Cloneable, Ge
         usesTypeVariable_visited = state.CIRCLE_INDEX;
         state.CHANGE = false;
         boolean new_usesTypeVariable_value = usesTypeVariable_compute();
-        if (new_usesTypeVariable_value!=usesTypeVariable_value)
-          state.CHANGE = true;
-        usesTypeVariable_value = new_usesTypeVariable_value; 
+        if (new_usesTypeVariable_value!=usesTypeVariable_value) {
+			state.CHANGE = true;
+		}
+        usesTypeVariable_value = new_usesTypeVariable_value;
         state.CIRCLE_INDEX++;
       } while (state.CHANGE);
         if(isFinal && num == state().boundariesCrossed) {
@@ -848,7 +898,7 @@ public class GenericInterfaceDecl extends InterfaceDecl implements Cloneable, Ge
         usesTypeVariable_computed = false;
         usesTypeVariable_initialized = false;
       }
-      state.IN_CIRCLE = false; 
+      state.IN_CIRCLE = false;
       return usesTypeVariable_value;
     }
     if(usesTypeVariable_visited != state.CIRCLE_INDEX) {
@@ -860,9 +910,10 @@ public class GenericInterfaceDecl extends InterfaceDecl implements Cloneable, Ge
         return usesTypeVariable_value;
       }
       boolean new_usesTypeVariable_value = usesTypeVariable_compute();
-      if (new_usesTypeVariable_value!=usesTypeVariable_value)
-        state.CHANGE = true;
-      usesTypeVariable_value = new_usesTypeVariable_value; 
+      if (new_usesTypeVariable_value!=usesTypeVariable_value) {
+		state.CHANGE = true;
+	}
+      usesTypeVariable_value = new_usesTypeVariable_value;
       return usesTypeVariable_value;
     }
     return usesTypeVariable_value;
@@ -877,18 +928,21 @@ public class GenericInterfaceDecl extends InterfaceDecl implements Cloneable, Ge
    * @aspect GenericsSubtype
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericsSubtype.jrag:19
    */
-  @SuppressWarnings({"unchecked", "cast"})
-  public boolean subtype(TypeDecl type) {
+  @Override
+@SuppressWarnings({"unchecked", "cast"})
+  public boolean subtype(final TypeDecl type) {
     Object _parameters = type;
-    if(subtype_TypeDecl_values == null) subtype_TypeDecl_values = new java.util.HashMap(4);
+    if(subtype_TypeDecl_values == null) {
+		subtype_TypeDecl_values = new java.util.HashMap(4);
+	}
     ASTNode$State.CircularValue _value;
     if(subtype_TypeDecl_values.containsKey(_parameters)) {
       Object _o = subtype_TypeDecl_values.get(_parameters);
       if(!(_o instanceof ASTNode$State.CircularValue)) {
         return ((Boolean)_o).booleanValue();
-      }
-      else
-        _value = (ASTNode$State.CircularValue)_o;
+      } else {
+		_value = (ASTNode$State.CircularValue)_o;
+	}
     }
     else {
       _value = new ASTNode$State.CircularValue();
@@ -920,7 +974,7 @@ public class GenericInterfaceDecl extends InterfaceDecl implements Cloneable, Ge
       subtype_compute(type);
       state.RESET_CYCLE = false;
       }
-      state.IN_CIRCLE = false; 
+      state.IN_CIRCLE = false;
       return new_subtype_TypeDecl_value;
     }
     if(!new Integer(state.CIRCLE_INDEX).equals(_value.visited)) {
@@ -940,13 +994,14 @@ public class GenericInterfaceDecl extends InterfaceDecl implements Cloneable, Ge
   /**
    * @apilevel internal
    */
-  private boolean subtype_compute(TypeDecl type) {  return type.supertypeGenericInterfaceDecl(this);  }
+  private boolean subtype_compute(final TypeDecl type) {  return type.supertypeGenericInterfaceDecl(this);  }
   /**
    * @attribute syn
    * @aspect GenericsSubtype
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericsSubtype.jrag:125
    */
-  public boolean supertypeParClassDecl(ParClassDecl type) {
+  @Override
+public boolean supertypeParClassDecl(final ParClassDecl type) {
     ASTNode$State state = state();
     try {  return type.genericDecl().original().subtype(this);  }
     finally {
@@ -957,7 +1012,8 @@ public class GenericInterfaceDecl extends InterfaceDecl implements Cloneable, Ge
    * @aspect GenericsSubtype
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericsSubtype.jrag:129
    */
-  public boolean supertypeParInterfaceDecl(ParInterfaceDecl type) {
+  @Override
+public boolean supertypeParInterfaceDecl(final ParInterfaceDecl type) {
     ASTNode$State state = state();
     try {  return type.genericDecl().original().subtype(this);  }
     finally {
@@ -969,10 +1025,13 @@ public class GenericInterfaceDecl extends InterfaceDecl implements Cloneable, Ge
    * @aspect GenericsSubtype
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericsSubtype.jrag:395
    */
-  @SuppressWarnings({"unchecked", "cast"})
-  public boolean instanceOf(TypeDecl type) {
+  @Override
+@SuppressWarnings({"unchecked", "cast"})
+  public boolean instanceOf(final TypeDecl type) {
     Object _parameters = type;
-    if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.util.HashMap(4);
+    if(instanceOf_TypeDecl_values == null) {
+		instanceOf_TypeDecl_values = new java.util.HashMap(4);
+	}
     if(instanceOf_TypeDecl_values.containsKey(_parameters)) {
       return ((Boolean)instanceOf_TypeDecl_values.get(_parameters)).booleanValue();
     }
@@ -980,34 +1039,47 @@ public class GenericInterfaceDecl extends InterfaceDecl implements Cloneable, Ge
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     boolean instanceOf_TypeDecl_value = instanceOf_compute(type);
-      if(isFinal && num == state().boundariesCrossed) instanceOf_TypeDecl_values.put(_parameters, Boolean.valueOf(instanceOf_TypeDecl_value));
+      if(isFinal && num == state().boundariesCrossed) {
+		instanceOf_TypeDecl_values.put(_parameters, Boolean.valueOf(instanceOf_TypeDecl_value));
+	}
     return instanceOf_TypeDecl_value;
   }
   /**
    * @apilevel internal
    */
-  private boolean instanceOf_compute(TypeDecl type) {  return subtype(type);  }
+  private boolean instanceOf_compute(final TypeDecl type) {  return subtype(type);  }
   /**
    * @attribute syn
    * @aspect Generics
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:158
    */
-  public boolean isGenericType() {
+  @Override
+public boolean isGenericType() {
     ASTNode$State state = state();
     try {  return true;  }
     finally {
     }
   }
+
+	@Override
+	public void jimplify1phase2() {
+		super.jimplify1phase2();
+		getSootClassDecl_value.addTag(new TypeParametersTag(getTypeParameters()));
+	}
+
   protected java.util.Map lookupParTypeDecl_ParTypeAccess_values;
   /**
    * @attribute syn
    * @aspect LookupParTypeDecl
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:708
    */
-  @SuppressWarnings({"unchecked", "cast"})
-  public TypeDecl lookupParTypeDecl(ParTypeAccess p) {
+  @Override
+@SuppressWarnings({"unchecked", "cast"})
+  public TypeDecl lookupParTypeDecl(final ParTypeAccess p) {
     Object _parameters = p;
-    if(lookupParTypeDecl_ParTypeAccess_values == null) lookupParTypeDecl_ParTypeAccess_values = new java.util.HashMap(4);
+    if(lookupParTypeDecl_ParTypeAccess_values == null) {
+		lookupParTypeDecl_ParTypeAccess_values = new java.util.HashMap(4);
+	}
     if(lookupParTypeDecl_ParTypeAccess_values.containsKey(_parameters)) {
       return (TypeDecl)lookupParTypeDecl_ParTypeAccess_values.get(_parameters);
     }
@@ -1015,16 +1087,19 @@ public class GenericInterfaceDecl extends InterfaceDecl implements Cloneable, Ge
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     TypeDecl lookupParTypeDecl_ParTypeAccess_value = lookupParTypeDecl_compute(p);
-      if(isFinal && num == state().boundariesCrossed) lookupParTypeDecl_ParTypeAccess_values.put(_parameters, lookupParTypeDecl_ParTypeAccess_value);
+      if(isFinal && num == state().boundariesCrossed) {
+		lookupParTypeDecl_ParTypeAccess_values.put(_parameters, lookupParTypeDecl_ParTypeAccess_value);
+	}
     return lookupParTypeDecl_ParTypeAccess_value;
   }
   /**
    * @apilevel internal
    */
-  private TypeDecl lookupParTypeDecl_compute(ParTypeAccess p) {
+  private TypeDecl lookupParTypeDecl_compute(final ParTypeAccess p) {
     ArrayList typeArguments = new ArrayList();
-    for(int i = 0; i < p.getNumTypeArgument(); i++)
-      typeArguments.add(p.getTypeArgument(i).type());
+    for(int i = 0; i < p.getNumTypeArgument(); i++) {
+		typeArguments.add(p.getTypeArgument(i).type());
+	}
     return lookupParTypeDecl(typeArguments);
   }
   /**
@@ -1042,7 +1117,8 @@ public class GenericInterfaceDecl extends InterfaceDecl implements Cloneable, Ge
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:486
    * @apilevel internal
    */
-  public boolean Define_boolean_isNestedType(ASTNode caller, ASTNode child) {
+  @Override
+public boolean Define_boolean_isNestedType(final ASTNode caller, final ASTNode child) {
     if(caller == getTypeParameterListNoTransform())  {
     int childIndex = caller.getIndexOfChild(child);
     return true;
@@ -1054,7 +1130,8 @@ public class GenericInterfaceDecl extends InterfaceDecl implements Cloneable, Ge
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:487
    * @apilevel internal
    */
-  public TypeDecl Define_TypeDecl_enclosingType(ASTNode caller, ASTNode child) {
+  @Override
+public TypeDecl Define_TypeDecl_enclosingType(final ASTNode caller, final ASTNode child) {
     if(caller == getTypeParameterListNoTransform())  {
     int childIndex = caller.getIndexOfChild(child);
     return this;
@@ -1066,15 +1143,18 @@ public class GenericInterfaceDecl extends InterfaceDecl implements Cloneable, Ge
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:531
    * @apilevel internal
    */
-  public SimpleSet Define_SimpleSet_lookupType(ASTNode caller, ASTNode child, String name) {
-    if(caller == getBodyDeclListNoTransform())  { 
+  @Override
+public SimpleSet Define_SimpleSet_lookupType(final ASTNode caller, final ASTNode child, final String name) {
+    if(caller == getBodyDeclListNoTransform())  {
     int index = caller.getIndexOfChild(child);
     {
     SimpleSet c = memberTypes(name);
-    if(getBodyDecl(index).visibleTypeParameters())
-      c = addTypeVariables(c, name);
-    if(!c.isEmpty())
-      return c;
+    if(getBodyDecl(index).visibleTypeParameters()) {
+		c = addTypeVariables(c, name);
+	}
+    if(!c.isEmpty()) {
+		return c;
+	}
     // 8.5.2
     if(isClassDecl() && isStatic() && !isTopLevelType()) {
       for(Iterator iter = lookupType(name).iterator(); iter.hasNext(); ) {
@@ -1083,21 +1163,24 @@ public class GenericInterfaceDecl extends InterfaceDecl implements Cloneable, Ge
           c = c.add(d);
         }
       }
-    }
-    else
-      c = lookupType(name);
-    if(!c.isEmpty())
-      return c;
+    } else {
+		c = lookupType(name);
+	}
+    if(!c.isEmpty()) {
+		return c;
+	}
     return topLevelType().lookupType(name); // Fix to search imports
     // include type parameters if not static
   }
   }
-    else if(caller == getTypeParameterListNoTransform())  { 
+    else if(caller == getTypeParameterListNoTransform())  {
     int childIndex = caller.getIndexOfChild(child);
     {
     SimpleSet c = memberTypes(name);
     c = addTypeVariables(c, name);
-    if(!c.isEmpty()) return c;
+    if(!c.isEmpty()) {
+		return c;
+	}
     // 8.5.2
     if(isClassDecl() && isStatic() && !isTopLevelType()) {
       for(Iterator iter = lookupType(name).iterator(); iter.hasNext(); ) {
@@ -1106,15 +1189,16 @@ public class GenericInterfaceDecl extends InterfaceDecl implements Cloneable, Ge
           c = c.add(d);
         }
       }
-    }
-    else
-      c = lookupType(name);
-    if(!c.isEmpty())
-      return c;
+    } else {
+		c = lookupType(name);
+	}
+    if(!c.isEmpty()) {
+		return c;
+	}
     return topLevelType().lookupType(name); // Fix to search imports
   }
   }
-    else if(caller == getSuperInterfaceIdListNoTransform())  { 
+    else if(caller == getSuperInterfaceIdListNoTransform())  {
     int childIndex = caller.getIndexOfChild(child);
     {
     SimpleSet c = addTypeVariables(SimpleSet.emptySet, name);
@@ -1128,7 +1212,8 @@ public class GenericInterfaceDecl extends InterfaceDecl implements Cloneable, Ge
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericsParTypeDecl.jrag:51
    * @apilevel internal
    */
-  public TypeDecl Define_TypeDecl_genericDecl(ASTNode caller, ASTNode child) {
+  @Override
+public TypeDecl Define_TypeDecl_genericDecl(final ASTNode caller, final ASTNode child) {
      {
       int childIndex = this.getIndexOfChild(caller);
       return this;
@@ -1137,7 +1222,8 @@ public class GenericInterfaceDecl extends InterfaceDecl implements Cloneable, Ge
   /**
    * @apilevel internal
    */
-  public ASTNode rewriteTo() {
+  @Override
+public ASTNode rewriteTo() {
     return super.rewriteTo();
   }
 }
