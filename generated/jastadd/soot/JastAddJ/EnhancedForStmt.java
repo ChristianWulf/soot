@@ -5,6 +5,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import soot.javaToJimple.jj.extension.HigherLevelStructureTags;
+import soot.javaToJimple.jj.extension.LoopIdTag;
+import soot.javaToJimple.jj.extension.VariableDeclarationTag;
+import soot.tagkit.Tag;
 
 /**
  * @production EnhancedForStmt : {@link BranchTargetStmt} ::= <span class="component">{@link VariableDeclaration}</span>
@@ -33,6 +36,11 @@ public class EnhancedForStmt extends BranchTargetStmt implements Cloneable, Vari
 	 * @apilevel internal
 	 */
 	protected soot.jimple.Stmt begin_label_value;
+
+	/**
+	 * @author chw
+	 */
+	private final Tag loopIdTag = new LoopIdTag();
 
 	/**
 	 * @apilevel low-level
@@ -196,8 +204,11 @@ public class EnhancedForStmt extends BranchTargetStmt implements Cloneable, Vari
 		b.add(b.newIfStmt(
 				b.newGeExpr(asImmediate(b, index), asImmediate(b, b.newLengthExpr(asImmediate(b, array), this)), this),
 				end_label(), this));
-		b.add(b.newAssignStmt(parameter, asRValue(b, getExpr().type().elementType().emitCastTo(b,
-				asLocal(b, b.newArrayRef(array, index, this)), getVariableDeclaration().type(), this)), this));
+		soot.jimple.Stmt loopVariable = b.newAssignStmt(parameter, asRValue(b, getExpr().type().elementType().emitCastTo(b,
+				asLocal(b, b.newArrayRef(array, index, this)), getVariableDeclaration().type(), this)), this);
+		// added by chw
+		loopVariable.addTag(VariableDeclarationTag.INSTANCE);
+		b.add(loopVariable);
 		b.addLabel(begin_label());
 		getStmt().jimplify2(b);
 		b.addLabel(update_label());
@@ -229,6 +240,7 @@ public class EnhancedForStmt extends BranchTargetStmt implements Cloneable, Vari
 	private soot.jimple.Stmt init_label_compute() {
 		soot.jimple.Stmt label = newLabel();
 		label.addTag(HigherLevelStructureTags.FOREACH_INIT);
+		label.addTag(loopIdTag);
 		return label;
 	}
 
@@ -745,6 +757,7 @@ public class EnhancedForStmt extends BranchTargetStmt implements Cloneable, Vari
 	private soot.jimple.Stmt cond_label_compute() {
 		soot.jimple.Stmt label = newLabel();
 		label.addTag(HigherLevelStructureTags.FOREACH_COND);
+		label.addTag(loopIdTag);
 		return label;
 	}
 
@@ -768,6 +781,7 @@ public class EnhancedForStmt extends BranchTargetStmt implements Cloneable, Vari
 	private soot.jimple.Stmt begin_label_compute() {
 		soot.jimple.Stmt label = newLabel();
 		label.addTag(HigherLevelStructureTags.FOREACH_BODY);
+		label.addTag(loopIdTag);
 		return label;
 	}
 
@@ -844,6 +858,7 @@ public class EnhancedForStmt extends BranchTargetStmt implements Cloneable, Vari
 	private soot.jimple.Stmt end_label_compute() {
 		soot.jimple.Stmt label = newLabel();
 		label.addTag(HigherLevelStructureTags.FOREACH_END);
+		label.addTag(loopIdTag);
 		return label;
 	}
 

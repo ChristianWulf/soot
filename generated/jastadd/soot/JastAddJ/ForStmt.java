@@ -4,6 +4,8 @@ package soot.JastAddJ;
 import java.util.Iterator;
 
 import soot.javaToJimple.jj.extension.HigherLevelStructureTags;
+import soot.javaToJimple.jj.extension.LoopIdTag;
+import soot.tagkit.Tag;
 
 /**
  * @production ForStmt : {@link BranchTargetStmt} ::= <span class="component">InitStmt:{@link Stmt}*</span>
@@ -18,6 +20,10 @@ public class ForStmt extends BranchTargetStmt implements Cloneable, VariableScop
 	 * @author chw
 	 */
 	private static boolean alwaysProduceEndForStmt = Boolean.getBoolean("alwaysProduceEndForStmt");
+	/**
+	 * @author chw
+	 */
+	private final Tag loopIdTag = new LoopIdTag();
 
 	/**
 	 * @apilevel low-level
@@ -1182,6 +1188,7 @@ public class ForStmt extends BranchTargetStmt implements Cloneable, VariableScop
 	private soot.jimple.Stmt cond_label_compute() {
 		soot.jimple.Stmt label = newLabel();
 		label.addTag(HigherLevelStructureTags.FOR_COND);
+		label.addTag(loopIdTag);
 		return label;
 	}
 
@@ -1220,6 +1227,7 @@ public class ForStmt extends BranchTargetStmt implements Cloneable, VariableScop
 	private soot.jimple.Stmt init_label_compute() {
 		soot.jimple.Stmt label = newLabel();
 		label.addTag(HigherLevelStructureTags.FOR_INIT);
+		label.addTag(loopIdTag);
 		return label;
 	}
 
@@ -1258,6 +1266,7 @@ public class ForStmt extends BranchTargetStmt implements Cloneable, VariableScop
 	private soot.jimple.Stmt begin_label_compute() {
 		soot.jimple.Stmt label = newLabel();
 		label.addTag(HigherLevelStructureTags.FOR_BODY);
+		label.addTag(loopIdTag);
 		return label;
 	}
 
@@ -1296,6 +1305,7 @@ public class ForStmt extends BranchTargetStmt implements Cloneable, VariableScop
 	private soot.jimple.Stmt update_label_compute() {
 		soot.jimple.Stmt label = newLabel();
 		label.addTag(HigherLevelStructureTags.FOR_UPDATE);
+		label.addTag(loopIdTag);
 		return label;
 	}
 
@@ -1334,6 +1344,7 @@ public class ForStmt extends BranchTargetStmt implements Cloneable, VariableScop
 	private soot.jimple.Stmt end_label_compute() {
 		soot.jimple.Stmt label = newLabel();
 		label.addTag(HigherLevelStructureTags.FOR_END);
+		label.addTag(loopIdTag);
 		return label;
 	}
 
