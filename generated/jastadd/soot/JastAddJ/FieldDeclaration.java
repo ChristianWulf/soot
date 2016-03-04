@@ -478,6 +478,7 @@ public class FieldDeclaration extends MemberDecl implements Cloneable, SimpleSet
     } else {
 	sootField = hostType().getSootClassDecl().getFieldByName(name);
     }
+    
     addAttributes();
   }
   /**
@@ -1280,6 +1281,8 @@ public class FieldDeclaration extends MemberDecl implements Cloneable, SimpleSet
     if(isPrivate()) result |= soot.Modifier.PRIVATE;
     if(isFinal()) result |= soot.Modifier.FINAL;
     if(isStatic()) result |= soot.Modifier.STATIC;
+    if(isVolatile()) result |= soot.Modifier.VOLATILE;	// by chw
+    if(isTransient()) result |= soot.Modifier.TRANSIENT;	// by chw
     return result;
   }
     finally {
