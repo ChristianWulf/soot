@@ -242,14 +242,18 @@ public class VariableDeclaration extends Stmt implements Cloneable, SimpleSet, I
 			varDeclStmt = assignStmt;
 		} else {
 			// added by chw
-			varDeclStmt = newLabel();
+			varDeclStmt = newLabel();	// declaration w/o initialization represented as nop
 		}
 
 		// added by chw
 		varDeclStmt.addTag(VariableDeclarationTag.INSTANCE);
-		if (isFinal()) varDeclStmt.addTag(ModifierTags.FINAL);
-		if (isSynthetic()) varDeclStmt.addTag(ModifierTags.SYNTHETIC);
-		
+		if (isFinal()) {
+			varDeclStmt.addTag(ModifierTags.FINAL);
+		}
+		if (isSynthetic()) {
+			varDeclStmt.addTag(ModifierTags.SYNTHETIC);
+		}
+
 		b.add(varDeclStmt);
 	}
 	/**
