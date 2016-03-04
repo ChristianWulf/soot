@@ -3,11 +3,12 @@ package soot.javaToJimple.jj.extension;
 import soot.tagkit.AttributeValueException;
 import soot.tagkit.Tag;
 
-public enum ModifierTags implements Tag {
+public final class SyntheticLocalVarTag implements Tag {
 
-	FINAL, SYNTHETIC;
+	public static final SyntheticLocalVarTag INSTANCE = new SyntheticLocalVarTag();
+	public static final String NAME = "SyntheticLocalVarTag";
 
-	public static final String NAME = "ModifierTags";
+	private SyntheticLocalVarTag() {}
 
 	@Override
 	public String getName() {
@@ -18,4 +19,5 @@ public enum ModifierTags implements Tag {
 	public byte[] getValue() throws AttributeValueException {
 		throw new RuntimeException(NAME + " has no value for bytecode");
 	}
+
 }
