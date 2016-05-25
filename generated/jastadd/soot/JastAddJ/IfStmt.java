@@ -2,6 +2,7 @@
 package soot.JastAddJ;
 
 import soot.javaToJimple.jj.extension.HigherLevelStructureTags;
+import soot.jimple.internal.JEndNopStmt;
 
 /**
  * @production IfStmt : {@link Stmt} ::= <span class="component">Condition:{@link Expr}</span>
@@ -158,32 +159,32 @@ public class IfStmt extends Stmt implements Cloneable {
 		soot.jimple.Stmt beginCond = beginCondLabel();
 		b.add(beginCond);
 
-		soot.jimple.Stmt endBranch = endBranchLabel();
+		soot.jimple.Stmt endBranch = endBranchLabel(beginCond);
 
 		// chw: this optimization should not be made while constructing the jimple representation;
 		// instead it should be performed afterwards to separate construction from optimization
-//		if (getCondition().isConstant()) {
-//			if (getCondition().isTrue()) {
-//				getThen().jimplify2(b);
-//			} else if (getCondition().isFalse() && hasElse()) {
-//				getElse().jimplify2(b);
-//			}
-//		} else {
-			soot.jimple.Stmt elseBranch = else_branch_label();
-			soot.jimple.Stmt thenBranch = then_branch_label();
+		//		if (getCondition().isConstant()) {
+		//			if (getCondition().isTrue()) {
+		//				getThen().jimplify2(b);
+		//			} else if (getCondition().isFalse() && hasElse()) {
+		//				getElse().jimplify2(b);
+		//			}
+		//		} else {
+		soot.jimple.Stmt elseBranch = else_branch_label();
+		soot.jimple.Stmt thenBranch = then_branch_label();
 
-			getCondition().emitEvalBranch(b);
-			b.addLabel(thenBranch);
-			getThen().jimplify2(b);
-			if (getThen().canCompleteNormally() && hasElse()) {
-				b.setLine(this);
-				b.add(b.newGotoStmt(endBranch, this));
-			}
-			b.addLabel(elseBranch);
-			if (hasElse()) {
-				getElse().jimplify2(b);
-			}
-//		}
+		getCondition().emitEvalBranch(b);
+		b.addLabel(thenBranch);
+		getThen().jimplify2(b);
+		if (getThen().canCompleteNormally() && hasElse()) {
+			b.setLine(this);
+			b.add(b.newGotoStmt(endBranch, this));
+		}
+		b.addLabel(elseBranch);
+		if (hasElse()) {
+			getElse().jimplify2(b);
+		}
+		//		}
 
 		if (!alwaysProduceEndBranchStmt) {
 			if (getThen().canCompleteNormally() && hasElse()) {
@@ -204,9 +205,11 @@ public class IfStmt extends Stmt implements Cloneable {
 	}
 	/**
 	 * @author chw
+	 * @param beginCond
 	 */
-	private soot.jimple.Stmt endBranchLabel() {
-		soot.jimple.Stmt label = newLabel();
+	private soot.jimple.Stmt endBranchLabel(soot.jimple.Stmt beginCond) {
+		//		soot.jimple.Stmt label = newLabel();
+		soot.jimple.Stmt label = new JEndNopStmt(beginCond);	// added by chw
 		label.addTag(HigherLevelStructureTags.IF_END);
 		return label;
 	}
