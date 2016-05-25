@@ -18,23 +18,105 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
 package soot.jimple;
 
-import soot.*;
-import soot.jimple.internal.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 
-import java.util.*;
+import soot.ArrayType;
+import soot.Body;
+import soot.ErroneousType;
+import soot.G;
+import soot.Immediate;
+import soot.Local;
+import soot.RefType;
+import soot.Singletons;
+import soot.SootClass;
+import soot.SootFieldRef;
+import soot.SootMethod;
+import soot.SootMethodRef;
+import soot.StmtAddressType;
+import soot.Trap;
+import soot.Type;
+import soot.Unit;
+import soot.UnitBox;
+import soot.UnknownType;
+import soot.Value;
+import soot.ValueBox;
+import soot.javaToJimple.jj.extension.BodyTag;
+import soot.jimple.internal.ConditionExprBox;
+import soot.jimple.internal.IdentityRefBox;
+import soot.jimple.internal.ImmediateBox;
+import soot.jimple.internal.InvokeExprBox;
+import soot.jimple.internal.JAddExpr;
+import soot.jimple.internal.JAndExpr;
+import soot.jimple.internal.JArrayRef;
+import soot.jimple.internal.JAssignStmt;
+import soot.jimple.internal.JBreakpointStmt;
+import soot.jimple.internal.JCastExpr;
+import soot.jimple.internal.JCaughtExceptionRef;
+import soot.jimple.internal.JCmpExpr;
+import soot.jimple.internal.JCmpgExpr;
+import soot.jimple.internal.JCmplExpr;
+import soot.jimple.internal.JDivExpr;
+import soot.jimple.internal.JDynamicInvokeExpr;
+import soot.jimple.internal.JEnterMonitorStmt;
+import soot.jimple.internal.JEqExpr;
+import soot.jimple.internal.JExitMonitorStmt;
+import soot.jimple.internal.JGeExpr;
+import soot.jimple.internal.JGotoStmt;
+import soot.jimple.internal.JGtExpr;
+import soot.jimple.internal.JIdentityStmt;
+import soot.jimple.internal.JIfStmt;
+import soot.jimple.internal.JInstanceFieldRef;
+import soot.jimple.internal.JInstanceOfExpr;
+import soot.jimple.internal.JInterfaceInvokeExpr;
+import soot.jimple.internal.JInvokeStmt;
+import soot.jimple.internal.JLeExpr;
+import soot.jimple.internal.JLengthExpr;
+import soot.jimple.internal.JLookupSwitchStmt;
+import soot.jimple.internal.JLtExpr;
+import soot.jimple.internal.JMulExpr;
+import soot.jimple.internal.JNeExpr;
+import soot.jimple.internal.JNegExpr;
+import soot.jimple.internal.JNewArrayExpr;
+import soot.jimple.internal.JNewExpr;
+import soot.jimple.internal.JNewMultiArrayExpr;
+import soot.jimple.internal.JNopStmt;
+import soot.jimple.internal.JOrExpr;
+import soot.jimple.internal.JRemExpr;
+import soot.jimple.internal.JRetStmt;
+import soot.jimple.internal.JReturnStmt;
+import soot.jimple.internal.JReturnVoidStmt;
+import soot.jimple.internal.JShlExpr;
+import soot.jimple.internal.JShrExpr;
+import soot.jimple.internal.JSpecialInvokeExpr;
+import soot.jimple.internal.JStaticInvokeExpr;
+import soot.jimple.internal.JSubExpr;
+import soot.jimple.internal.JTableSwitchStmt;
+import soot.jimple.internal.JThrowStmt;
+import soot.jimple.internal.JTrap;
+import soot.jimple.internal.JUshrExpr;
+import soot.jimple.internal.JVirtualInvokeExpr;
+import soot.jimple.internal.JXorExpr;
+import soot.jimple.internal.JimpleLocal;
+import soot.jimple.internal.JimpleLocalBox;
+import soot.jimple.internal.RValueBox;
+import soot.jimple.internal.StmtBox;
+import soot.jimple.internal.VariableBox;
 
 /**
  * The Jimple class contains all the constructors for the components of the
  * Jimple grammar for the Jimple body. <br>
  * <br>
- * 
+ *
  * Immediate -> Local | Constant <br>
  * RValue -> Local | Constant | ConcreteRef | Expr<br>
  * Variable -> Local | ArrayRef | InstanceFieldRef | StaticFieldRef <br>
@@ -133,7 +215,7 @@ public class Jimple {
 		return !(t instanceof StmtAddressType
 				|| t instanceof UnknownType
 				|| t instanceof RefType
-				|| (t instanceof ArrayType && (!isJavaKeywordType(((ArrayType) t).baseType))) 
+				|| (t instanceof ArrayType && (!isJavaKeywordType(((ArrayType) t).baseType)))
 				|| t instanceof ErroneousType);
 	}
 
@@ -338,26 +420,26 @@ public class Jimple {
 	/**
 	 * Constructs a NewStaticInvokeExpr(ArrayType, List of Immediate) grammar
 	 * chunk.
-	 */	
+	 */
 	public StaticInvokeExpr newStaticInvokeExpr(SootMethodRef method,
 			List<? extends Value> args) {
 		return new JStaticInvokeExpr(method, args);
 	}
- 
+
 	public StaticInvokeExpr newStaticInvokeExpr(SootMethodRef method,
 			Value... args) {
 		return newStaticInvokeExpr(method, Arrays.asList(args));
 	}
-	
+
 	public StaticInvokeExpr newStaticInvokeExpr(SootMethodRef method, Value arg) {
 		return newStaticInvokeExpr(method, Collections.singletonList(arg));
 	}
-	
+
 	public StaticInvokeExpr newStaticInvokeExpr(SootMethodRef method) {
 		return newStaticInvokeExpr(method, Collections.<Value>emptyList());
 	}
 
-	
+
 	/**
 	 * Constructs a NewSpecialInvokeExpr(Local base, SootMethodRef method, List
 	 * of Immediate) grammar chunk.
@@ -379,12 +461,12 @@ public class Jimple {
 	public SpecialInvokeExpr newSpecialInvokeExpr(Local base, SootMethodRef method, Value arg) {
 		return newSpecialInvokeExpr(base, method, Collections.<Value>singletonList(arg));
 	}
-	
+
 	public SpecialInvokeExpr newSpecialInvokeExpr(Local base,
 			SootMethodRef method) {
 		return newSpecialInvokeExpr(base, method, Collections.<Value>emptyList());
 	}
-	
+
 	/**
 	 * Constructs a NewDynamicInvokeExpr(SootMethodRef bootstrapMethodRef, List
 	 * bootstrapArgs, SootMethodRef methodRef, List args) grammar chunk.
@@ -396,7 +478,7 @@ public class Jimple {
 		return new JDynamicInvokeExpr(bootstrapMethodRef, bootstrapArgs,
 				methodRef, args);
 	}
-	
+
 	/**
 	 * Constructs a NewDynamicInvokeExpr(SootMethodRef bootstrapMethodRef, List
 	 * bootstrapArgs, SootMethodRef methodRef, List args) grammar chunk.
@@ -427,16 +509,16 @@ public class Jimple {
 			SootMethodRef method, Value... args) {
 		return newVirtualInvokeExpr(base, method, Arrays.asList(args));
 	}
-	
+
 	public VirtualInvokeExpr newVirtualInvokeExpr(Local base, SootMethodRef method, Value arg) {
 		return newVirtualInvokeExpr(base, method, Collections.<Value>singletonList(arg));
 	}
-	
+
 	public VirtualInvokeExpr newVirtualInvokeExpr(Local base,
 			SootMethodRef method) {
 		return newVirtualInvokeExpr(base, method, Collections.<Value>emptyList());
 	}
-	
+
 	/**
 	 * Constructs a NewInterfaceInvokeExpr(Local base, SootMethodRef method,
 	 * List of Immediate) grammar chunk.
@@ -445,7 +527,7 @@ public class Jimple {
 			SootMethodRef method, List<? extends Value> args) {
 		return new JInterfaceInvokeExpr(base, method, args);
 	}
-	
+
 	/**
 	 * Constructs a NewInterfaceInvokeExpr(Local base, SootMethodRef method,
 	 * List of Immediate) grammar chunk.
@@ -454,11 +536,11 @@ public class Jimple {
 			SootMethodRef method, Value... args) {
 		return newInterfaceInvokeExpr(base, method, Arrays.asList(args));
 	}
-	
+
 	public InterfaceInvokeExpr newInterfaceInvokeExpr(Local base, SootMethodRef method, Value arg) {
 		return newInterfaceInvokeExpr(base, method, Collections.<Value>singletonList(arg));
 	}
-	
+
 	public InterfaceInvokeExpr newInterfaceInvokeExpr(Local base,
 			SootMethodRef method) {
 		return newInterfaceInvokeExpr(base, method, Collections.<Value>emptyList());
@@ -512,6 +594,7 @@ public class Jimple {
 
 	/**
 	 * Constructs a ReturnVoidStmt() grammar chunk.
+	 * @param body
 	 */
 	public ReturnVoidStmt newReturnVoidStmt() {
 		return new JReturnVoidStmt();
@@ -523,6 +606,26 @@ public class Jimple {
 	public ReturnStmt newReturnStmt(Value op) {
 		return new JReturnStmt(op);
 	}
+
+	/**
+	 * Constructs a ReturnVoidStmt() grammar chunk.
+	 * @param body
+	 */
+	public ReturnVoidStmt newReturnVoidStmt(Body body) {	// body added by chw
+		JReturnVoidStmt returnVoidStmt = new JReturnVoidStmt();
+		returnVoidStmt.addTag(new BodyTag(body));
+		return returnVoidStmt;
+	}
+
+	/**
+	 * Constructs a ReturnStmt(Immediate) grammar chunk.
+	 */
+	public ReturnStmt newReturnStmt(Value op, Body body) {// body added by chw
+		JReturnStmt returnStmt = new JReturnStmt(op);
+		returnStmt.addTag(new BodyTag(body));
+		return returnStmt;
+	}
+
 
 	/**
 	 * Constructs a RetStmt(Local) grammar chunk.
@@ -713,7 +816,7 @@ public class Jimple {
 	 * Uncomment these stubs to make it compile with old code using Soot that
 	 * does not know about SootField/MethodRefs.
 	 */
-/*
+	/*
 	public StaticFieldRef newStaticFieldRef(SootField f) {
 		return newStaticFieldRef(f.makeRef());
 	}
@@ -796,5 +899,5 @@ public class Jimple {
 			SootMethod method, Value arg1, Value arg2) {
 		return newInterfaceInvokeExpr(base, method.makeRef(), arg1, arg2);
 	}
-*/
+	 */
 }
