@@ -13,7 +13,6 @@ import soot.SootMethodRef;
 import soot.Type;
 import soot.Unit;
 import soot.Value;
-import soot.javaToJimple.jj.extension.BodyTag;
 import soot.jimple.CaughtExceptionRef;
 import soot.jimple.IdentityStmt;
 import soot.jimple.Jimple;
@@ -432,7 +431,6 @@ public class Body extends java.lang.Object {
 		if(tag != null) {
 			stmt.getOpBox().addTag(tag);
 		}
-		stmt.addTag(new BodyTag(body));
 		return stmt;
 	}
 
@@ -468,14 +466,14 @@ public class Body extends java.lang.Object {
 
 
 	public soot.jimple.ReturnVoidStmt newReturnVoidStmt(final ASTNode location) {
-		ReturnVoidStmt returnVoidStmt = Jimple.v().newReturnVoidStmt(body);
+		ReturnVoidStmt returnVoidStmt = Jimple.v().newReturnVoidStmt();
 		return returnVoidStmt;
 	}
 
 
 
 	public soot.jimple.ReturnStmt newReturnStmt(final Value op, final ASTNode location) {
-		soot.jimple.ReturnStmt stmt = Jimple.v().newReturnStmt(op, body);
+		soot.jimple.ReturnStmt stmt = Jimple.v().newReturnStmt(op);
 		soot.tagkit.Tag tag = getTag(op);
 		if(tag != null) {
 			stmt.getOpBox().addTag(tag);

@@ -1173,7 +1173,7 @@ public class MethodDecl extends MemberDecl implements Cloneable, SimpleSet, Iter
 					getParameter(i).jimplify2(b);
 				getBlock().jimplify2(b);
 				if(type() instanceof VoidType)
-					b.add(Jimple.v().newReturnVoidStmt(body));
+					b.add(Jimple.v().newReturnVoidStmt());
 			}
 		} catch (RuntimeException e) {
 			System.err.println("Error generating " + hostType().typeName() + ": " + this);

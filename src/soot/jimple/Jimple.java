@@ -31,7 +31,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import soot.ArrayType;
-import soot.Body;
 import soot.ErroneousType;
 import soot.G;
 import soot.Immediate;
@@ -50,7 +49,6 @@ import soot.UnitBox;
 import soot.UnknownType;
 import soot.Value;
 import soot.ValueBox;
-import soot.javaToJimple.jj.extension.BodyTag;
 import soot.jimple.internal.ConditionExprBox;
 import soot.jimple.internal.IdentityRefBox;
 import soot.jimple.internal.ImmediateBox;
@@ -611,20 +609,20 @@ public class Jimple {
 	 * Constructs a ReturnVoidStmt() grammar chunk.
 	 * @param body
 	 */
-	public ReturnVoidStmt newReturnVoidStmt(Body body) {	// body added by chw
-		JReturnVoidStmt returnVoidStmt = new JReturnVoidStmt();
-		returnVoidStmt.addTag(new BodyTag(body));
-		return returnVoidStmt;
-	}
+	//	public ReturnVoidStmt newReturnVoidStmt(Body body) {	// body added by chw; removed since a full migration requires too much effort
+	//		JReturnVoidStmt returnVoidStmt = new JReturnVoidStmt();
+	//		returnVoidStmt.addTag(new BodyTag(body));
+	//		return returnVoidStmt;
+	//	}
 
 	/**
 	 * Constructs a ReturnStmt(Immediate) grammar chunk.
 	 */
-	public ReturnStmt newReturnStmt(Value op, Body body) {// body added by chw
-		JReturnStmt returnStmt = new JReturnStmt(op);
-		returnStmt.addTag(new BodyTag(body));
-		return returnStmt;
-	}
+	//	public ReturnStmt newReturnStmt(Value op, Body body) {// body added by chw; removed since a full migration requires too much effort
+	//		JReturnStmt returnStmt = new JReturnStmt(op);
+	//		returnStmt.addTag(new BodyTag(body));
+	//		return returnStmt;
+	//	}
 
 
 	/**

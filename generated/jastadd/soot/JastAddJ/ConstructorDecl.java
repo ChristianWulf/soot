@@ -1116,7 +1116,7 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
 			}
 		}
 		getBlock().jimplify2(b);
-		b.add(Jimple.v().newReturnVoidStmt(body));
+		b.add(Jimple.v().newReturnVoidStmt());
 	}
 	/**
 	 * @ast method
