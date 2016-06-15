@@ -9,7 +9,7 @@ public enum HigherLevelStructureTags implements Tag {
 
 	FOREACH_INIT, FOREACH_COND, FOREACH_BODY, FOREACH_END,
 
-	IF_COND, IF_END,
+	IF_COND, IF_THEN, IF_ELSE, IF_END,
 
 	SWITCH_COND, SWITCH_CASE, SWITCH_END,
 

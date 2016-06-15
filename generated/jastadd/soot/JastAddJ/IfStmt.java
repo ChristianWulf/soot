@@ -563,7 +563,7 @@ public class IfStmt extends Stmt implements Cloneable {
 	 * @aspect Statements
 	 * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/Statements.jrag:113
 	 */
-	@SuppressWarnings({ "unchecked", "cast" })
+	@SuppressWarnings({ "cast" })
 	public soot.jimple.Stmt else_branch_label() {
 		if (else_branch_label_computed) {
 			return else_branch_label_value;
@@ -582,7 +582,7 @@ public class IfStmt extends Stmt implements Cloneable {
 	 * @apilevel internal
 	 */
 	private soot.jimple.Stmt else_branch_label_compute() {
-		return newLabel();
+		return newLabel(HigherLevelStructureTags.IF_ELSE);	// changed by chw
 	}
 
 	/**
@@ -599,7 +599,7 @@ public class IfStmt extends Stmt implements Cloneable {
 	 * @aspect Statements
 	 * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/Statements.jrag:114
 	 */
-	@SuppressWarnings({ "unchecked", "cast" })
+	@SuppressWarnings({ "cast" })
 	public soot.jimple.Stmt then_branch_label() {
 		if (then_branch_label_computed) {
 			return then_branch_label_value;
@@ -618,7 +618,7 @@ public class IfStmt extends Stmt implements Cloneable {
 	 * @apilevel internal
 	 */
 	private soot.jimple.Stmt then_branch_label_compute() {
-		return newLabel();
+		return newLabel(HigherLevelStructureTags.IF_THEN);	// changed by chw
 	}
 
 	/**

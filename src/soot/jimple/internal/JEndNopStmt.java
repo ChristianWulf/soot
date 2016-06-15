@@ -3,6 +3,8 @@ package soot.jimple.internal;
 import soot.jimple.Stmt;
 
 /**
+ * Represents a JNopStmt which holds the condition statement of the associated loop.
+ *
  * @author Christian Wulf (chw)
  */
 public class JEndNopStmt extends JNopStmt {
