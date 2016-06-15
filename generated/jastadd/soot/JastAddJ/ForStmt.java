@@ -235,11 +235,8 @@ public class ForStmt extends BranchTargetStmt implements Cloneable, VariableScop
 			b.setLine(this);
 			b.add(b.newGotoStmt(cond_label(), this));
 		}
-		if (!alwaysProduceEndForStmt) {
-			if (canCompleteNormally()) {
-				b.addLabel(end_label());
-			}
-		} else {
+
+		if (alwaysProduceEndForStmt || canCompleteNormally()) {
 			b.addLabel(end_label());
 		}
 	}
@@ -1206,7 +1203,7 @@ public class ForStmt extends BranchTargetStmt implements Cloneable, VariableScop
 	 * @aspect Statements
 	 * @author chw
 	 */
-	@SuppressWarnings({ "unchecked", "cast" })
+	@SuppressWarnings({ "cast" })
 	public soot.jimple.Stmt init_label() {
 		if (init_label_computed) {
 			return init_label_value;
@@ -1245,7 +1242,7 @@ public class ForStmt extends BranchTargetStmt implements Cloneable, VariableScop
 	 * @aspect Statements
 	 * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/Statements.jrag:176
 	 */
-	@SuppressWarnings({  "cast" })
+	@SuppressWarnings({ "cast" })
 	public soot.jimple.Stmt begin_label() {
 		if (begin_label_computed) {
 			return begin_label_value;
