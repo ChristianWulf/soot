@@ -10,6 +10,7 @@ import soot.PatchingChain;
 import soot.RefType;
 import soot.SootFieldRef;
 import soot.SootMethodRef;
+import soot.Trap;
 import soot.Type;
 import soot.Unit;
 import soot.Value;
@@ -181,8 +182,9 @@ public class Body extends java.lang.Object {
 
 
 
-	public Body addTrap(final TypeDecl type, final soot.jimple.Stmt firstStmt, final soot.jimple.Stmt lastStmt, final soot.jimple.Stmt handler) {
-		body.getTraps().add(Jimple.v().newTrap(type.getSootClassDecl(), firstStmt, lastStmt, handler));
+	public Body addTrap(final TypeDecl type, final soot.jimple.Stmt firstStmt, final soot.jimple.Stmt lastStmt, final soot.jimple.Stmt handlerStmt) {
+		Trap newTrap = Jimple.v().newTrap(type.getSootClassDecl(), firstStmt, lastStmt, handlerStmt);
+		body.getTraps().add(newTrap);
 		return this;
 	}
 

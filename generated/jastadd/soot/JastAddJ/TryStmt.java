@@ -322,8 +322,9 @@ public class TryStmt extends Stmt implements Cloneable, FinallyHost {
 				soot.jimple.Stmt stmtBegin = (soot.jimple.Stmt) iter.next();
 				soot.jimple.Stmt stmtEnd = (soot.jimple.Stmt) iter.next();
 				if (stmtBegin != stmtEnd) {
-					soot.jimple.Stmt lbl = ((BasicCatch) getCatchClause(i)).label();
-					b.addTrap(((BasicCatch) getCatchClause(i)).getParameter().type(), stmtBegin, stmtEnd, lbl);
+					BasicCatch catchClause = (BasicCatch) getCatchClause(i);
+					soot.jimple.Stmt lbl = catchClause.label();
+					b.addTrap(catchClause.getParameter().type(), stmtBegin, stmtEnd, lbl);
 					addFallThroughLabelTag(b, lbl, label_end);
 				}
 				if (stmtEnd == label_block_end) {
@@ -1291,7 +1292,7 @@ public class TryStmt extends Stmt implements Cloneable, FinallyHost {
 	 * @apilevel internal
 	 */
 	private soot.jimple.Stmt label_end_compute() {
-		return newLabel();
+		return newLabel(HigherLevelStructureTags.TRY_END);	// changed by chw
 	}
 
 	/**

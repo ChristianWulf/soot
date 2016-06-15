@@ -13,7 +13,7 @@ public enum HigherLevelStructureTags implements Tag {
 
 	SWITCH_COND, SWITCH_CASE, SWITCH_END,
 
-	TRY_BEGIN,
+	TRY_BEGIN, TRY_END,
 
 	WHILE_COND, WHILE_BODY, WHILE_END,
 

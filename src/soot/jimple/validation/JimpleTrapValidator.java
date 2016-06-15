@@ -32,14 +32,18 @@ import soot.validation.BodyValidator;
 import soot.validation.ValidationException;
 
 /**
- * This validator checks whether the jimple traps are correct.
- * It does not perform the same checks as {@link soot.validation.TrapsValidator}
- * 
+ * This validator checks whether the jimple traps are correct. It does not perform the same checks as
+ * {@link soot.validation.TrapsValidator}
+ *
  * @see JimpleTrapValidator#validate(Body, List)
  * @author Marc Miltenberger
  */
 public enum JimpleTrapValidator implements BodyValidator {
 	INSTANCE;
+
+	// added by chw
+	private static final boolean ACTIVATED = Boolean.parseBoolean(
+			System.getProperty(JimpleTrapValidator.class.getCanonicalName() + ".activated"));
 
 	public static JimpleTrapValidator v() {
 		return INSTANCE;
@@ -50,34 +54,39 @@ public enum JimpleTrapValidator implements BodyValidator {
 	 * Checks whether all Caught-Exception-References are associated to traps.
 	 */
 	public void validate(Body body, List<ValidationException> exception) {
+		if (!ACTIVATED) return;
+
 		Set<Unit> caughtUnits = new HashSet<Unit>();
 		for (Trap trap : body.getTraps()) {
 			caughtUnits.add(trap.getHandlerUnit());
-			
-			if (!(trap.getHandlerUnit() instanceof IdentityStmt))
-				exception.add(new ValidationException(trap, "Trap handler does start with caught "
-						+ "exception reference"));
-			else {
+
+			if (!(trap.getHandlerUnit() instanceof IdentityStmt)) {
+				ValidationException validationException = new ValidationException(trap,
+						"Trap handler does not start with caught exception reference (IdentityStmt), but with "
+								+ trap.getHandlerUnit());
+				exception.add(validationException);
+			} else {
 				IdentityStmt is = (IdentityStmt) trap.getHandlerUnit();
-				if (!(is.getRightOp() instanceof CaughtExceptionRef))
-					exception.add(new ValidationException(trap, "Trap handler does start with caught "
-							+ "exception reference"));
+				if (!(is.getRightOp() instanceof CaughtExceptionRef)) {
+					ValidationException validationException = new ValidationException(trap,
+							"Trap handler does not start with caught exception reference (CaughtExceptionRef), but with "
+									+ is.getRightOp());
+					exception.add(validationException);
+				}
 			}
 		}
+
 		for (Unit u : body.getUnits()) {
 			if (u instanceof IdentityStmt) {
 				IdentityStmt id = (IdentityStmt) u;
 				if (id.getRightOp() instanceof CaughtExceptionRef) {
-					if (!caughtUnits.contains(id)) 
-					{
+					if (!caughtUnits.contains(id)) {
 						exception
-						.add(new ValidationException(
-								id,
+						.add(new ValidationException(id,
 								"Could not find a corresponding trap using this statement as handler",
-								"Body of method "
-										+ body.getMethod()
-												.getSignature()
-										+ " contains a caught exception reference, but not a corresponding trap using this statement as handler"));						
+								"Body of method " + body.getMethod()
+								.getSignature()
+								+ " contains a caught exception reference, but not a corresponding trap using this statement as handler"));
 					}
 				}
 			}
