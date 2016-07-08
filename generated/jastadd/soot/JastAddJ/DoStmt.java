@@ -153,14 +153,15 @@ public class DoStmt extends BranchTargetStmt implements Cloneable {
 	@Override
 	public void jimplify2(final Body b) {
 		b.setLine(this);
-		b.addLabel(begin_label());
+		soot.jimple.Stmt begin_label = begin_label();
+		b.addLabel(begin_label);
 		getStmt().jimplify2(b);
 		soot.jimple.Stmt condLabel = cond_label();
 		b.addLabel(condLabel);
 		getCondition().emitEvalBranch(b);
 
 		if (alwaysProduceEndDoWhileStmt || canCompleteNormally()) {
-			b.addLabel(endLoopLabel(condLabel));
+			b.addLabel(endLoopLabel(begin_label));
 		}
 	}
 

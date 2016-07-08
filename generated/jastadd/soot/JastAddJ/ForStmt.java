@@ -220,7 +220,8 @@ public class ForStmt extends BranchTargetStmt implements Cloneable, VariableScop
 	 */
 	@Override
 	public void jimplify2(final Body b) {
-		b.addLabel(init_label());
+		soot.jimple.Stmt init_label = init_label();
+		b.addLabel(init_label);
 		for (int i = 0; i < getNumInitStmt(); i++) {
 			getInitStmt(i).jimplify2(b);
 		}
@@ -239,7 +240,7 @@ public class ForStmt extends BranchTargetStmt implements Cloneable, VariableScop
 		}
 
 		if (alwaysProduceEndForStmt || canCompleteNormally()) {
-			b.addLabel(endLoopLabel(condLabel));
+			b.addLabel(endLoopLabel(init_label));
 		}
 	}
 
