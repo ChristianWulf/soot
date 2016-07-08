@@ -4,6 +4,9 @@ package soot.JastAddJ;
 import java.util.Iterator;
 
 import soot.javaToJimple.jj.extension.HigherLevelStructureTags;
+import soot.javaToJimple.jj.extension.LoopIdTag;
+import soot.jimple.internal.JEndNopStmt;
+import soot.tagkit.Tag;
 
 /**
  * @production WhileStmt : {@link BranchTargetStmt} ::= <span class="component">Condition:{@link Expr}</span>
@@ -17,6 +20,10 @@ public class WhileStmt extends BranchTargetStmt implements Cloneable {
 	 * @author chw
 	 */
 	private static boolean alwaysProduceEndWhileStmt = Boolean.getBoolean("alwaysProduceEndWhileStmt");
+	/**
+	 * @author chw
+	 */
+	private final Tag loopIdTag = new LoopIdTag();
 
 	/**
 	 * @apilevel low-level
@@ -144,23 +151,20 @@ public class WhileStmt extends BranchTargetStmt implements Cloneable {
 	 */
 	@Override
 	public void jimplify2(final Body b) {
-		b.addLabel(cond_label());
+		soot.jimple.Stmt condLabel = cond_label();
+		b.addLabel(condLabel);
 		getCondition().emitEvalBranch(b);
 		b.addLabel(stmt_label());
 		if (getCondition().canBeTrue()) {
 			getStmt().jimplify2(b);
 			if (getStmt().canCompleteNormally()) {
 				b.setLine(this);
-				b.add(b.newGotoStmt(cond_label(), this));
+				b.add(b.newGotoStmt(condLabel, this));
 			}
 		}
 
-		if (!alwaysProduceEndWhileStmt) {
-			if (canCompleteNormally()) {
-				b.addLabel(end_label());
-			}
-		} else {
-			b.addLabel(end_label());
+		if (alwaysProduceEndWhileStmt || canCompleteNormally()) {
+			b.addLabel(endLoopLabel(condLabel));
 		}
 	}
 
@@ -638,7 +642,9 @@ public class WhileStmt extends BranchTargetStmt implements Cloneable {
 	 * @apilevel internal
 	 */
 	private soot.jimple.Stmt cond_label_compute() {
-		return newLabel(HigherLevelStructureTags.WHILE_COND);
+		soot.jimple.Stmt label = newLabel(HigherLevelStructureTags.WHILE_COND);
+		label.addTag(loopIdTag);
+		return label;
 	}
 
 	/**
@@ -678,6 +684,18 @@ public class WhileStmt extends BranchTargetStmt implements Cloneable {
 	}
 
 	/**
+	 * @author Christian Wulf (chw)
+	 * @param beginCond
+	 * @apilevel internal
+	 */
+	private soot.jimple.Stmt endLoopLabel(final soot.jimple.Stmt beginCond) {
+		soot.jimple.Stmt label = new JEndNopStmt(beginCond); // added by chw
+		label.addTag(HigherLevelStructureTags.WHILE_END);
+		label.addTag(loopIdTag);
+		return label;
+	}
+
+	/**
 	 * @apilevel internal
 	 */
 	protected boolean stmt_label_computed = false;
@@ -710,7 +728,9 @@ public class WhileStmt extends BranchTargetStmt implements Cloneable {
 	 * @apilevel internal
 	 */
 	private soot.jimple.Stmt stmt_label_compute() {
-		return newLabel(HigherLevelStructureTags.WHILE_BODY);
+		soot.jimple.Stmt label = newLabel(HigherLevelStructureTags.WHILE_BODY);
+		label.addTag(loopIdTag);
+		return label;
 	}
 
 	/**

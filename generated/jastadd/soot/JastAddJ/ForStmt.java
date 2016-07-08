@@ -5,6 +5,7 @@ import java.util.Iterator;
 
 import soot.javaToJimple.jj.extension.HigherLevelStructureTags;
 import soot.javaToJimple.jj.extension.LoopIdTag;
+import soot.jimple.internal.JEndNopStmt;
 import soot.tagkit.Tag;
 
 /**
@@ -223,7 +224,8 @@ public class ForStmt extends BranchTargetStmt implements Cloneable, VariableScop
 		for (int i = 0; i < getNumInitStmt(); i++) {
 			getInitStmt(i).jimplify2(b);
 		}
-		b.addLabel(cond_label());
+		soot.jimple.Stmt condLabel = cond_label();
+		b.addLabel(condLabel);
 		getCondition().emitEvalBranch(b);
 		if (getCondition().canBeTrue()) {
 			b.addLabel(begin_label());
@@ -233,11 +235,11 @@ public class ForStmt extends BranchTargetStmt implements Cloneable, VariableScop
 				getUpdateStmt(i).jimplify2(b);
 			}
 			b.setLine(this);
-			b.add(b.newGotoStmt(cond_label(), this));
+			b.add(b.newGotoStmt(condLabel, this));
 		}
 
 		if (alwaysProduceEndForStmt || canCompleteNormally()) {
-			b.addLabel(end_label());
+			b.addLabel(endLoopLabel(condLabel));
 		}
 	}
 
@@ -1340,6 +1342,17 @@ public class ForStmt extends BranchTargetStmt implements Cloneable, VariableScop
 	 */
 	private soot.jimple.Stmt end_label_compute() {
 		soot.jimple.Stmt label = newLabel();
+		return label;
+	}
+
+	/**
+	 * @apilevel internal
+	 * @author Christian Wulf (chw)
+	 * @param beginCond
+	 */
+	private soot.jimple.Stmt endLoopLabel(final soot.jimple.Stmt beginCond) {
+//		soot.jimple.Stmt label = newLabel();
+		soot.jimple.Stmt label = new JEndNopStmt(beginCond);	// added by chw
 		label.addTag(HigherLevelStructureTags.FOR_END);
 		label.addTag(loopIdTag);
 		return label;

@@ -32,13 +32,13 @@ import java.io.*;
 /** Soot ant task.
  * @author Ondrej Lhotak
  */
-
+@SuppressWarnings("rawtypes")
 public class AntTask extends MatchingTask {
     public static final boolean DEBUG = true;
     private void debug(String s) {
         if(DEBUG) System.err.println(s);
     }
-    private ArrayList args = new ArrayList();
+    private List args = new ArrayList();
     public List args() { return args; }
     private void addArg( String s ) { args.add(s); }
     private void addArg( String s, String s2 ) { args.add(s); args.add(s2); }

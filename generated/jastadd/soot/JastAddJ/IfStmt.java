@@ -186,16 +186,13 @@ public class IfStmt extends Stmt implements Cloneable {
 		}
 		//		}
 
-		if (!alwaysProduceEndBranchStmt) {
-			if (getThen().canCompleteNormally() && hasElse()) {
-				b.addLabel(endBranch);
-			}
-		} else {
+		if (alwaysProduceEndBranchStmt || (getThen().canCompleteNormally() && hasElse())) {
 			b.addLabel(endBranch);
 		}
 	}
 
 	/**
+	 * @apilevel internal
 	 * @author chw
 	 */
 	private soot.jimple.Stmt beginCondLabel() {
@@ -203,11 +200,13 @@ public class IfStmt extends Stmt implements Cloneable {
 		label.addTag(HigherLevelStructureTags.IF_COND);
 		return label;
 	}
+
 	/**
+	 * @apilevel internal
 	 * @author chw
 	 * @param beginCond
 	 */
-	private soot.jimple.Stmt endBranchLabel(soot.jimple.Stmt beginCond) {
+	private soot.jimple.Stmt endBranchLabel(final soot.jimple.Stmt beginCond) {
 		//		soot.jimple.Stmt label = newLabel();
 		soot.jimple.Stmt label = new JEndNopStmt(beginCond);	// added by chw
 		label.addTag(HigherLevelStructureTags.IF_END);
