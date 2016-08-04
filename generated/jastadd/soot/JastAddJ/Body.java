@@ -372,11 +372,12 @@ public class Body extends java.lang.Object {
 
 
 
-	public soot.jimple.InterfaceInvokeExpr newInterfaceInvokeExpr(final Local base, final SootMethodRef method, final java.util.List args, final ASTNode location) {
+	public soot.jimple.InterfaceInvokeExpr newInterfaceInvokeExpr(final Local base, final SootMethodRef method, final java.util.List<Value> args,
+			final ASTNode location) {
 		soot.jimple.InterfaceInvokeExpr expr = Jimple.v().newInterfaceInvokeExpr(base, method, args);
 		createTag(expr, location);
 		for(int i = 0; i < args.size(); i++) {
-			soot.tagkit.Tag tag = getTag((Value)args.get(i));
+			soot.tagkit.Tag tag = getTag(args.get(i));
 			if(tag != null) {
 				expr.getArgBox(i).addTag(tag);
 			}
@@ -652,7 +653,7 @@ public class Body extends java.lang.Object {
 	}
 
 
-	private void createTag(final soot.Value value, final ASTNode node) {
+	private void createTag(final soot.Value value, final ASTNode<?> node) {
 		if(node == null || tagMap.containsKey(value)) {
 			return;
 		}
