@@ -240,7 +240,8 @@ public class ForStmt extends BranchTargetStmt implements Cloneable, VariableScop
 		}
 
 		if (alwaysProduceEndForStmt || canCompleteNormally()) {
-			b.addLabel(endLoopLabel(init_label));
+			soot.jimple.Stmt endLoopLabel = end_label(init_label);
+			b.addLabel(endLoopLabel);
 		}
 	}
 
@@ -1324,14 +1325,14 @@ public class ForStmt extends BranchTargetStmt implements Cloneable, VariableScop
 	 * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/Statements.jrag:178
 	 */
 	@SuppressWarnings({ "unchecked", "cast" })
-	public soot.jimple.Stmt end_label() {
+	public soot.jimple.Stmt end_label(final soot.jimple.Stmt beginCond) {
 		if (end_label_computed) {
 			return end_label_value;
 		}
 		ASTNode$State state = state();
 		int num = state.boundariesCrossed;
 		boolean isFinal = this.is$Final();
-		end_label_value = end_label_compute();
+		end_label_value = end_label_compute(beginCond);
 		if (isFinal && num == state().boundariesCrossed) {
 			end_label_computed = true;
 		}
@@ -1341,23 +1342,26 @@ public class ForStmt extends BranchTargetStmt implements Cloneable, VariableScop
 	/**
 	 * @apilevel internal
 	 */
-	private soot.jimple.Stmt end_label_compute() {
-		soot.jimple.Stmt label = newLabel();
-		return label;
-	}
-
-	/**
-	 * @apilevel internal
-	 * @author Christian Wulf (chw)
-	 * @param beginCond
-	 */
-	private soot.jimple.Stmt endLoopLabel(final soot.jimple.Stmt beginCond) {
+	private soot.jimple.Stmt end_label_compute(final soot.jimple.Stmt beginCond) {
 //		soot.jimple.Stmt label = newLabel();
 		soot.jimple.Stmt label = new JEndNopStmt(beginCond);	// added by chw
 		label.addTag(HigherLevelStructureTags.FOR_END);
 		label.addTag(loopIdTag);
 		return label;
 	}
+
+//	/**
+//	 * @apilevel internal
+//	 * @author Christian Wulf (chw)
+//	 * @param beginCond
+//	 */
+//	private soot.jimple.Stmt endLoopLabel(final soot.jimple.Stmt beginCond) {
+////		soot.jimple.Stmt label = newLabel();
+//		soot.jimple.Stmt label = new JEndNopStmt(beginCond);	// added by chw
+//		label.addTag(HigherLevelStructureTags.FOR_END);
+//		label.addTag(loopIdTag);
+//		return label;
+//	}
 
 	/**
 	 * @attribute syn
@@ -1368,7 +1372,7 @@ public class ForStmt extends BranchTargetStmt implements Cloneable, VariableScop
 	public soot.jimple.Stmt break_label() {
 		ASTNode$State state = state();
 		try {
-			return end_label();
+			return end_label(null);
 		} finally {
 		}
 	}
@@ -1599,7 +1603,7 @@ public class ForStmt extends BranchTargetStmt implements Cloneable, VariableScop
 	@Override
 	public soot.jimple.Stmt Define_soot_jimple_Stmt_condition_false_label(final ASTNode caller, final ASTNode child) {
 		if (caller == getConditionOptNoTransform()) {
-			return end_label();
+			return end_label(null);
 		} else {
 			return getParent().Define_soot_jimple_Stmt_condition_false_label(this, caller);
 		}

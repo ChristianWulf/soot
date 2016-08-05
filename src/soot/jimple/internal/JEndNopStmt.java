@@ -19,4 +19,16 @@ public class JEndNopStmt extends JNopStmt {
 	public Stmt getBeginCond() {
 		return beginCond;
 	}
+
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder()
+			.append(super.toString())
+			.append(": ")
+			.append("[")
+			.append("beginCond: ")
+			.append(beginCond)
+			.append("]");
+		return builder.toString();
+	}
 }

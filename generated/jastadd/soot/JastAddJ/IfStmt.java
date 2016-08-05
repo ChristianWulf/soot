@@ -5,8 +5,10 @@ import soot.javaToJimple.jj.extension.HigherLevelStructureTags;
 import soot.jimple.internal.JEndNopStmt;
 
 /**
- * @production IfStmt : {@link Stmt} ::= <span class="component">Condition:{@link Expr}</span>
- *             <span class="component">Then:{@link Stmt}</span> <span class="component">[Else:{@link Stmt}]</span>;
+ * @production IfStmt : {@link Stmt} ::=
+ *             <span class="component">Condition:{@link Expr}</span>
+ *             <span class="component">Then:{@link Stmt}</span>
+ *             <span class="component">[Else:{@link Stmt}]</span>;
  * @ast node
  * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/java.ast:207
  */
@@ -78,7 +80,8 @@ public class IfStmt extends Stmt implements Cloneable {
 	}
 
 	/**
-	 * Create a deep copy of the AST subtree at this node. The copy is dangling, i.e. has no parent.
+	 * Create a deep copy of the AST subtree at this node. The copy is dangling,
+	 * i.e. has no parent.
 	 *
 	 * @return dangling copy of the subtree at this node
 	 * @apilevel low-level
@@ -161,15 +164,17 @@ public class IfStmt extends Stmt implements Cloneable {
 
 		soot.jimple.Stmt endBranch = endBranchLabel(beginCond);
 
-		// chw: this optimization should not be made while constructing the jimple representation;
-		// instead it should be performed afterwards to separate construction from optimization
-		//		if (getCondition().isConstant()) {
-		//			if (getCondition().isTrue()) {
-		//				getThen().jimplify2(b);
-		//			} else if (getCondition().isFalse() && hasElse()) {
-		//				getElse().jimplify2(b);
-		//			}
-		//		} else {
+		// chw: this optimization should not be made while constructing the
+		// jimple representation;
+		// instead it should be performed afterwards to separate construction
+		// from optimization
+		// if (getCondition().isConstant()) {
+		// if (getCondition().isTrue()) {
+		// getThen().jimplify2(b);
+		// } else if (getCondition().isFalse() && hasElse()) {
+		// getElse().jimplify2(b);
+		// }
+		// } else {
 		soot.jimple.Stmt elseBranch = else_branch_label();
 		soot.jimple.Stmt thenBranch = then_branch_label();
 
@@ -184,7 +189,7 @@ public class IfStmt extends Stmt implements Cloneable {
 		if (hasElse()) {
 			getElse().jimplify2(b);
 		}
-		//		}
+		// }
 
 		if (alwaysProduceEndBranchStmt || (getThen().canCompleteNormally() && hasElse())) {
 			b.addLabel(endBranch);
@@ -207,8 +212,8 @@ public class IfStmt extends Stmt implements Cloneable {
 	 * @param beginCond
 	 */
 	private soot.jimple.Stmt endBranchLabel(final soot.jimple.Stmt beginCond) {
-		//		soot.jimple.Stmt label = newLabel();
-		soot.jimple.Stmt label = new JEndNopStmt(beginCond);	// added by chw
+		// soot.jimple.Stmt label = newLabel();
+		soot.jimple.Stmt label = new JEndNopStmt(beginCond); // added by chw
 		label.addTag(HigherLevelStructureTags.IF_END);
 		return label;
 	}
@@ -223,7 +228,8 @@ public class IfStmt extends Stmt implements Cloneable {
 	}
 
 	/**
-	 * Initializes the child array to the correct size. Initializes List and Opt nta children.
+	 * Initializes the child array to the correct size. Initializes List and Opt
+	 * nta children.
 	 *
 	 * @apilevel internal
 	 * @ast method
@@ -347,11 +353,12 @@ public class IfStmt extends Stmt implements Cloneable {
 	}
 
 	/**
-	 * Replaces the optional node for the Else child. This is the {@code Opt} node containing the child Else, not the
-	 * actual child!
+	 * Replaces the optional node for the Else child. This is the {@code Opt}
+	 * node containing the child Else, not the actual child!
 	 *
 	 * @param opt
-	 *            The new node to be used as the optional node for the Else child.
+	 *            The new node to be used as the optional node for the Else
+	 *            child.
 	 * @apilevel low-level
 	 * @ast method
 	 *
@@ -363,7 +370,8 @@ public class IfStmt extends Stmt implements Cloneable {
 	/**
 	 * Check whether the optional Else child exists.
 	 *
-	 * @return {@code true} if the optional Else child exists, {@code false} if it does not.
+	 * @return {@code true} if the optional Else child exists, {@code false} if
+	 *         it does not.
 	 * @apilevel high-level
 	 * @ast method
 	 *
@@ -409,8 +417,8 @@ public class IfStmt extends Stmt implements Cloneable {
 	}
 
 	/**
-	 * Retrieves the optional node for child Else. This is the {@code Opt} node containing the child Else, not the
-	 * actual child!
+	 * Retrieves the optional node for child Else. This is the {@code Opt} node
+	 * containing the child Else, not the actual child!
 	 * <p>
 	 * <em>This method does not invoke AST transformations.</em>
 	 * </p>
@@ -581,7 +589,7 @@ public class IfStmt extends Stmt implements Cloneable {
 	 * @apilevel internal
 	 */
 	private soot.jimple.Stmt else_branch_label_compute() {
-		return newLabel(HigherLevelStructureTags.IF_ELSE);	// changed by chw
+		return newLabel(HigherLevelStructureTags.IF_ELSE); // changed by chw
 	}
 
 	/**
@@ -617,7 +625,7 @@ public class IfStmt extends Stmt implements Cloneable {
 	 * @apilevel internal
 	 */
 	private soot.jimple.Stmt then_branch_label_compute() {
-		return newLabel(HigherLevelStructureTags.IF_THEN);	// changed by chw
+		return newLabel(HigherLevelStructureTags.IF_THEN); // changed by chw
 	}
 
 	/**

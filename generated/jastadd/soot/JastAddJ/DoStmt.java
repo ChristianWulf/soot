@@ -9,7 +9,8 @@ import soot.jimple.internal.JEndNopStmt;
 import soot.tagkit.Tag;
 
 /**
- * @production DoStmt : {@link BranchTargetStmt} ::= <span class="component">{@link Stmt}</span>
+ * @production DoStmt : {@link BranchTargetStmt} ::=
+ *             <span class="component">{@link Stmt}</span>
  *             <span class="component">Condition:{@link Expr}</span>;
  * @ast node
  * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/java.ast:209
@@ -96,7 +97,8 @@ public class DoStmt extends BranchTargetStmt implements Cloneable {
 	}
 
 	/**
-	 * Create a deep copy of the AST subtree at this node. The copy is dangling, i.e. has no parent.
+	 * Create a deep copy of the AST subtree at this node. The copy is dangling,
+	 * i.e. has no parent.
 	 *
 	 * @return dangling copy of the subtree at this node
 	 * @apilevel low-level
@@ -161,7 +163,7 @@ public class DoStmt extends BranchTargetStmt implements Cloneable {
 		getCondition().emitEvalBranch(b);
 
 		if (alwaysProduceEndDoWhileStmt || canCompleteNormally()) {
-			b.addLabel(endLoopLabel(begin_label));
+			b.addLabel(end_label(begin_label));
 		}
 	}
 
@@ -175,7 +177,8 @@ public class DoStmt extends BranchTargetStmt implements Cloneable {
 	}
 
 	/**
-	 * Initializes the child array to the correct size. Initializes List and Opt nta children.
+	 * Initializes the child array to the correct size. Initializes List and Opt
+	 * nta children.
 	 *
 	 * @apilevel internal
 	 * @ast method
@@ -696,14 +699,14 @@ public class DoStmt extends BranchTargetStmt implements Cloneable {
 	 * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/Statements.jrag:163
 	 */
 	@SuppressWarnings({ "unchecked", "cast" })
-	public soot.jimple.Stmt end_label() {
+	public soot.jimple.Stmt end_label(soot.jimple.Stmt beginCond) {
 		if (end_label_computed) {
 			return end_label_value;
 		}
 		ASTNode$State state = state();
 		int num = state.boundariesCrossed;
 		boolean isFinal = this.is$Final();
-		end_label_value = end_label_compute();
+		end_label_value = end_label_compute(beginCond);
 		if (isFinal && num == state().boundariesCrossed) {
 			end_label_computed = true;
 		}
@@ -711,17 +714,10 @@ public class DoStmt extends BranchTargetStmt implements Cloneable {
 	}
 
 	/**
-	 * @apilevel internal
-	 */
-	private soot.jimple.Stmt end_label_compute() {
-		return newLabel(HigherLevelStructureTags.DO_WHILE_END);
-	}
-
-	/**
 	 * @param beginCond
 	 * @apilevel internal
 	 */
-	private soot.jimple.Stmt endLoopLabel(final soot.jimple.Stmt beginCond) {
+	private soot.jimple.Stmt end_label_compute(soot.jimple.Stmt beginCond) {
 		soot.jimple.Stmt label = new JEndNopStmt(beginCond); // added by chw
 		label.addTag(HigherLevelStructureTags.DO_WHILE_END);
 		label.addTag(loopIdTag);
@@ -737,7 +733,7 @@ public class DoStmt extends BranchTargetStmt implements Cloneable {
 	public soot.jimple.Stmt break_label() {
 		ASTNode$State state = state();
 		try {
-			return end_label();
+			return end_label(null);
 		} finally {
 		}
 	}
@@ -856,7 +852,7 @@ public class DoStmt extends BranchTargetStmt implements Cloneable {
 	@Override
 	public soot.jimple.Stmt Define_soot_jimple_Stmt_condition_false_label(final ASTNode caller, final ASTNode child) {
 		if (caller == getConditionNoTransform()) {
-			return end_label();
+			return end_label(null);
 		} else {
 			return getParent().Define_soot_jimple_Stmt_condition_false_label(this, caller);
 		}

@@ -896,7 +896,7 @@ public class EnhancedForStmt extends BranchTargetStmt implements Cloneable, Vari
 	 * @apilevel internal
 	 */
 	private soot.jimple.Stmt end_label_compute(final soot.jimple.Stmt init_label) {
-		// soot.jimple.Stmt label = newLabel();
+//		 soot.jimple.Stmt label = newLabel();
 		soot.jimple.Stmt label = new JEndNopStmt(init_label); // added by chw
 		label.addTag(HigherLevelStructureTags.FOREACH_END);
 		label.addTag(loopIdTag);
