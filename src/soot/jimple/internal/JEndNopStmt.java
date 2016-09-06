@@ -10,7 +10,7 @@ import soot.jimple.Stmt;
 public class JEndNopStmt extends JNopStmt {
 
 	private static final long serialVersionUID = 9058642543692764987L;
-	private final Stmt beginCond;
+	private Stmt beginCond;
 
 	public JEndNopStmt(Stmt beginCond) {
 		this.beginCond = beginCond;
@@ -20,15 +20,19 @@ public class JEndNopStmt extends JNopStmt {
 		return beginCond;
 	}
 
+	public void setBeginCond(Stmt beginCond) {
+		this.beginCond = beginCond;
+	}
+
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder()
-			.append(super.toString())
-			.append(": ")
-			.append("[")
-			.append("beginCond: ")
-			.append(beginCond)
-			.append("]");
+				.append(super.toString())
+				.append(": ")
+				.append("[")
+				.append("beginCond: ")
+				.append(beginCond)
+				.append("]");
 		return builder.toString();
 	}
 }

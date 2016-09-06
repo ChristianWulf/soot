@@ -262,7 +262,8 @@ public class EnhancedForStmt extends BranchTargetStmt implements Cloneable, Vari
 		b.addLabel(condLabel);
 		soot.jimple.Stmt endLabel = end_label(init_label);
 		b.add(b.newIfStmt(b.newEqExpr(
-				asImmediate(b, b.newInterfaceInvokeExpr(iterator, hasNextMethod().sootRef(), new ArrayList<Value>(), this)),
+				asImmediate(b,
+						b.newInterfaceInvokeExpr(iterator, hasNextMethod().sootRef(), new ArrayList<Value>(), this)),
 				BooleanType.emitConstant(false), this), endLabel, this));
 		b.add(b.newAssignStmt(parameter,
 				nextMethod().type().emitCastTo(b,
@@ -896,7 +897,7 @@ public class EnhancedForStmt extends BranchTargetStmt implements Cloneable, Vari
 	 * @apilevel internal
 	 */
 	private soot.jimple.Stmt end_label_compute(final soot.jimple.Stmt init_label) {
-//		 soot.jimple.Stmt label = newLabel();
+		// soot.jimple.Stmt label = newLabel();
 		soot.jimple.Stmt label = new JEndNopStmt(init_label); // added by chw
 		label.addTag(HigherLevelStructureTags.FOREACH_END);
 		label.addTag(loopIdTag);

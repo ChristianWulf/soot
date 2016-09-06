@@ -664,6 +664,8 @@ public class WhileStmt extends BranchTargetStmt implements Cloneable {
 	@SuppressWarnings({ "unchecked", "cast" })
 	public soot.jimple.Stmt end_label(soot.jimple.Stmt beginCond) {
 		if (end_label_computed) {
+			// end_label is first invoked with "null", so we need to set the beginCond
+			((JEndNopStmt) end_label_value).setBeginCond(beginCond);
 			return end_label_value;
 		}
 		ASTNode$State state = state();
@@ -677,7 +679,7 @@ public class WhileStmt extends BranchTargetStmt implements Cloneable {
 	}
 
 	/**
-	 * @param beginCond 
+	 * @param beginCond
 	 * @apilevel internal
 	 */
 	private soot.jimple.Stmt end_label_compute(soot.jimple.Stmt beginCond) {

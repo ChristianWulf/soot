@@ -1327,6 +1327,8 @@ public class ForStmt extends BranchTargetStmt implements Cloneable, VariableScop
 	@SuppressWarnings({ "unchecked", "cast" })
 	public soot.jimple.Stmt end_label(final soot.jimple.Stmt beginCond) {
 		if (end_label_computed) {
+			// end_label is first invoked with "null", so we need to set the beginCond
+			((JEndNopStmt) end_label_value).setBeginCond(beginCond);
 			return end_label_value;
 		}
 		ASTNode$State state = state();
@@ -1343,25 +1345,25 @@ public class ForStmt extends BranchTargetStmt implements Cloneable, VariableScop
 	 * @apilevel internal
 	 */
 	private soot.jimple.Stmt end_label_compute(final soot.jimple.Stmt beginCond) {
-//		soot.jimple.Stmt label = newLabel();
+		//		soot.jimple.Stmt label = newLabel();
 		soot.jimple.Stmt label = new JEndNopStmt(beginCond);	// added by chw
 		label.addTag(HigherLevelStructureTags.FOR_END);
 		label.addTag(loopIdTag);
 		return label;
 	}
 
-//	/**
-//	 * @apilevel internal
-//	 * @author Christian Wulf (chw)
-//	 * @param beginCond
-//	 */
-//	private soot.jimple.Stmt endLoopLabel(final soot.jimple.Stmt beginCond) {
-////		soot.jimple.Stmt label = newLabel();
-//		soot.jimple.Stmt label = new JEndNopStmt(beginCond);	// added by chw
-//		label.addTag(HigherLevelStructureTags.FOR_END);
-//		label.addTag(loopIdTag);
-//		return label;
-//	}
+	//	/**
+	//	 * @apilevel internal
+	//	 * @author Christian Wulf (chw)
+	//	 * @param beginCond
+	//	 */
+	//	private soot.jimple.Stmt endLoopLabel(final soot.jimple.Stmt beginCond) {
+	////		soot.jimple.Stmt label = newLabel();
+	//		soot.jimple.Stmt label = new JEndNopStmt(beginCond);	// added by chw
+	//		label.addTag(HigherLevelStructureTags.FOR_END);
+	//		label.addTag(loopIdTag);
+	//		return label;
+	//	}
 
 	/**
 	 * @attribute syn
