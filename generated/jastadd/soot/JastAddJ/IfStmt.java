@@ -181,7 +181,8 @@ public class IfStmt extends Stmt implements Cloneable {
 		getCondition().emitEvalBranch(b);
 		b.addLabel(thenBranch);
 		getThen().jimplify2(b);
-		if (getThen().canCompleteNormally() && hasElse()) {
+		// canCompleteNormally means: whether the 'then' contains a return or a throw statement
+		if (alwaysProduceEndBranchStmt || getThen().canCompleteNormally() && hasElse()) {
 			b.setLine(this);
 			b.add(b.newGotoStmt(endBranch, this));
 		}
