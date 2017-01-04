@@ -8,7 +8,6 @@ import java.util.LinkedList;
 import soot.Local;
 import soot.Type;
 import soot.javaToJimple.jj.extension.FinalTag;
-import soot.javaToJimple.jj.extension.SyntheticLocalVarTag;
 import soot.javaToJimple.jj.extension.TypeArgumentsTag;
 import soot.javaToJimple.jj.extension.VariableDeclarationTag;
 import soot.jimple.AssignStmt;
@@ -250,9 +249,6 @@ public class VariableDeclaration extends Stmt implements Cloneable, SimpleSet, I
 		varDeclStmt.addTag(VariableDeclarationTag.INSTANCE);
 		if (isFinal()) {
 			varDeclStmt.addTag(FinalTag.INSTANCE);
-		}
-		if (isSynthetic()) {
-			varDeclStmt.addTag(SyntheticLocalVarTag.INSTANCE);
 		}
 
 		b.add(varDeclStmt);
