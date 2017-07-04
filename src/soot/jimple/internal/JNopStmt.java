@@ -23,61 +23,50 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
-
-
-
-
 package soot.jimple.internal;
 
 import soot.baf.*;
 
-import soot.tagkit.*;
 import soot.jimple.*;
 import soot.*;
 import soot.util.*;
 import java.util.*;
 
-public class JNopStmt extends AbstractStmt implements NopStmt
-{
-    public JNopStmt()
-    {
-    }
-    
+public class JNopStmt extends AbstractStmt implements NopStmt {
 
-    public Object clone() 
-    {
-        return new JNopStmt();
-    }
+	private static final long serialVersionUID = -8204997428905545800L;
 
+	public JNopStmt() {
+	}
 
-    public String toString()
-    {
-        return Jimple.NOP;
-    }
-    
-    public void toString(UnitPrinter up) {
-        up.literal(Jimple.NOP);
-    }
-    
-    public void apply(Switch sw)
-    {
-        ((StmtSwitch) sw).caseNopStmt(this);
-    }    
-    
-    public void convertToBaf(JimpleToBafContext context, List<Unit> out)
-    {
-    	Unit u = Baf.v().newNopInst();
-    	u.addAllTagsOf(this);
-        out.add(u);
-    }
+	public Object clone() {
+		return new JNopStmt();
+	}
 
+	public String toString() {
+		return Jimple.NOP + " with tags: " + getTags();	// with tags added by chw
+	}
 
-    public boolean fallsThrough(){return true;}        
-    public boolean branches(){return false;}
+	public void toString(UnitPrinter up) {
+		up.literal(Jimple.NOP);
+	}
+
+	public void apply(Switch sw) {
+		((StmtSwitch) sw).caseNopStmt(this);
+	}
+
+	public void convertToBaf(JimpleToBafContext context, List<Unit> out) {
+		Unit u = Baf.v().newNopInst();
+		u.addAllTagsOf(this);
+		out.add(u);
+	}
+
+	public boolean fallsThrough() {
+		return true;
+	}
+
+	public boolean branches() {
+		return false;
+	}
 
 }
-
-
-
-

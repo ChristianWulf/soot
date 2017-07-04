@@ -5,10 +5,8 @@ import soot.javaToJimple.jj.extension.HigherLevelStructureTags;
 import soot.jimple.internal.JEndNopStmt;
 
 /**
- * @production IfStmt : {@link Stmt} ::=
- *             <span class="component">Condition:{@link Expr}</span>
- *             <span class="component">Then:{@link Stmt}</span>
- *             <span class="component">[Else:{@link Stmt}]</span>;
+ * @production IfStmt : {@link Stmt} ::= <span class="component">Condition:{@link Expr}</span>
+ *             <span class="component">Then:{@link Stmt}</span> <span class="component">[Else:{@link Stmt}]</span>;
  * @ast node
  * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/java.ast:207
  */
@@ -80,8 +78,7 @@ public class IfStmt extends Stmt implements Cloneable {
 	}
 
 	/**
-	 * Create a deep copy of the AST subtree at this node. The copy is dangling,
-	 * i.e. has no parent.
+	 * Create a deep copy of the AST subtree at this node. The copy is dangling, i.e. has no parent.
 	 *
 	 * @return dangling copy of the subtree at this node
 	 * @apilevel low-level
@@ -160,10 +157,7 @@ public class IfStmt extends Stmt implements Cloneable {
 	@Override
 	public void jimplify2(final Body b) {
 		soot.jimple.Stmt beginCond = beginCondLabel();
-		b.add(beginCond);
-
-		soot.jimple.Stmt endBranch = endBranchLabel(beginCond);
-
+		b.addLabel(beginCond);
 		// chw: this optimization should not be made while constructing the
 		// jimple representation;
 		// instead it should be performed afterwards to separate construction
@@ -175,19 +169,26 @@ public class IfStmt extends Stmt implements Cloneable {
 		// getElse().jimplify2(b);
 		// }
 		// } else {
-		soot.jimple.Stmt elseBranch = else_branch_label();
-		soot.jimple.Stmt thenBranch = then_branch_label();
 
 		getCondition().emitEvalBranch(b);
+
+		soot.jimple.Stmt thenBranch = then_branch_label();
 		b.addLabel(thenBranch);
 		getThen().jimplify2(b);
 
+		soot.jimple.Stmt ifElseBranch = else_branch_label();
+		/* must always be added to the body since else_branch_label is called internally somewhere */
+		b.addLabel(ifElseBranch);
+
+		soot.jimple.Stmt endBranch = endBranchLabel(beginCond);
+
 		if (hasElse()) {
+			// first: finalize "then"-branch
 			if (alwaysProduceEndBranchStmt || getThen().canCompleteNormally()) {
 				b.setLine(this);
-				b.add(b.newGotoStmt(endBranch, this));	// link to endBranch node
+				b.add(b.newGotoStmt(endBranch, this)); // link to endBranch node
 			}
-			b.addLabel(elseBranch);
+			// then: begin "else"-branch
 			getElse().jimplify2(b);
 		}
 
@@ -230,8 +231,7 @@ public class IfStmt extends Stmt implements Cloneable {
 	}
 
 	/**
-	 * Initializes the child array to the correct size. Initializes List and Opt
-	 * nta children.
+	 * Initializes the child array to the correct size. Initializes List and Opt nta children.
 	 *
 	 * @apilevel internal
 	 * @ast method
@@ -355,12 +355,11 @@ public class IfStmt extends Stmt implements Cloneable {
 	}
 
 	/**
-	 * Replaces the optional node for the Else child. This is the {@code Opt}
-	 * node containing the child Else, not the actual child!
+	 * Replaces the optional node for the Else child. This is the {@code Opt} node containing the child Else, not the
+	 * actual child!
 	 *
 	 * @param opt
-	 *            The new node to be used as the optional node for the Else
-	 *            child.
+	 *            The new node to be used as the optional node for the Else child.
 	 * @apilevel low-level
 	 * @ast method
 	 *
@@ -372,8 +371,7 @@ public class IfStmt extends Stmt implements Cloneable {
 	/**
 	 * Check whether the optional Else child exists.
 	 *
-	 * @return {@code true} if the optional Else child exists, {@code false} if
-	 *         it does not.
+	 * @return {@code true} if the optional Else child exists, {@code false} if it does not.
 	 * @apilevel high-level
 	 * @ast method
 	 *
@@ -419,8 +417,8 @@ public class IfStmt extends Stmt implements Cloneable {
 	}
 
 	/**
-	 * Retrieves the optional node for child Else. This is the {@code Opt} node
-	 * containing the child Else, not the actual child!
+	 * Retrieves the optional node for child Else. This is the {@code Opt} node containing the child Else, not the
+	 * actual child!
 	 * <p>
 	 * <em>This method does not invoke AST transformations.</em>
 	 * </p>
