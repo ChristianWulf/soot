@@ -176,10 +176,6 @@ public class IfStmt extends Stmt implements Cloneable {
 		b.addLabel(thenBranch);
 		getThen().jimplify2(b);
 
-		soot.jimple.Stmt ifElseBranch = else_branch_label();
-		/* must always be added to the body since else_branch_label is called internally somewhere */
-		b.addLabel(ifElseBranch);
-
 		soot.jimple.Stmt endBranch = endBranchLabel(beginCond);
 
 		if (hasElse()) {
@@ -188,6 +184,13 @@ public class IfStmt extends Stmt implements Cloneable {
 				b.setLine(this);
 				b.add(b.newGotoStmt(endBranch, this)); // link to endBranch node
 			}
+		}
+		
+		soot.jimple.Stmt ifElseBranch = else_branch_label();
+		/* must always be added to the body since else_branch_label is called internally somewhere */
+		b.addLabel(ifElseBranch);
+		
+		if (hasElse()) {
 			// then: begin "else"-branch
 			getElse().jimplify2(b);
 		}
