@@ -31,7 +31,7 @@ import soot.validation.ValidationException;
 
 /**
  * This validator checks whether each ParameterRef and ThisRef is used exactly once.
- * 
+ *
  * @author Marc Miltenberger
  */
 public enum IdentityValidator implements BodyValidator {
@@ -45,11 +45,11 @@ public enum IdentityValidator implements BodyValidator {
 	/**
 	 * Checks whether each ParameterRef and ThisRef is used exactly once.
 	 */
-	public void validate(Body body, List<ValidationException> exception) {
+	public void validate(final Body body, final List<ValidationException> exception) {
 		boolean hasThisLocal = false;
 		int paramCount = body.getMethod().getParameterCount();
 		boolean[] parameterRefs = new boolean[paramCount];
-		
+
 		for (Unit u : body.getUnits()) {
 			if (u instanceof IdentityStmt) {
 				IdentityStmt id = (IdentityStmt) u;
@@ -60,24 +60,25 @@ public enum IdentityValidator implements BodyValidator {
 					ParameterRef ref = (ParameterRef) id.getRightOp();
 					if (ref.getIndex() < 0 || ref.getIndex() >= paramCount)
 					{
-						if (paramCount == 0)
+						if (paramCount == 0) {
 							exception.add(new ValidationException(id, "This method has no parameters, so no parameter reference is allowed"));
-						else
+						} else {
 							exception.add(new ValidationException(id, String.format("Parameter reference index must be between 0 and %d (inclusive)", paramCount - 1)));
+						}
 						return;
 					}
 					if (parameterRefs[ref.getIndex()]) {
-						exception.add(new ValidationException(id, String.format("Only one local for parameter %d is allowed", ref.getIndex())));
+						exception.add(new ValidationException(id, String.format("Only one local for parameter %d is allowed (method: %s)", ref.getIndex(), body.getMethod())));
 					}
 					parameterRefs[ref.getIndex()] = true;
 				}
 			}
 		}
-		
+
 		if (!body.getMethod().isStatic() && !hasThisLocal) {
 			exception.add(new ValidationException(body, String.format("The method %s is not static, but does not have a this local", body.getMethod().getSignature())));
 		}
-		
+
 		for (int i = 0; i < paramCount; i++) {
 			if (!parameterRefs[i])
 			{
