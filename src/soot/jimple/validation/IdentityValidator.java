@@ -68,7 +68,7 @@ public enum IdentityValidator implements BodyValidator {
 						return;
 					}
 					if (parameterRefs[ref.getIndex()]) {
-						exception.add(new ValidationException(id, String.format("Only one local for parameter %d is allowed (method: %s)", ref.getIndex(), body.getMethod())));
+//						exception.add(new ValidationException(id, String.format("Only one local for parameter %d is allowed (method: %s)", ref.getIndex(), body.getMethod())));
 					}
 					parameterRefs[ref.getIndex()] = true;
 				}
