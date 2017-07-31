@@ -1,23 +1,9 @@
 /* This file was generated with JastAdd2 (http://jastadd.org) version R20130212 (r1031) */
 package soot.JastAddJ;
 
-import java.util.HashSet;
-import java.io.File;
-import java.util.*;
-import beaver.*;
 import java.util.ArrayList;
-import java.util.zip.*;
-import java.io.*;
-import java.io.FileNotFoundException;
-import java.util.Collection;
-import soot.*;
-import soot.util.*;
-import soot.jimple.*;
-import soot.coffi.ClassFile;
-import soot.coffi.method_info;
-import soot.coffi.CONSTANT_Utf8_info;
-import soot.tagkit.SourceFileTag;
-import soot.coffi.CoffiMethodSource;
+
+import soot.Local;
 /**
  * @production ConditionalExpr : {@link Expr} ::= <span class="component">Condition:{@link Expr}</span> <span class="component">TrueExpr:{@link Expr}</span> <span class="component">FalseExpr:{@link Expr}</span>;
  * @ast node
@@ -27,7 +13,8 @@ public class ConditionalExpr extends Expr implements Cloneable {
   /**
    * @apilevel low-level
    */
-  public void flushCache() {
+  @Override
+public void flushCache() {
     super.flushCache();
     constant_computed = false;
     constant_value = null;
@@ -43,13 +30,15 @@ public class ConditionalExpr extends Expr implements Cloneable {
   /**
    * @apilevel internal
    */
-  public void flushCollectionCache() {
+  @Override
+public void flushCollectionCache() {
     super.flushCollectionCache();
   }
   /**
    * @apilevel internal
    */
-  @SuppressWarnings({"unchecked", "cast"})
+  @Override
+@SuppressWarnings({"unchecked", "cast"})
   public ConditionalExpr clone() throws CloneNotSupportedException {
     ConditionalExpr node = (ConditionalExpr)super.clone();
     node.constant_computed = false;
@@ -69,13 +58,15 @@ public class ConditionalExpr extends Expr implements Cloneable {
   /**
    * @apilevel internal
    */
-  @SuppressWarnings({"unchecked", "cast"})
+  @Override
+@SuppressWarnings({"unchecked", "cast"})
   public ConditionalExpr copy() {
     try {
-      ConditionalExpr node = (ConditionalExpr) clone();
+      ConditionalExpr node = clone();
       node.parent = null;
-      if(children != null)
-        node.children = (ASTNode[]) children.clone();
+      if(children != null) {
+		node.children = children.clone();
+	}
       return node;
     } catch (CloneNotSupportedException e) {
       throw new Error("Error: clone not supported for " +
@@ -88,12 +79,13 @@ public class ConditionalExpr extends Expr implements Cloneable {
    * @return dangling copy of the subtree at this node
    * @apilevel low-level
    */
-  @SuppressWarnings({"unchecked", "cast"})
+  @Override
+@SuppressWarnings({"unchecked", "cast"})
   public ConditionalExpr fullCopy() {
-    ConditionalExpr tree = (ConditionalExpr) copy();
+    ConditionalExpr tree = copy();
     if (children != null) {
       for (int i = 0; i < children.length; ++i) {
-        ASTNode child = (ASTNode) children[i];
+        ASTNode child = children[i];
         if(child != null) {
           child = child.fullCopy();
           tree.setChild(child, i);
@@ -103,11 +95,12 @@ public class ConditionalExpr extends Expr implements Cloneable {
     return tree;
   }
   /**
-   * @ast method 
+   * @ast method
    * @aspect PrettyPrint
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/PrettyPrint.jadd:427
    */
-  public void toString(StringBuffer s) {
+  @Override
+public void toString(final StringBuffer s) {
     getCondition().toString(s);
     s.append(" ? ");
     getTrueExpr().toString(s);
@@ -115,27 +108,30 @@ public class ConditionalExpr extends Expr implements Cloneable {
     getFalseExpr().toString(s);
   }
   /**
-   * @ast method 
+   * @ast method
    * @aspect TypeCheck
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeCheck.jrag:562
    */
-  public void typeCheck() {
-    if(!getCondition().type().isBoolean())
-      error("The first operand of a conditional expression must be a boolean");
+  @Override
+public void typeCheck() {
+    if(!getCondition().type().isBoolean()) {
+		error("The first operand of a conditional expression must be a boolean");
+	}
     if(type().isUnknown() && !getTrueExpr().type().isUnknown() && !getFalseExpr().type().isUnknown()) {
-      error("The types of the second and third operand in this conditional expression do not match"); 
+      error("The types of the second and third operand in this conditional expression do not match");
     }
   }
   /**
-   * @ast method 
+   * @ast method
    * @aspect BooleanExpressions
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/BooleanExpressions.jrag:119
    */
-  public soot.Value eval(Body b) {
+  @Override
+public soot.Value eval(final Body b) {
     b.setLine(this);
-    if(type().isBoolean())
-      return emitBooleanCondition(b);
-    else {
+    if(type().isBoolean()) {
+		return emitBooleanCondition(b);
+	} else {
       Local result = b.newTemp(type().getSootType());
       soot.jimple.Stmt endBranch = newLabel();
       getCondition().emitEvalBranch(b);
@@ -167,11 +163,12 @@ public class ConditionalExpr extends Expr implements Cloneable {
     }
   }
   /**
-   * @ast method 
+   * @ast method
    * @aspect BooleanExpressions
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/BooleanExpressions.jrag:209
    */
-  public void emitEvalBranch(Body b) {
+  @Override
+public void emitEvalBranch(final Body b) {
     b.setLine(this);
     soot.jimple.Stmt endBranch = newLabel();
     getCondition().emitEvalBranch(b);
@@ -179,7 +176,7 @@ public class ConditionalExpr extends Expr implements Cloneable {
     if(getCondition().canBeTrue()) {
       getTrueExpr().emitEvalBranch(b);
       b.add(b.newGotoStmt(true_label(), this));
-    }  
+    }
     b.addLabel(else_branch_label());
     if(getCondition().canBeFalse()) {
       getFalseExpr().emitEvalBranch(b);
@@ -187,8 +184,8 @@ public class ConditionalExpr extends Expr implements Cloneable {
     }
   }
   /**
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
   public ConditionalExpr() {
     super();
@@ -200,53 +197,56 @@ public class ConditionalExpr extends Expr implements Cloneable {
    * Initializes List and Opt nta children.
    * @apilevel internal
    * @ast method
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
-  public void init$Children() {
+  @Override
+public void init$Children() {
     children = new ASTNode[3];
   }
   /**
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
-  public ConditionalExpr(Expr p0, Expr p1, Expr p2) {
+  public ConditionalExpr(final Expr p0, final Expr p1, final Expr p2) {
     setChild(p0, 0);
     setChild(p1, 1);
     setChild(p2, 2);
   }
   /**
    * @apilevel low-level
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
-  protected int numChildren() {
+  @Override
+protected int numChildren() {
     return 3;
   }
   /**
    * @apilevel internal
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
-  public boolean mayHaveRewrite() {
+  @Override
+public boolean mayHaveRewrite() {
     return false;
   }
   /**
    * Replaces the Condition child.
    * @param node The new node to replace the Condition child.
    * @apilevel high-level
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
-  public void setCondition(Expr node) {
+  public void setCondition(final Expr node) {
     setChild(node, 0);
   }
   /**
    * Retrieves the Condition child.
    * @return The current node used as the Condition child.
    * @apilevel high-level
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
   public Expr getCondition() {
     return (Expr)getChild(0);
@@ -256,8 +256,8 @@ public class ConditionalExpr extends Expr implements Cloneable {
    * <p><em>This method does not invoke AST transformations.</em></p>
    * @return The current node used as the Condition child.
    * @apilevel low-level
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
   public Expr getConditionNoTransform() {
     return (Expr)getChildNoTransform(0);
@@ -266,18 +266,18 @@ public class ConditionalExpr extends Expr implements Cloneable {
    * Replaces the TrueExpr child.
    * @param node The new node to replace the TrueExpr child.
    * @apilevel high-level
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
-  public void setTrueExpr(Expr node) {
+  public void setTrueExpr(final Expr node) {
     setChild(node, 1);
   }
   /**
    * Retrieves the TrueExpr child.
    * @return The current node used as the TrueExpr child.
    * @apilevel high-level
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
   public Expr getTrueExpr() {
     return (Expr)getChild(1);
@@ -287,8 +287,8 @@ public class ConditionalExpr extends Expr implements Cloneable {
    * <p><em>This method does not invoke AST transformations.</em></p>
    * @return The current node used as the TrueExpr child.
    * @apilevel low-level
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
   public Expr getTrueExprNoTransform() {
     return (Expr)getChildNoTransform(1);
@@ -297,18 +297,18 @@ public class ConditionalExpr extends Expr implements Cloneable {
    * Replaces the FalseExpr child.
    * @param node The new node to replace the FalseExpr child.
    * @apilevel high-level
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
-  public void setFalseExpr(Expr node) {
+  public void setFalseExpr(final Expr node) {
     setChild(node, 2);
   }
   /**
    * Retrieves the FalseExpr child.
    * @return The current node used as the FalseExpr child.
    * @apilevel high-level
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
   public Expr getFalseExpr() {
     return (Expr)getChild(2);
@@ -318,14 +318,14 @@ public class ConditionalExpr extends Expr implements Cloneable {
    * <p><em>This method does not invoke AST transformations.</em></p>
    * @return The current node used as the FalseExpr child.
    * @apilevel low-level
-   * @ast method 
-   * 
+   * @ast method
+   *
    */
   public Expr getFalseExprNoTransform() {
     return (Expr)getChildNoTransform(2);
   }
   /**
-   * @ast method 
+   * @ast method
    * @aspect TypeAnalysis
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:364
    */
@@ -333,18 +333,26 @@ public class ConditionalExpr extends Expr implements Cloneable {
 {
     TypeDecl trueType = getTrueExpr().type();
     TypeDecl falseType = getFalseExpr().type();
-    
-    if(trueType == falseType) return trueType;
-    
+
+    if(trueType == falseType) {
+		return trueType;
+	}
+
     if(trueType.isNumericType() && falseType.isNumericType()) {
-      if(trueType.isByte() && falseType.isShort()) return falseType;
-      if(trueType.isShort() && falseType.isByte()) return trueType;
-      if((trueType.isByte() || trueType.isShort() || trueType.isChar()) && 
-         falseType.isInt() && getFalseExpr().isConstant() && getFalseExpr().representableIn(trueType))
-        return trueType;
-      if((falseType.isByte() || falseType.isShort() || falseType.isChar()) && 
-         trueType.isInt() && getTrueExpr().isConstant() && getTrueExpr().representableIn(falseType))
-        return falseType;
+      if(trueType.isByte() && falseType.isShort()) {
+		return falseType;
+	}
+      if(trueType.isShort() && falseType.isByte()) {
+		return trueType;
+	}
+      if((trueType.isByte() || trueType.isShort() || trueType.isChar()) &&
+         falseType.isInt() && getFalseExpr().isConstant() && getFalseExpr().representableIn(trueType)) {
+		return trueType;
+	}
+      if((falseType.isByte() || falseType.isShort() || falseType.isChar()) &&
+         trueType.isInt() && getTrueExpr().isConstant() && getTrueExpr().representableIn(falseType)) {
+		return falseType;
+	}
       return trueType.binaryNumericPromotion(falseType);
     }
     else if(trueType.isBoolean() && falseType.isBoolean()) {
@@ -357,17 +365,19 @@ public class ConditionalExpr extends Expr implements Cloneable {
       return falseType;
     }
     else if(trueType.isReferenceType() && falseType.isReferenceType()) {
-      if(trueType.assignConversionTo(falseType, null))
-        return falseType;
-      if(falseType.assignConversionTo(trueType, null))
-        return trueType;
+      if(trueType.assignConversionTo(falseType, null)) {
+		return falseType;
+	}
+      if(falseType.assignConversionTo(trueType, null)) {
+		return trueType;
+	}
       return unknownType();
-    }
-    else
-      return unknownType();
+    } else {
+		return unknownType();
+	}
   }
   /**
-   * @ast method 
+   * @ast method
    * @aspect AutoBoxing
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/AutoBoxing.jrag:181
    */
@@ -376,10 +386,12 @@ public class ConditionalExpr extends Expr implements Cloneable {
     TypeDecl trueType = getTrueExpr().type();
     TypeDecl falseType = getFalseExpr().type();
     if(trueType.isBoolean() && falseType.isBoolean()) {
-      if(trueType == falseType)
-        return trueType;
-      if(trueType.isReferenceType())
-        return trueType.unboxed();
+      if(trueType == falseType) {
+		return trueType;
+	}
+      if(trueType.isReferenceType()) {
+		return trueType.unboxed();
+	}
       return trueType;
     }
     return refined_TypeAnalysis_ConditionalExpr_type();
@@ -397,7 +409,8 @@ public class ConditionalExpr extends Expr implements Cloneable {
    * @aspect ConstantExpression
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/ConstantExpression.jrag:125
    */
-  @SuppressWarnings({"unchecked", "cast"})
+  @Override
+@SuppressWarnings({"unchecked", "cast"})
   public Constant constant() {
     if(constant_computed) {
       return constant_value;
@@ -406,7 +419,9 @@ public class ConditionalExpr extends Expr implements Cloneable {
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     constant_value = constant_compute();
-      if(isFinal && num == state().boundariesCrossed) constant_computed = true;
+      if(isFinal && num == state().boundariesCrossed) {
+		constant_computed = true;
+	}
     return constant_value;
   }
   /**
@@ -426,7 +441,8 @@ public class ConditionalExpr extends Expr implements Cloneable {
    * @aspect ConstantExpression
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/ConstantExpression.jrag:347
    */
-  @SuppressWarnings({"unchecked", "cast"})
+  @Override
+@SuppressWarnings({"unchecked", "cast"})
   public boolean isConstant() {
     if(isConstant_computed) {
       return isConstant_value;
@@ -435,7 +451,9 @@ public class ConditionalExpr extends Expr implements Cloneable {
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     isConstant_value = isConstant_compute();
-      if(isFinal && num == state().boundariesCrossed) isConstant_computed = true;
+      if(isFinal && num == state().boundariesCrossed) {
+		isConstant_computed = true;
+	}
     return isConstant_value;
   }
   /**
@@ -464,7 +482,9 @@ public class ConditionalExpr extends Expr implements Cloneable {
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     booleanOperator_value = booleanOperator_compute();
-      if(isFinal && num == state().boundariesCrossed) booleanOperator_computed = true;
+      if(isFinal && num == state().boundariesCrossed) {
+		booleanOperator_computed = true;
+	}
     return booleanOperator_value;
   }
   /**
@@ -479,7 +499,8 @@ public class ConditionalExpr extends Expr implements Cloneable {
    * @aspect DA
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:332
    */
-  public boolean isDAafterTrue(Variable v) {
+  @Override
+public boolean isDAafterTrue(final Variable v) {
     ASTNode$State state = state();
     try {  return (getTrueExpr().isDAafterTrue(v) && getFalseExpr().isDAafterTrue(v)) || isFalse();  }
     finally {
@@ -490,7 +511,8 @@ public class ConditionalExpr extends Expr implements Cloneable {
    * @aspect DA
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:333
    */
-  public boolean isDAafterFalse(Variable v) {
+  @Override
+public boolean isDAafterFalse(final Variable v) {
     ASTNode$State state = state();
     try {  return (getTrueExpr().isDAafterFalse(v) && getFalseExpr().isDAafterFalse(v)) || isTrue();  }
     finally {
@@ -501,7 +523,8 @@ public class ConditionalExpr extends Expr implements Cloneable {
    * @aspect DA
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:235
    */
-  public boolean isDAafter(Variable v) {
+  @Override
+public boolean isDAafter(final Variable v) {
     ASTNode$State state = state();
     try {  return booleanOperator() ? isDAafterTrue(v) && isDAafterFalse(v) : getTrueExpr().isDAafter(v) && getFalseExpr().isDAafter(v);  }
     finally {
@@ -512,7 +535,8 @@ public class ConditionalExpr extends Expr implements Cloneable {
    * @aspect DU
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:702
    */
-  public boolean isDUafterTrue(Variable v) {
+  @Override
+public boolean isDUafterTrue(final Variable v) {
     ASTNode$State state = state();
     try {  return getTrueExpr().isDUafterTrue(v) && getFalseExpr().isDUafterTrue(v);  }
     finally {
@@ -523,7 +547,8 @@ public class ConditionalExpr extends Expr implements Cloneable {
    * @aspect DU
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:703
    */
-  public boolean isDUafterFalse(Variable v) {
+  @Override
+public boolean isDUafterFalse(final Variable v) {
     ASTNode$State state = state();
     try {  return getTrueExpr().isDUafterFalse(v) && getFalseExpr().isDUafterFalse(v);  }
     finally {
@@ -534,7 +559,8 @@ public class ConditionalExpr extends Expr implements Cloneable {
    * @aspect DU
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:694
    */
-  public boolean isDUafter(Variable v) {
+  @Override
+public boolean isDUafter(final Variable v) {
     ASTNode$State state = state();
     try {  return booleanOperator() ? isDUafterTrue(v) && isDUafterFalse(v) : getTrueExpr().isDUafter(v) && getFalseExpr().isDUafter(v);  }
     finally {
@@ -553,7 +579,8 @@ public class ConditionalExpr extends Expr implements Cloneable {
    * @aspect Generics
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:129
    */
-  @SuppressWarnings({"unchecked", "cast"})
+  @Override
+@SuppressWarnings({"unchecked", "cast"})
   public TypeDecl type() {
     if(type_computed) {
       return type_value;
@@ -562,7 +589,9 @@ public class ConditionalExpr extends Expr implements Cloneable {
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     type_value = type_compute();
-      if(isFinal && num == state().boundariesCrossed) type_computed = true;
+      if(isFinal && num == state().boundariesCrossed) {
+		type_computed = true;
+	}
     return type_value;
   }
   /**
@@ -574,10 +603,12 @@ public class ConditionalExpr extends Expr implements Cloneable {
     TypeDecl falseType = getFalseExpr().type();
 
     if(type.isUnknown()) {
-      if(!trueType.isReferenceType() && !trueType.boxed().isUnknown())
-        trueType = trueType.boxed();
-      if(!falseType.isReferenceType() && !falseType.boxed().isUnknown())
-        falseType = falseType.boxed();
+      if(!trueType.isReferenceType() && !trueType.boxed().isUnknown()) {
+		trueType = trueType.boxed();
+	}
+      if(!falseType.isReferenceType() && !falseType.boxed().isUnknown()) {
+		falseType = falseType.boxed();
+	}
 
       ArrayList list = new ArrayList();
       list.add(trueType);
@@ -591,7 +622,8 @@ public class ConditionalExpr extends Expr implements Cloneable {
    * @aspect BooleanExpressions
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/BooleanExpressions.jrag:21
    */
-  public boolean definesLabel() {
+  @Override
+public boolean definesLabel() {
     ASTNode$State state = state();
     try {  return true;  }
     finally {
@@ -602,9 +634,10 @@ public class ConditionalExpr extends Expr implements Cloneable {
    * @aspect BooleanExpressions
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/BooleanExpressions.jrag:82
    */
-  public boolean canBeTrue() {
+  @Override
+public boolean canBeTrue() {
     ASTNode$State state = state();
-    try {  return type().isBoolean() && (getTrueExpr().canBeTrue() && getFalseExpr().canBeTrue() 
+    try {  return type().isBoolean() && (getTrueExpr().canBeTrue() && getFalseExpr().canBeTrue()
     || getCondition().isTrue() && getTrueExpr().canBeTrue()
     || getCondition().isFalse() && getFalseExpr().canBeTrue());  }
     finally {
@@ -615,9 +648,10 @@ public class ConditionalExpr extends Expr implements Cloneable {
    * @aspect BooleanExpressions
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/BooleanExpressions.jrag:92
    */
-  public boolean canBeFalse() {
+  @Override
+public boolean canBeFalse() {
     ASTNode$State state = state();
-    try {  return type().isBoolean() && (getTrueExpr().canBeFalse() && getFalseExpr().canBeFalse() 
+    try {  return type().isBoolean() && (getTrueExpr().canBeFalse() && getFalseExpr().canBeFalse()
     || getCondition().isTrue() && getTrueExpr().canBeFalse()
     || getCondition().isFalse() && getFalseExpr().canBeFalse());  }
     finally {
@@ -645,7 +679,9 @@ public class ConditionalExpr extends Expr implements Cloneable {
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     else_branch_label_value = else_branch_label_compute();
-      if(isFinal && num == state().boundariesCrossed) else_branch_label_computed = true;
+      if(isFinal && num == state().boundariesCrossed) {
+		else_branch_label_computed = true;
+	}
     return else_branch_label_value;
   }
   /**
@@ -674,7 +710,9 @@ public class ConditionalExpr extends Expr implements Cloneable {
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     then_branch_label_value = then_branch_label_compute();
-      if(isFinal && num == state().boundariesCrossed) then_branch_label_computed = true;
+      if(isFinal && num == state().boundariesCrossed) {
+		then_branch_label_computed = true;
+	}
     return then_branch_label_value;
   }
   /**
@@ -685,7 +723,8 @@ public class ConditionalExpr extends Expr implements Cloneable {
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:387
    * @apilevel internal
    */
-  public boolean Define_boolean_isDAbefore(ASTNode caller, ASTNode child, Variable v) {
+  @Override
+public boolean Define_boolean_isDAbefore(final ASTNode caller, final ASTNode child, final Variable v) {
     if(caller == getFalseExprNoTransform()) {
       return getCondition().isDAafterFalse(v);
     }
@@ -702,7 +741,8 @@ public class ConditionalExpr extends Expr implements Cloneable {
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:823
    * @apilevel internal
    */
-  public boolean Define_boolean_isDUbefore(ASTNode caller, ASTNode child, Variable v) {
+  @Override
+public boolean Define_boolean_isDUbefore(final ASTNode caller, final ASTNode child, final Variable v) {
     if(caller == getFalseExprNoTransform()) {
       return getCondition().isDUafterFalse(v);
     }
@@ -719,7 +759,8 @@ public class ConditionalExpr extends Expr implements Cloneable {
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/BooleanExpressions.jrag:64
    * @apilevel internal
    */
-  public soot.jimple.Stmt Define_soot_jimple_Stmt_condition_false_label(ASTNode caller, ASTNode child) {
+  @Override
+public soot.jimple.Stmt Define_soot_jimple_Stmt_condition_false_label(final ASTNode caller, final ASTNode child) {
     if(caller == getFalseExprNoTransform()) {
       return false_label();
     }
@@ -736,7 +777,8 @@ public class ConditionalExpr extends Expr implements Cloneable {
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/BooleanExpressions.jrag:65
    * @apilevel internal
    */
-  public soot.jimple.Stmt Define_soot_jimple_Stmt_condition_true_label(ASTNode caller, ASTNode child) {
+  @Override
+public soot.jimple.Stmt Define_soot_jimple_Stmt_condition_true_label(final ASTNode caller, final ASTNode child) {
     if(caller == getFalseExprNoTransform()) {
       return true_label();
     }
@@ -752,7 +794,8 @@ public class ConditionalExpr extends Expr implements Cloneable {
   /**
    * @apilevel internal
    */
-  public ASTNode rewriteTo() {
+  @Override
+public ASTNode rewriteTo() {
     return super.rewriteTo();
   }
 }

@@ -11,6 +11,8 @@ public enum HigherLevelStructureTags implements Tag {
 
 	IF_COND, IF_THEN, IF_ELSE, IF_END,
 
+	IF_COND_X, IF_THEN_X, IF_ELSE_X, IF_END_X,	// for testing purposes
+
 	SWITCH_COND, SWITCH_CASE, SWITCH_END,
 
 	TRY_BEGIN, TRY_END,

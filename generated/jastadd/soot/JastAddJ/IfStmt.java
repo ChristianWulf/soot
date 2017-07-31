@@ -170,7 +170,7 @@ public class IfStmt extends Stmt implements Cloneable {
 		// }
 		// } else {
 
-		getCondition().emitEvalBranch(b);
+		getCondition().emitEvalBranch(b); // calls else_branch_label()
 
 		soot.jimple.Stmt thenBranch = then_branch_label();
 		b.addLabel(thenBranch);
@@ -178,25 +178,33 @@ public class IfStmt extends Stmt implements Cloneable {
 
 		soot.jimple.Stmt endBranch = endBranchLabel(beginCond);
 
-		if (hasElse()) {
-			// first: finalize "then"-branch
-			if (alwaysProduceEndBranchStmt || getThen().canCompleteNormally()) {
-				b.setLine(this);
-				b.add(b.newGotoStmt(endBranch, this)); // link to endBranch node
-			}
+		// first: finalize "then"-branch
+		// canCompleteNormally means: whether the 'then' contains a return or a throw statement
+		if (/* alwaysProduceEndBranchStmt || */ getThen().canCompleteNormally()) {
+			b.setLine(this);
+			b.add(b.newGotoStmt(endBranch, this)); // link to endBranch node
 		}
-		
+
 		soot.jimple.Stmt ifElseBranch = else_branch_label();
-		/* must always be added to the body since else_branch_label is called internally somewhere */
+		// if (hasElse()) {
+		//// ifElseBranch.addTag(t); // IF_ELSE
+		// } else {
+		//// ifElseBranch.addTag(t); // IF_END
+		//// ifElseBranch.addTag(t); // ref to beginCond
+		// }
+		/*
+		 * must always be added to the body since else_branch_label is called internally by the
+		 * getCondition().emitEvalBranch(b)
+		 */
 		b.addLabel(ifElseBranch);
-		
+
 		if (hasElse()) {
 			// then: begin "else"-branch
 			getElse().jimplify2(b);
 		}
 
 		// canCompleteNormally means: whether the 'then' contains a return or a throw statement
-		if (alwaysProduceEndBranchStmt || (getThen().canCompleteNormally() && hasElse())) {
+		if (alwaysProduceEndBranchStmt || getThen().canCompleteNormally() || hasElse()) {
 			b.setLine(this);
 			b.addLabel(endBranch);
 		}
