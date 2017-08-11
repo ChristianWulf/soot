@@ -22,22 +22,22 @@ public class EnhancedForStmt extends BranchTargetStmt implements Cloneable, Vari
 	/**
 	 * @apilevel internal
 	 */
-	protected boolean init_label_computed;
+	private boolean init_label_computed;
 
 	/**
 	 * @apilevel internal
 	 */
-	protected soot.jimple.Stmt init_label_value;
+	private soot.jimple.Stmt init_label_value;
 
 	/**
 	 * @apilevel internal
 	 */
-	protected boolean begin_label_computed;
+	private boolean begin_label_computed;
 
 	/**
 	 * @apilevel internal
 	 */
-	protected soot.jimple.Stmt begin_label_value;
+	private soot.jimple.Stmt begin_label_value;
 
 	/**
 	 * @author chw
@@ -55,8 +55,12 @@ public class EnhancedForStmt extends BranchTargetStmt implements Cloneable, Vari
 		canCompleteNormally_computed = false;
 		isDAafter_Variable_values = null;
 		isDUafter_Variable_values = null;
+		init_label_computed = false;
+		init_label_value = null;
 		cond_label_computed = false;
 		cond_label_value = null;
+		begin_label_computed = false;
+		begin_label_value = null;
 		update_label_computed = false;
 		update_label_value = null;
 		end_label_computed = false;
@@ -84,8 +88,12 @@ public class EnhancedForStmt extends BranchTargetStmt implements Cloneable, Vari
 		node.canCompleteNormally_computed = false;
 		node.isDAafter_Variable_values = null;
 		node.isDUafter_Variable_values = null;
+		node.init_label_computed = false;
+		node.init_label_value = null;
 		node.cond_label_computed = false;
 		node.cond_label_value = null;
+		node.begin_label_computed = false;
+		node.begin_label_value = null;
 		node.update_label_computed = false;
 		node.update_label_value = null;
 		node.end_label_computed = false;
@@ -230,7 +238,7 @@ public class EnhancedForStmt extends BranchTargetStmt implements Cloneable, Vari
 	/**
 	 * @author chw
 	 */
-	public soot.jimple.Stmt init_label(final HigherLevelStructureTags initTag) {
+	private soot.jimple.Stmt init_label(final HigherLevelStructureTags initTag) {
 		if (init_label_computed) {
 			return init_label_value;
 		}
@@ -260,6 +268,7 @@ public class EnhancedForStmt extends BranchTargetStmt implements Cloneable, Vari
 		soot.Local parameter = b.newLocal(getVariableDeclaration().name(),
 				getVariableDeclaration().type().getSootType());
 		getVariableDeclaration().local = parameter;
+		b.setLine(this);
 		soot.jimple.Stmt condLabel = cond_label();
 		b.addLabel(condLabel);
 		soot.jimple.Stmt endLabel = end_label(init_label);
@@ -772,7 +781,7 @@ public class EnhancedForStmt extends BranchTargetStmt implements Cloneable, Vari
 		return label;
 	}
 
-	public soot.jimple.Stmt begin_label() {
+	public soot.jimple.Stmt begin_label() {	// by chw
 		if (begin_label_computed) {
 			return begin_label_value;
 		}
